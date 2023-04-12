@@ -6,6 +6,12 @@ from mongoengine.fields import (
 
 class Experiment(Document):
     meta = {'collection': 'experiment'}
-    ID = ObjectIdField()
+    _id = ObjectIdField()
     name = StringField(required=True)
-    description = StringField(required=True)
+    description = StringField(max_length=50, required=True)
+
+class Example(Document):
+    meta = {'collection': 'example'}
+    _id = ObjectIdField()
+    name = StringField(required=True)
+    description = StringField(max_length=50, required=True)
