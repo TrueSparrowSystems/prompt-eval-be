@@ -50,6 +50,5 @@ class Query(graphene.ObjectType):
 
     
 schema = graphene.Schema(query=Query, mutation=Mutations, types=[ExperimentType, ExampleType, PromptTemplateType, ExperimentPaginationType])
-print(schema)
 
 
