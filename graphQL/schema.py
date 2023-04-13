@@ -1,14 +1,20 @@
 import graphene
 from graphene.relay import Node, Connection
 from graphene_mongo.fields import MongoengineConnectionField
-from .mutations import CreateExperimentMutation, CreateExampleMutation, UpdateExperimentMutation
+from .mutations import CreateExperimentMutation, CreateExampleMutation, UpdateExperimentMutation, CreatePromptTemplateMutation, UpdatePromptTemplateMutation
 from .models import Experiment
-from .types import ExperimentType, ExampleType , ExperimentConnection
+from .types import ExperimentType, ExampleType , ExperimentConnection , PromptTemplateType
+
+
 
 class Mutations(graphene.ObjectType):
     create_experiment = CreateExperimentMutation.Field()
     create_example = CreateExampleMutation.Field()
     update_experiment = UpdateExperimentMutation.Field()
+    create_prompt_template = CreatePromptTemplateMutation.Field()
+    update_prompt_template = UpdatePromptTemplateMutation.Field()
+    
+
 class Query(graphene.ObjectType):
     node = Node.Field()
     experiment_list = graphene.List(ExperimentType, name=graphene.String())
@@ -35,4 +41,6 @@ class Query(graphene.ObjectType):
             return None
 
     
-schema = graphene.Schema(query=Query, mutation=Mutations, types=[ExperimentType, ExampleType, ExperimentConnection])
+schema = graphene.Schema(query=Query, mutation=Mutations, types=[ExperimentType, ExampleType, ExperimentConnection, PromptTemplateType])
+
+
