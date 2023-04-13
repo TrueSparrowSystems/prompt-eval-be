@@ -1,9 +1,8 @@
 import graphene
-from graphene.relay import Node, Connection
-from graphene_mongo.fields import MongoengineConnectionField
+from graphene.relay import Node
 from .mutations import CreateExperimentMutation, CreateExampleMutation, UpdateExperimentMutation, CreatePromptTemplateMutation, UpdatePromptTemplateMutation
 from .models import Experiment
-from .types import ExperimentType, ExampleType , ExperimentConnection , PromptTemplateType
+from .types import ExperimentType, ExampleType , PromptTemplateType, ExperimentPaginationType
 
 
 
@@ -19,7 +18,8 @@ class Query(graphene.ObjectType):
     node = Node.Field()
     experiment_list = graphene.List(ExperimentType, name=graphene.String())
     experiment_list_by_id = graphene.Field(ExperimentType, documentId=graphene.String(required=True))
-    experiments_by_pagination = MongoengineConnectionField(ExperimentType)
+    experiments_by_pagination = graphene.List(ExperimentType, limit=graphene.Int(required=True), page=graphene.Int())
+    experiments_by_pagination_count = graphene.Field(ExperimentPaginationType, limit=graphene.Int(required=True), page=graphene.Int())
 
     def resolve_experiment_list(root, info, name=None):
         if name:
@@ -34,13 +34,22 @@ class Query(graphene.ObjectType):
             return None
     
     def resolve_experiments_by_pagination(self, info, **kwargs):
-        try:
-            queryset = Experiment.objects.order_by('id')
-            return queryset
-        except queryset.DoesNotExist:
-            return None
+        limit = kwargs.get('limit')
+        page = kwargs.get('page', 0)
+        offset = page * limit
+        return Experiment.objects[offset:offset+limit]
+    
+    def resolve_experiments_by_pagination_count(self, info, **kwargs):
+        limit = kwargs.get('limit')
+        page = kwargs.get('page', 0)
+        offset = page * limit
+        
+        total_count = Experiment.objects.count()
+        experiments = Experiment.objects[offset:offset+limit]
+
+        return ExperimentPaginationType(total_count=total_count, items=experiments)
 
     
-schema = graphene.Schema(query=Query, mutation=Mutations, types=[ExperimentType, ExampleType, ExperimentConnection, PromptTemplateType])
+schema = graphene.Schema(query=Query, mutation=Mutations, types=[ExperimentType, ExampleType, PromptTemplateType])
 
 
