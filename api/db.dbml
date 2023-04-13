@@ -1,0 +1,62 @@
+// https://dbdiagram.io/d/64369a1c8615191cfa8d54ca
+Table experiment {
+  _id ObjectId
+  name string
+  description string
+  dyanamic_vars Array
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table prompt_template {
+  _id ObjectId
+  name string
+  description string
+  conversation  Array [
+    note: '
+      [{ role: system, content: "asdasd"},
+       { role: user, content: "asdasd"}, 
+       { role: assistant, content: "asdasd"},
+        { role: user, content: "asdasd"}]
+    '
+  ]
+  experiment_id ObjectId [ref: > experiment._id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table test_cases {
+  _id ObjectId
+  name string
+  description string
+  dynamic_var_values  Object [
+    note: '
+      { var_1: value_1, var_2: value_2}
+    '
+  ]
+  experiment_id ObjectId [ref: > experiment._id]
+  expected_result Array
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table evaluation_results {
+  _id ObjectId
+  model varchar
+  eval varchar
+  accuracy double
+  prompt_template_id ObjectId [ref: > prompt_template._id]
+  evaluation_report_data Object
+  run_id int
+  status string [
+    note: '
+      INITIATED
+      COMPLETED
+      RUNNING
+      FAILED
+    '
+  ]
+  completed_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
