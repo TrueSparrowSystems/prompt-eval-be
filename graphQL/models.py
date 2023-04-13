@@ -50,10 +50,10 @@ class Testcase(Document):
 
 
 class Status(Enum):
-            INITIATED = 'INITIATED'
-            COMPLETED = 'COMPLETED'
-            RUNNING = 'RUNNING'
-            FAILED = 'FAILED'
+    INITIATED = 'INITIATED'
+    COMPLETED = 'COMPLETED'
+    RUNNING = 'RUNNING'
+    FAILED = 'FAILED'
 
 class EvaluationResult(Document):
     meta = {'collection': 'evaluation_results'}
