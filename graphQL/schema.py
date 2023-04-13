@@ -49,7 +49,7 @@ class Query(graphene.ObjectType):
         return ExperimentPaginationType(total_count=total_count, items=experiments)
 
     
-schema = graphene.Schema(query=Query, mutation=Mutations, types=[ExperimentType, ExampleType, PromptTemplateType])
+schema = graphene.Schema(query=Query, mutation=Mutations, types=[ExperimentType, ExampleType, PromptTemplateType, ExperimentPaginationType])
 print(schema)
 
 
