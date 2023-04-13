@@ -124,12 +124,6 @@ _MONGODB_PASSWD = ""
 _MONGODB_HOST = "localhost"
 _MONGODB_NAME = "prompt-eval"
 _MONGODB_PORT = 27017
-_MONGODB_DATABASE_HOST = "mongodb://%s:%s@%s/%s" % (
-    _MONGODB_USER,
-    _MONGODB_PASSWD,
-    _MONGODB_HOST,
-    _MONGODB_NAME,
-)
 
 mongoengine.connect(_MONGODB_NAME, host=_MONGODB_HOST, port=_MONGODB_PORT)
 
