@@ -20,6 +20,7 @@ class Experiment(Document):
     created_at = IntField()
     updated_at = IntField()
 
+
 class Example(Document):
     meta = {'collection': 'example'}
     _id = ObjectIdField()
@@ -67,4 +68,5 @@ class EvaluationResult(Document):
     completed_at = DateTimeField()
     created_at = IntField()
     updated_at = IntField()
+
 

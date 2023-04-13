@@ -3,6 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from .models import Experiment, Example, PromptTemplate
 from .types import ExperimentType, ExampleType, PromptTemplateType
 
+
 class CreateExperimentMutation(graphene.Mutation):
     class Arguments:
         name = graphene.String()
@@ -97,4 +98,5 @@ class UpdatePromptTemplateMutation(graphene.Mutation):
         return UpdatePromptTemplateMutation(promptTemplate=promptTemplate)
 
   
+
 
