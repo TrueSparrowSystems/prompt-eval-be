@@ -2,7 +2,7 @@ import graphene
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Experiment, Example, PromptTemplate
 from .types import ExperimentType, ExampleType, PromptTemplateType
-
+from graphql import GraphQLError
 
 class CreateExperimentMutation(graphene.Mutation):
     class Arguments:
@@ -84,16 +84,23 @@ class UpdatePromptTemplateMutation(graphene.Mutation):
         try:
             print('getting id successfully')
             print(documentId)
-            promptTemplate = PromptTemplate.objects.get(_id=documentId)
-            print('getting id successfully')
-            print(promptTemplate)
+            query = promptTemplate = PromptTemplate.objects.get(_id=documentId)
+            print('Mongoengine queries 1')
+            print(str(query.to_mongo()))
         except Exception as e:
-            print('I am in except')
+            print('Exception occured')
             print(e)
-            return None
+            error = GraphQLError(
+            message="Error While querying to database ",
+            extensions= {
+             "code": "FETCH_ERROR",
+             "debug": "Error While querying to database",
+             }
+            )
+            return error
         promptTemplate.description = description
         query = promptTemplate.save()
-        print('Mongoengine queries')
+        print('Mongoengine queries 2')
         print(str(query.to_mongo()))
         return UpdatePromptTemplateMutation(promptTemplate=promptTemplate)
 

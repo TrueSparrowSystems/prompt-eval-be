@@ -13,7 +13,6 @@ class Mutations(graphene.ObjectType):
     create_prompt_template = CreatePromptTemplateMutation.Field()
     update_prompt_template = UpdatePromptTemplateMutation.Field()
     
-
 class Query(graphene.ObjectType):
     node = Node.Field()
     experiment_list = graphene.List(ExperimentType, name=graphene.String())
@@ -51,5 +50,6 @@ class Query(graphene.ObjectType):
 
     
 schema = graphene.Schema(query=Query, mutation=Mutations, types=[ExperimentType, ExampleType, PromptTemplateType])
+print(schema)
 
 
