@@ -2,7 +2,9 @@ import graphene
 import time
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Experiment, Example, PromptTemplate
-from .types import ExperimentType, ExampleType, PromptTemplateType, InputConversationType
+from graphQL.graphene_types.experiment import ExperimentType
+from graphQL.graphene_types.prompt_template import PromptTemplateType, InputConversationType
+from .types import ExampleType
 from graphql import GraphQLError
 
 class MutateBase(graphene.Mutation):
