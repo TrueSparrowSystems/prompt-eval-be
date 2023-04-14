@@ -1,10 +1,14 @@
 import graphene
 from graphene.relay import Node
-from .mutations import CreateExperimentMutation, CreateExampleMutation, UpdateExperimentMutation, CreatePromptTemplateMutation, UpdatePromptTemplateMutation
-from .models import Experiment
-from .types import ExperimentType, ExampleType , PromptTemplateType, ExperimentPaginationType
-
-
+from .mutations import  CreateExampleMutation
+from graphQL.graphene_mutations.create_experiment import CreateExperimentMutation
+from graphQL.graphene_mutations.create_prompt_template import CreatePromptTemplateMutation
+from graphQL.graphene_mutations.update_experiment import UpdateExperimentMutation
+from graphQL.graphene_mutations.update_prompt_template import UpdatePromptTemplateMutation
+from graphQL.db_models.experiment import Experiment
+from graphQL.graphene_types.experiment import ExperimentType, ExperimentPaginationType
+from graphQL.graphene_types.prompt_template import PromptTemplateType
+from .types import ExampleType
 
 class Mutations(graphene.ObjectType):
     create_experiment = CreateExperimentMutation.Field()
@@ -12,6 +16,7 @@ class Mutations(graphene.ObjectType):
     create_prompt_template = CreatePromptTemplateMutation.Field()
     update_prompt_template = UpdatePromptTemplateMutation.Field()
     create_example = CreateExampleMutation.Field()
+
     
 class Query(graphene.ObjectType):
     node = Node.Field()
