@@ -13,7 +13,6 @@ class Mutations(graphene.ObjectType):
     update_prompt_template = UpdatePromptTemplateMutation.Field()
     create_example = CreateExampleMutation.Field()
     
-
 class Query(graphene.ObjectType):
     node = Node.Field()
     experiment_list = graphene.List(ExperimentType)
@@ -47,6 +46,6 @@ class Query(graphene.ObjectType):
         return ExperimentPaginationType(total_count=total_count, items=experiments)
 
     
-schema = graphene.Schema(query=Query, mutation=Mutations, types=[ExperimentType, ExampleType, PromptTemplateType])
+schema = graphene.Schema(query=Query, mutation=Mutations, types=[ExperimentType, ExampleType, PromptTemplateType, ExperimentPaginationType])
 
 
