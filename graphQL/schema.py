@@ -8,23 +8,20 @@ from .types import ExperimentType, ExampleType , PromptTemplateType, ExperimentP
 
 class Mutations(graphene.ObjectType):
     create_experiment = CreateExperimentMutation.Field()
-    create_example = CreateExampleMutation.Field()
     update_experiment = UpdateExperimentMutation.Field()
     create_prompt_template = CreatePromptTemplateMutation.Field()
     update_prompt_template = UpdatePromptTemplateMutation.Field()
+    create_example = CreateExampleMutation.Field()
     
 class Query(graphene.ObjectType):
     node = Node.Field()
-    experiment_list = graphene.List(ExperimentType, name=graphene.String())
+    experiment_list = graphene.List(ExperimentType)
     experiment_list_by_id = graphene.Field(ExperimentType, documentId=graphene.String(required=True))
     experiments_by_pagination = graphene.List(ExperimentType, limit=graphene.Int(required=True), page=graphene.Int())
     experiments_by_pagination_count = graphene.Field(ExperimentPaginationType, limit=graphene.Int(required=True), page=graphene.Int())
 
-    def resolve_experiment_list(root, info, name=None):
-        if name:
-            return Experiment.objects.filter(name=name)            
-        else:
-            return Experiment.objects.all()
+    def resolve_experiment_list(root, info): 
+        return Experiment.objects.all()
             
     def resolve_experiment_list_by_id(self, info, documentId=graphene.String(required=True)):
         try:

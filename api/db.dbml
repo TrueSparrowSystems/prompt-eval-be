@@ -3,7 +3,7 @@ Table experiment {
   _id ObjectId
   name string
   description string
-  dyanamic_vars Array
+  dynamic_vars Array
   created_at timestamp
   updated_at timestamp
 }

@@ -1,26 +1,23 @@
 import graphene
+import time
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Experiment, Example, PromptTemplate
-from .types import ExperimentType, ExampleType, PromptTemplateType
+from .types import ExperimentType, ExampleType, PromptTemplateType, InputConversationType
 from graphql import GraphQLError
 
 class CreateExperimentMutation(graphene.Mutation):
     class Arguments:
-        name = graphene.String()
+        name = graphene.String(required=True)
         description = graphene.String()
 
     experiment = graphene.Field(ExperimentType)
 
-    def mutate(root, info, name, description):
-        experiment = Experiment(name=name, description=description)
+    def mutate(root, info, name, **kwargs):
+        experiment = Experiment(name=name)
+        if 'description' in kwargs:
+            experiment.description = kwargs['description']
+
         experiment.save()
-        # print(experiment.name)
-        # print(experiment.description)
-        # print(experiment)
-        # for key, value in vars(experiment).items():
-        #     print(f"{key}: {value}")
-        # print(experiment._cls)
-        # print(experiment.auto_id_0)
         return CreateExperimentMutation(experiment=experiment)
     
 class UpdateExperimentMutation(graphene.Mutation):
@@ -28,16 +25,19 @@ class UpdateExperimentMutation(graphene.Mutation):
         documentId = graphene.String(required=True)
         name = graphene.String() 
         description = graphene.String()
+        dynamic_vars = graphene.List(graphene.String)
 
     experiment = graphene.Field(ExperimentType)
 
-    def mutate(root, info, documentId, name, description):
-        try:
-            experiment = Experiment.objects.get(_id=documentId)
-        except ObjectDoesNotExist:
-            return None
-        experiment.name = name
-        experiment.description = description
+    def mutate(root, info,documentId, **kwargs):
+        experiment = Experiment.objects.get(id=documentId)
+
+        fields = {}
+        for arg_name, arg_value in kwargs.items():
+            if arg_name in ['name', 'description','dynamic_vars']:
+                fields[arg_name] = arg_value
+        experiment.update(**fields)
+        experiment.updated_at = int(time.time())
         experiment.save()
         return UpdateExperimentMutation(experiment=experiment)
     
@@ -58,13 +58,21 @@ class CreateExampleMutation(graphene.Mutation):
     
 class CreatePromptTemplateMutation(graphene.Mutation):
     class Arguments:
-        name = graphene.String()
+        name = graphene.String(required=True)
         description = graphene.String()
+        conversation = graphene.List(InputConversationType)
+        experimentId = graphene.ID(required=True)
 
     promptTemplate = graphene.Field(PromptTemplateType)
 
-    def mutate(root, info, name, description):
-        promptTemplate = PromptTemplate(name=name, description=description)
+    def mutate(root, info, name,experimentId, **kwargs):
+
+        fields = {}
+        for arg_name, arg_value in kwargs.items():
+            if arg_name in ['description', 'conversation']:
+                fields[arg_name] = arg_value
+        
+        promptTemplate = PromptTemplate(name=name, experiment_id=experimentId, **fields)
         promptTemplate.save()
         return CreatePromptTemplateMutation(promptTemplate=promptTemplate)
     

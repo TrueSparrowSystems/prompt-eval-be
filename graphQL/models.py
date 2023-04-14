@@ -1,4 +1,5 @@
 from enum import Enum
+import time
 from mongoengine import Document
 from mongoengine.fields import (
     StringField,
@@ -13,12 +14,11 @@ from mongoengine.fields import (
 
 class Experiment(Document):
     meta = {'collection': 'experiment'}
-    _id = ObjectIdField()
     name = StringField(required=True)
     description = StringField(max_length=255)
-    dyanamic_vars = ListField()
-    created_at = IntField()
-    updated_at = IntField()
+    dynamic_vars = ListField(StringField(max_length=255))
+    created_at = IntField(default=lambda: int(time.time()))
+    updated_at = IntField(default=lambda: int(time.time()))
 
 
 class Example(Document):
@@ -29,11 +29,10 @@ class Example(Document):
     
 class PromptTemplate(Document):
     meta = {'collection': 'prompt_template'}
-    _id = ObjectIdField()
     name = StringField(required=True)
     description = StringField(max_length=255)
     conversation = ListField()
-    experiment_id = ObjectIdField()
+    experiment_id = ObjectIdField(required=True)
     created_at = IntField()
     updated_at = IntField()
 
