@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import mongoengine
+from pymongo import monitoring
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -117,6 +118,32 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+log = logging.getLogger()
+log.setLevel(logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
+
+class CommandLogger(monitoring.CommandListener):
+
+    def started(self, event):
+        log.debug("Command {0.command_name} with request id "
+                 "{0.request_id} started on server "
+                 "{0.connection_id}".format(event))
+        log.debug("\n event {0.command}\n".format(event))
+
+    def succeeded(self, event):
+        log.debug("Command {0.command_name} with request id "
+                 "{0.request_id} on server {0.connection_id} "
+                 "succeeded in {0.duration_micros} "
+                 "microseconds".format(event))
+
+    def failed(self, event):
+        log.debug("Command {0.command_name} with request id "
+                 "{0.request_id} on server {0.connection_id} "
+                 "failed in {0.duration_micros} "
+                 "microseconds".format(event))
+
+monitoring.register(CommandLogger())
 
 # MONGO DB connection
 _MONGODB_USER = ""
