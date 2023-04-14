@@ -5,14 +5,36 @@ from .models import Experiment, Example, PromptTemplate
 from .types import ExperimentType, ExampleType, PromptTemplateType, InputConversationType
 from graphql import GraphQLError
 
-class CreateExperimentMutation(graphene.Mutation):
+class MutateBase(graphene.Mutation):
+
+    @staticmethod
+    def self_mutate(root, info, **kwargs):
+        raise NotImplementedError('self_mutate must be implemented to use MutateBase')
+    
+    @classmethod
+    def mutate(cls,root, info, **kwargs):
+        try:
+            return cls.self_mutate(root, info, **kwargs)
+        except Exception as e:
+            print(e)
+            error = GraphQLError(
+            message="Something went wrong",
+            extensions= {
+             "code": "m_b_1",
+             "debug": "Something_went_wrong",
+             }
+            )
+            return error
+        
+class CreateExperimentMutation(MutateBase):
     class Arguments:
         name = graphene.String(required=True)
         description = graphene.String()
 
     experiment = graphene.Field(ExperimentType)
 
-    def mutate(root, info, name, **kwargs):
+    @staticmethod
+    def self_mutate(root, info, name, **kwargs):
         experiment = Experiment(name=name)
         if 'description' in kwargs:
             experiment.description = kwargs['description']
@@ -20,7 +42,7 @@ class CreateExperimentMutation(graphene.Mutation):
         experiment.save()
         return CreateExperimentMutation(experiment=experiment)
     
-class UpdateExperimentMutation(graphene.Mutation):
+class UpdateExperimentMutation(MutateBase):
     class Arguments:
         documentId = graphene.String(required=True)
         name = graphene.String() 
@@ -29,14 +51,19 @@ class UpdateExperimentMutation(graphene.Mutation):
 
     experiment = graphene.Field(ExperimentType)
 
-    def mutate(root, info,documentId, **kwargs):
+    @staticmethod
+    def self_mutate(root, info,documentId, **kwargs):
         experiment = Experiment.objects.get(id=documentId)
 
-        fields = {}
-        for arg_name, arg_value in kwargs.items():
-            if arg_name in ['name', 'description','dynamic_vars']:
-                fields[arg_name] = arg_value
-        experiment.update(**fields)
+        if 'name' in kwargs:
+            experiment.name = kwargs['name']
+            
+        if 'description' in kwargs:
+            experiment.description = kwargs['description']
+        
+        if 'dynamic_vars' in kwargs:
+            experiment.dynamic_vars = kwargs['dynamic_vars']
+       
         experiment.updated_at = int(time.time())
         experiment.save()
         return UpdateExperimentMutation(experiment=experiment)
@@ -75,27 +102,7 @@ class CreatePromptTemplateMutation(graphene.Mutation):
         promptTemplate = PromptTemplate(name=name, experiment_id=experimentId, **fields)
         promptTemplate.save()
         return CreatePromptTemplateMutation(promptTemplate=promptTemplate)
-    
-class MutateBase(graphene.Mutation):
 
-    @staticmethod
-    def self_mutate(root, info, **kwargs):
-        raise NotImplementedError('self_mutate must be implemented to use MutateBase')
-    
-    @classmethod
-    def mutate(cls,root, info, **kwargs):
-        try:
-            return cls.self_mutate(root, info, **kwargs)
-        except Exception as e:
-            print(e)
-            error = GraphQLError(
-            message="Something went wrong",
-            extensions= {
-             "code": "m_b_1",
-             "debug": "Something_went_wrong",
-             }
-            )
-            return error
     
     
 class UpdatePromptTemplateMutation(MutateBase):
