@@ -14,11 +14,11 @@ class CreatePromptTemplateMutation(graphene.Mutation):
 
     def mutate(root, info, name,experimentId, **kwargs):
 
-        fields = {}
-        for arg_name, arg_value in kwargs.items():
-            if arg_name in ['description', 'conversation']:
-                fields[arg_name] = arg_value
+        promptTemplate = PromptTemplate(name=name, experiment_id=experimentId)
+        if 'description' in kwargs:
+            promptTemplate.description = kwargs['description']
+        if 'conversation' in kwargs:
+            promptTemplate.conversation = kwargs['conversation']
         
-        promptTemplate = PromptTemplate(name=name, experiment_id=experimentId, **fields)
         promptTemplate.save()
         return CreatePromptTemplateMutation(promptTemplate=promptTemplate)
