@@ -36,9 +36,9 @@ class Query(graphene.ObjectType):
         offset = (page - 1) * limit
         
         total_count = PromptTemplate.objects.filter(experiment_id=experimentId).count()
-        experiments = PromptTemplate.objects.filter(experiment_id=experimentId).order_by('-updated_at')[offset:offset+limit]
+        prompts = PromptTemplate.objects.filter(experiment_id=experimentId).order_by('-updated_at')[offset:offset+limit]
 
-        return PromptTemplatePaginationType(total_count=total_count, items=experiments)
+        return PromptTemplatePaginationType(total_count=total_count, prompt=prompts)
             
     def resolve_experiment_list_by_id(self, info, documentId=graphene.String(required=True)):
         try:

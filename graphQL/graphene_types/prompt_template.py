@@ -11,14 +11,14 @@ class OutputConversationType(ObjectType):
 
 class PromptTemplateType(ObjectType):
     id = ID()
-    name = String(required=True)
+    name = String()
     description = String()
     conversation = List(OutputConversationType)
-    experiment_id = ID(required=True)
-    result = List(ReportType)
+    experiment_id = ID()
+    evaluation_report = List(ReportType)
     created_at = Int()
     updated_at = Int()
 
 class PromptTemplatePaginationType(ObjectType):
     total_count = Int()
-    items = List(PromptTemplateType)
+    prompt = List(PromptTemplateType)
