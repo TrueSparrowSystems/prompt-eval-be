@@ -1,4 +1,5 @@
 from enum import Enum
+import time
 from mongoengine import Document
 from mongoengine.fields import (
     StringField,
@@ -15,5 +16,5 @@ class PromptTemplate(Document):
     description = StringField(max_length=255)
     conversation = ListField()
     experiment_id = ObjectIdField(required=True)
-    created_at = IntField()
-    updated_at = IntField()
+    created_at = IntField(default=lambda: int(time.time()))
+    updated_at = IntField(default=lambda: int(time.time()))
