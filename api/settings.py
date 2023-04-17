@@ -14,6 +14,7 @@ from pathlib import Path
 import mongoengine
 from pymongo import monitoring
 import logging
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-8u-^3wkt+la(3d+sj4-h22yv^9^dnh(m(i*1*d2#k7h$io3&kp"
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -149,9 +150,9 @@ monitoring.register(CommandLogger())
 # MONGO DB connection
 _MONGODB_USER = ""
 _MONGODB_PASSWD = ""
-_MONGODB_HOST = "localhost"
-_MONGODB_NAME = "prompt-eval"
-_MONGODB_PORT = 27017
+_MONGODB_HOST = config('MONGODB_HOST')
+_MONGODB_NAME = config('MONGODB_NAME')
+_MONGODB_PORT = int(config('MONGODB_PORT'))
 
 mongoengine.connect(_MONGODB_NAME, host=_MONGODB_HOST, port=_MONGODB_PORT)
 
