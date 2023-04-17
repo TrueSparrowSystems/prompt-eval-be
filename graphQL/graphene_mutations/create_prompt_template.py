@@ -1,9 +1,9 @@
 import graphene
 from graphQL.graphene_types.prompt_template import PromptTemplateType, InputConversationType
 from graphQL.db_models.prompt_template import PromptTemplate
-
+from .mutation_base import MutateBase
     
-class CreatePromptTemplateMutation(graphene.Mutation):
+class CreatePromptTemplateMutation(MutateBase):
     class Arguments:
         name = graphene.String(required=True)
         description = graphene.String()
@@ -12,13 +12,14 @@ class CreatePromptTemplateMutation(graphene.Mutation):
 
     promptTemplate = graphene.Field(PromptTemplateType)
 
-    def mutate(root, info, name,experimentId, **kwargs):
+    @staticmethod
+    def self_mutate(root, info, name, experimentId, **kwargs):
 
-        fields = {}
-        for arg_name, arg_value in kwargs.items():
-            if arg_name in ['description', 'conversation']:
-                fields[arg_name] = arg_value
+        promptTemplate = PromptTemplate(name=name, experiment_id=experimentId)
+        if 'description' in kwargs:
+            promptTemplate.description = kwargs['description']
+        if 'conversation' in kwargs:
+            promptTemplate.conversation = kwargs['conversation']
         
-        promptTemplate = PromptTemplate(name=name, experiment_id=experimentId, **fields)
         promptTemplate.save()
         return CreatePromptTemplateMutation(promptTemplate=promptTemplate)
