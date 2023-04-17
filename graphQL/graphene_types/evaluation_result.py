@@ -13,4 +13,4 @@ class ReportType(ObjectType):
     completed_at = Int()
     created_at = Int()
     updated_at = Int()
-    evaluation_report_data = List(TestCasesEvaluationsResult)
+    test_case_evaluation_report = List(TestCasesEvaluationsResult)
