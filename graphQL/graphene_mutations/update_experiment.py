@@ -3,6 +3,7 @@ import time
 from graphQL.db_models.experiment import Experiment
 from graphQL.graphene_types.experiment import ExperimentType
 from .mutation_base import MutateBase
+from graphQL.lib.helper import CommonValiator
 
 class UpdateExperimentMutation(MutateBase):
     class Arguments:
@@ -18,9 +19,13 @@ class UpdateExperimentMutation(MutateBase):
         experiment = Experiment.objects.get(id=documentId)
 
         if 'name' in kwargs:
+            if not CommonValiator.length_validation(kwargs['name'], 70):
+                raise Exception('Invalid name length')
             experiment.name = kwargs['name']
             
         if 'description' in kwargs:
+            if not CommonValiator.length_validation(kwargs['description'], 240):
+                raise Exception('Invalid description length')
             experiment.description = kwargs['description']
         
         if 'dynamic_vars' in kwargs:

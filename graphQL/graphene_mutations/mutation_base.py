@@ -18,7 +18,7 @@ class MutateBase(graphene.Mutation):
             message="Something went wrong",
             extensions= {
              "code": "m_b_1",
-             "debug": "Something_went_wrong",
+             "debug": str(e),
              }
             )
             return error
