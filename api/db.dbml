@@ -46,7 +46,6 @@ Table evaluation_results {
   eval varchar
   accuracy double
   prompt_template_id ObjectId [ref: > prompt_template._id]
-  evaluation_report_data Object
   run_id int
   status string [
     note: '
@@ -59,4 +58,20 @@ Table evaluation_results {
   completed_at timestamp
   created_at timestamp
   updated_at timestamp
+}
+
+
+Table test_case_evaluation_results {
+  _id ObjectId
+  evaluation_result_id ObjectId [ref: > evaluation_results._id ]
+  prompt String
+  test_case_id ObjectId [ref: > test_cases._id]
+  test_case_name String
+  test_case_description String
+  actual_result Array
+  acceptable_result Array
+  accuracy double
+  created_at timestamp
+  updated_at timestamp
+
 }
