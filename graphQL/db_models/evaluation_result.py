@@ -9,7 +9,7 @@ from mongoengine.fields import (
     EnumField,
     DateTimeField
 )
-
+import time
 class Status(Enum):
     INITIATED = 'INITIATED'
     COMPLETED = 'COMPLETED'
@@ -18,7 +18,6 @@ class Status(Enum):
 
 class EvaluationResult(Document):
     meta = {'collection': 'evaluation_results'}
-    _id = ObjectIdField()
     model = StringField(required=True)
     eval = StringField(required=True)
     accuracy = FloatField()
@@ -27,5 +26,5 @@ class EvaluationResult(Document):
     run_id = IntField()
     status = EnumField(Status, default=Status.INITIATED)
     completed_at = DateTimeField()
-    created_at = IntField()
-    updated_at = IntField()
+    created_at = IntField(default=lambda: int(time.time()))
+    updated_at = IntField(default=lambda: int(time.time()))

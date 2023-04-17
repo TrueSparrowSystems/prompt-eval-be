@@ -6,14 +6,14 @@ from mongoengine.fields import (
     DictField,
     IntField,
 )
+import time
 
-class Testcase(Document):
+class TestCase(Document):
     meta = {'collection': 'test_cases'}
-    _id = ObjectIdField()
     name = StringField(required=True)
     description = StringField(max_length=255)
-    dynamic_var_values = DictField()
+    dynamic_var_values = ListField()
     experiment_id = ObjectIdField(required=True)
     expected_result= ListField()
-    created_at = IntField()
-    updated_at = IntField()
+    created_at = IntField(default=lambda: int(time.time()))
+    updated_at = IntField(default=lambda: int(time.time()))
