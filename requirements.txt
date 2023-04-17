@@ -6,3 +6,4 @@ mongomock==4.1.2
 graphene-django==3.0.0
 graphene-mongo
 python-decouple
+django-cors-headers
