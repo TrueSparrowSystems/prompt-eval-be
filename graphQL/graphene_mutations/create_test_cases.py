@@ -17,12 +17,12 @@ class CreateTestCasesMutation(MutateBase):
     @staticmethod
     def self_mutate(root, info, name, experimentId, **kwargs):
         if not CommonValiator.length_validation(name, 70):
-            raise Exception('Invalid name length')        
+            raise Exception('Invalid length')        
 
         testCase = TestCase(name=name, experiment_id=experimentId)
         if 'description' in kwargs:
             if not CommonValiator.length_validation(kwargs['description'], 240):
-                raise Exception('Invalid description length')
+                raise Exception('Invalid length')
             testCase.description = kwargs['description']
         if 'dynamic_var_values' in kwargs:
             testCase.dynamic_var_values = kwargs['dynamic_var_values']

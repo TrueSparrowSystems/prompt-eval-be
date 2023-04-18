@@ -13,12 +13,17 @@ class MutateBase(graphene.Mutation):
         try:
             return cls.self_mutate(root, info, **kwargs)
         except Exception as e:
-            print(e)
+            print(str(e))
+            print(str(e) == "Invalid length")
+            if str(e) == "Invalid length":
+                debug = "Invalid length"
+            else:
+                debug = "Something went wrong"
             error = GraphQLError(
             message="Something went wrong",
             extensions= {
              "code": "m_b_1",
-             "debug": str(e),
+             "debug": debug,
              }
             )
             return error

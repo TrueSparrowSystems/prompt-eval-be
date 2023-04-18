@@ -20,12 +20,12 @@ class UpdateExperimentMutation(MutateBase):
 
         if 'name' in kwargs:
             if not CommonValiator.length_validation(kwargs['name'], 70):
-                raise Exception('Invalid name length')
+                raise Exception('Invalid length')
             experiment.name = kwargs['name']
             
         if 'description' in kwargs:
             if not CommonValiator.length_validation(kwargs['description'], 240):
-                raise Exception('Invalid description length')
+                raise Exception('Invalid length')
             experiment.description = kwargs['description']
         
         if 'dynamic_vars' in kwargs:
