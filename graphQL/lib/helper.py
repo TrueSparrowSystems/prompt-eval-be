@@ -18,5 +18,5 @@ class CommonValiator:
     def validate_non_empty_list(variable):
         return type(variable) ==  list and len(variable) > 0
     
-    def length_validation(variable, length):
+    def max_length_validation(variable, length):
         return len(variable) <= length

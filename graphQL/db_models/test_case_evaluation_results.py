@@ -1,14 +1,12 @@
-from mongoengine import Document
+from graphQL.db_models.model_base import ModelBase
 from mongoengine.fields import (
     StringField,
     ObjectIdField,
     ListField,
-    FloatField,
-    IntField
+    FloatField
 )
-import time
 
-class TestCaseEvaluationResults(Document):
+class TestCaseEvaluationResults(ModelBase):
     meta = {'collection': 'test_case_evaluation_results'}
     evaluation_result_id = ObjectIdField(required=True)
     prompt = StringField(required=True)
@@ -18,5 +16,3 @@ class TestCaseEvaluationResults(Document):
     actual_result = ListField()
     acceptable_result = ListField()
     accuracy = FloatField()
-    created_at = IntField(default=lambda: int(time.time()))
-    updated_at = IntField(default=lambda: int(time.time()))

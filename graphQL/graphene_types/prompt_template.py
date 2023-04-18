@@ -15,7 +15,7 @@ class PromptTemplateType(ObjectType):
     description = String()
     conversation = List(OutputConversationType)
     experiment_id = ID()
-    evaluation_report = List(ReportType)
+    latest_evaluation_report = ReportType()
     created_at = Int()
     updated_at = Int()
 

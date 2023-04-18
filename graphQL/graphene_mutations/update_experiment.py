@@ -4,32 +4,36 @@ from graphQL.db_models.experiment import Experiment
 from graphQL.graphene_types.experiment import ExperimentType
 from .mutation_base import MutateBase
 from graphQL.lib.helper import CommonValiator
+from graphQL.lib.custom_exception import InvalidLengthError
+
+class UpdateExperimentInput(graphene.InputObjectType):
+    id = graphene.String(required=True)
+    name = graphene.String() 
+    description = graphene.String()
+    dynamic_vars = graphene.List(graphene.String)
 
 class UpdateExperimentMutation(MutateBase):
     class Arguments:
-        documentId = graphene.String(required=True)
-        name = graphene.String() 
-        description = graphene.String()
-        dynamic_vars = graphene.List(graphene.String)
+        update_experiment_data = UpdateExperimentInput(required=True)
 
     experiment = graphene.Field(ExperimentType)
 
-    @staticmethod
-    def self_mutate(root, info,documentId, **kwargs):
-        experiment = Experiment.objects.get(id=documentId)
+    @classmethod
+    def self_mutate(cls, root, info, update_experiment_data=None):
+        experiment = Experiment.objects.get(id=update_experiment_data.id)
 
-        if 'name' in kwargs:
-            if not CommonValiator.length_validation(kwargs['name'], 70):
-                raise Exception('Invalid length')
-            experiment.name = kwargs['name']
+        if update_experiment_data.name:
+            if not CommonValiator.max_length_validation(update_experiment_data.name, 70):
+                raise InvalidLengthError(code = "g_gm_ue_1", param="name")
+            experiment.name = update_experiment_data.name
             
-        if 'description' in kwargs:
-            if not CommonValiator.length_validation(kwargs['description'], 240):
-                raise Exception('Invalid length')
-            experiment.description = kwargs['description']
+        if update_experiment_data.description:
+            if not CommonValiator.max_length_validation(update_experiment_data.description, 240):
+                raise InvalidLengthError(code = "g_gm_ue_2", param="description")
+            experiment.description = update_experiment_data.description
         
-        if 'dynamic_vars' in kwargs:
-            experiment.dynamic_vars = kwargs['dynamic_vars']
+        if update_experiment_data.dynamic_vars:
+            experiment.dynamic_vars = update_experiment_data.dynamic_vars
        
         experiment.updated_at = int(time.time())
         experiment.save()
