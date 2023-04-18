@@ -152,8 +152,8 @@ class CommandLogger(monitoring.CommandListener):
 monitoring.register(CommandLogger())
 
 # MONGO DB connection
-_MONGODB_USER = ""
-_MONGODB_PASSWD = ""
+_MONGODB_USER = config('MONGODB_USER')
+_MONGODB_PASSWD = config('MONGODB_PASSWORD')
 _MONGODB_HOST = config('MONGODB_HOST')
 _MONGODB_NAME = config('MONGODB_NAME')
 _MONGODB_PORT = int(config('MONGODB_PORT'))
