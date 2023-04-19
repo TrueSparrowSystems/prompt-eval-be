@@ -1,4 +1,4 @@
-from mongoengine import Document
+from graphQL.db_models.model_base import ModelBase
 from mongoengine.fields import (
     StringField,
     ObjectIdField,
@@ -7,13 +7,10 @@ from mongoengine.fields import (
     IntField,
 )
 
-class Testcase(Document):
+class TestCase(ModelBase):
     meta = {'collection': 'test_cases'}
-    _id = ObjectIdField()
     name = StringField(required=True)
     description = StringField(max_length=255)
-    dynamic_var_values = DictField()
+    dynamic_var_values = ListField()
     experiment_id = ObjectIdField(required=True)
     expected_result= ListField()
-    created_at = IntField()
-    updated_at = IntField()
