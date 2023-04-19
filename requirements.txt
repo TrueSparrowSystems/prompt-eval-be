@@ -4,6 +4,7 @@ pytest-django==4.5.2
 mongoengine==0.27.0
 mongomock==4.1.2
 graphene-django==3.0.0
-graphene-mongo
-python-decouple
-django-cors-headers
+graphene-mongo==0.2.15
+python-decouple==3.8
+django-cors-headers==3.14.0
+coverage==7.2.3
