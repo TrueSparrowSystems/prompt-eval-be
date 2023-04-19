@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = config('PE_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -152,11 +152,11 @@ class CommandLogger(monitoring.CommandListener):
 monitoring.register(CommandLogger())
 
 # MONGO DB connection
-_MONGODB_USER = config('MONGODB_USER')
-_MONGODB_PASSWD = config('MONGODB_PASSWORD')
-_MONGODB_HOST = config('MONGODB_HOST')
-_MONGODB_NAME = config('MONGODB_NAME')
-_MONGODB_PORT = int(config('MONGODB_PORT'))
+_MONGODB_USER = config('PE_MONGODB_USER')
+_MONGODB_PASSWD = config('PE_MONGODB_PASSWORD')
+_MONGODB_HOST = config('PE_MONGODB_HOST')
+_MONGODB_NAME = config('PE_MONGODB_NAME')
+_MONGODB_PORT = int(config('PE_MONGODB_PORT'))
 
 mongoengine.connect(_MONGODB_NAME, host=_MONGODB_HOST, port=_MONGODB_PORT)
 
