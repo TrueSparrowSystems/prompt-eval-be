@@ -36,7 +36,7 @@ pip install -r requirements.txt
 python manage.py runserver 8000
 ```
 
-7. Run the test cases usinf following command
+7. Run the test cases using following command
 
 ```
 python manage.py test graphQL.test.test_prompt
