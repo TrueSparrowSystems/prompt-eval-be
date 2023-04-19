@@ -7,4 +7,4 @@ graphene-django==3.0.0
 graphene-mongo==0.2.15
 python-decouple==3.8
 django-cors-headers==3.14.0
-django-nose==1.4.7
+coverage==7.2.3

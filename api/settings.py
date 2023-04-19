@@ -15,6 +15,7 @@ import mongoengine
 from pymongo import monitoring
 import logging
 from decouple import config
+#import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -148,6 +149,9 @@ class CommandLogger(monitoring.CommandListener):
                  "{0.request_id} on server {0.connection_id} "
                  "failed in {0.duration_micros} "
                  "microseconds".format(event))
+
+# TEST_DISCOVER_TOP_LEVEL = 'graphQL'  # Replace with the name of your app
+# TEST_DISCOVER_ROOT = os.path.join(BASE_DIR, 'graphQL', 'test')  
 
 monitoring.register(CommandLogger())
 
