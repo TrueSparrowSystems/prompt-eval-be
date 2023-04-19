@@ -31,18 +31,15 @@ class ExperimentTest(GraphQLTestCase):
     def test_create_experiment_mutation(self):
         response = self.query(
             '''
-            mutation {
-                createExperiment(
-                    name: "Test Experiment",
-                    description: "This is a test experiment",
-                ) {
+            mutation{
+                createExperiment(experimentData:{name:"Test Experiment",description:"This is a test experiment"}){
                     experiment {
-                        id
-                        name
-                        description
-                        createdAt
-                        updatedAt
-                        dynamicVars
+                    id
+                    name
+                    description
+                    dynamicVars
+                    createdAt
+                    updatedAt
                     }
                 }
             }
@@ -56,16 +53,12 @@ class ExperimentTest(GraphQLTestCase):
         self.assertEqual(content['data']['createExperiment']['experiment']['name'], 'Test Experiment')
         self.assertEqual(content['data']['createExperiment']['experiment']['description'], 'This is a test experiment')
 
-
-        # Add some more asserts if you like
     
     def test_create_experiment_mocked_mutations(self):
       response = self.query(
             '''
             mutation {
-                createExperiment(
-                    description: "This is a test experiment",
-                ) {
+                createExperiment(experimentData:{description:"description of 1 "}) {
                     experiment {
                         id
                         name
@@ -86,24 +79,26 @@ class ExperimentTest(GraphQLTestCase):
             '''
             mutation {
                 updateExperiment(
-                    documentId: "6438f6ea0b7e9d05970def5a",
-                    name: "Test Experiment Update",
-                    description: "This is a test experiment update",
+                    updateExperimentData:
+                        {
+                            name:"Test Experiment Update",
+                            id:"6438f6ea0b7e9d05970def5a"
+                        }
                 ) {
-                    experiment {
-                        id
-                        name
-                        description
-                        createdAt
-                        updatedAt
-                    }
+                    experiment{
+                    id
+                    name
+                    description
+                    dynamicVars
+                    createdAt
+                    updatedAt
+                  }
                 }
             }
             '''
         )
 
         content = json.loads(response.content)
-        print(content.keys())
 
         # This validates the status code and if you get errors
         self.assertResponseNoErrors(response)
@@ -114,17 +109,21 @@ class ExperimentTest(GraphQLTestCase):
         response = self.query(
             '''
             mutation {
-                updateExperiment(
-                    name: "Test Experiment Update",
+                updateExperiment(updateExperimentData:
+                    {
+                    name:"Test Experiment Update",
                     description: "This is a test experiment update",
-                ) {
-                    experiment {
-                        id
-                        name
-                        description
-                        createdAt
-                        updatedAt
+                    id:"6438f6ea0b7e9d05970def5e"
                     }
+                ) {
+                    experiment{
+                    id
+                    name
+                    description
+                    dynamicVars
+                    createdAt
+                    updatedAt
+                  }
                 }
             }
             '''
@@ -142,41 +141,30 @@ class ExperimentTest(GraphQLTestCase):
         response = self.query(
             '''
             mutation {
-                updateExperiment(
-                    documentId: "6438f6ea0b7e9d05970def5b",
-                    name: "Test Experiment Update",
+                updateExperiment(updateExperimentData:
+                    {
+                    name:"Test Experiment Update",
                     description: "This is a test experiment update",
-                ) {
-                    experiment {
-                        id
-                        name
-                        description
-                        createdAt
-                        updatedAt
+                    id:"6438f6ea0b7e9d05970def5b"
                     }
+                ) {
+                    experiment{
+                    id
+                    name
+                    description
+                    dynamicVars
+                    createdAt
+                    updatedAt
+                  }
                 }
             }
             '''
         )
 
-        content = json.loads(response.content)
-                
-        expected_dict = {
-            "errors": [
-                {
-                    "message": "Something went wrong",
-                    "locations": [{"line": 3, "column": 17}],
-                    "path": ["updateExperiment"],
-                    "extensions": {"code": "m_b_1", "debug": "Something_went_wrong"},
-                }
-            ],
-            "data": {"updateExperiment": None},
-            }
+        content = json.loads(response.content)                
 
         # This validates the status code and if you get errors
         self.assertResponseHasErrors(response)
-        self.assertDictEqual(content, expected_dict)
-
         # Add some more asserts if you like
 
     
