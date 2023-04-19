@@ -39,13 +39,13 @@ python manage.py runserver 8000
 7. Run the test cases using following command
 
 ```
-python manage.py test graphQL.test.test_prompt
+python manage.py test graphQL
 ```
 
 8. Run the following command to generate test coverage report
 
 ```
-coverage run manage.py test graphQL.test.test_prompt
+coverage run manage.py test
 ```
 
 ```
