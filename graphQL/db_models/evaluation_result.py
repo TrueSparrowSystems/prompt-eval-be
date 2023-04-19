@@ -1,5 +1,4 @@
 from enum import Enum
-from mongoengine import Document
 from mongoengine.fields import (
     StringField,
     ObjectIdField,
@@ -9,6 +8,7 @@ from mongoengine.fields import (
     EnumField,
     DateTimeField
 )
+from graphQL.db_models.model_base import ModelBase
 
 class Status(Enum):
     INITIATED = 'INITIATED'
@@ -16,9 +16,8 @@ class Status(Enum):
     RUNNING = 'RUNNING'
     FAILED = 'FAILED'
 
-class EvaluationResult(Document):
+class EvaluationResult(ModelBase):
     meta = {'collection': 'evaluation_results'}
-    _id = ObjectIdField()
     model = StringField(required=True)
     eval = StringField(required=True)
     accuracy = FloatField()
@@ -27,5 +26,3 @@ class EvaluationResult(Document):
     run_id = IntField()
     status = EnumField(Status, default=Status.INITIATED)
     completed_at = DateTimeField()
-    created_at = IntField()
-    updated_at = IntField()
