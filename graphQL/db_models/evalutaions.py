@@ -1,4 +1,5 @@
 from enum import Enum
+from time import time
 from mongoengine.fields import (
     StringField,
     ObjectIdField,
@@ -16,13 +17,13 @@ class Status(Enum):
     RUNNING = 'RUNNING'
     FAILED = 'FAILED'
 
-class Evaluations(ModelBase):
-    meta = {'collection': 'evaluation_results'}
+class Evaluation(ModelBase):
+    meta = {'collection': 'evaluation'}
     model = StringField(required=True)
     eval = StringField(required=True)
     accuracy = FloatField()
     prompt_template_id = ObjectIdField(required=True)
-    run_id = IntField()
+    run_id = IntField(default=lambda: 1)
     status = EnumField(Status, default=Status.INITIATED)
-    initiated_at = IntField()
+    initiated_at = IntField(default=lambda: int(time()))
     completed_at = IntField()
