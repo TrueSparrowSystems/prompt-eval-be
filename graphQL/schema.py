@@ -6,9 +6,12 @@ from graphQL.graphene_mutations.create_test_cases import CreateTestCasesMutation
 from graphQL.db_models.experiment import Experiment
 from graphQL.db_models.prompt_template import PromptTemplate
 from graphQL.db_models.test_case import TestCase
-from graphQL.graphene_types.experiment import ExperimentType, ExperimentPaginationType
-from graphQL.graphene_types.prompt_template import PromptTemplateType, PromptTemplatePaginationType
+from graphQL.db_models.evalutaions import Evaluations
+from graphQL.db_models.evaluation_test_case_relation import EvaluationTestCaseRelation
+from graphQL.graphene_types.experiment import ExperimentType
+from graphQL.graphene_types.prompt_template import PromptTemplatePaginationType
 from graphQL.graphene_types.test_case import TestCaseType
+from graphQL.graphene_types.report import ReportType
 from graphql import GraphQLError
 
 class Mutations(graphene.ObjectType):
@@ -22,6 +25,7 @@ class Query(graphene.ObjectType):
     experiment_list = graphene.List(ExperimentType)
     prompt_list_by_pagination = graphene.Field(PromptTemplatePaginationType, experimentId=graphene.String(required=True), limit=graphene.Int(required=True), page=graphene.Int(required=True))
     test_cases = graphene.List(TestCaseType, experimentId=graphene.String(required=True))
+    get_report = graphene.Field(ReportType, reportId=graphene.String(required=True),limit=graphene.Int(required=True), page=graphene.Int(required=True))
 
     def resolve_experiment_list(root, info): 
         try:
@@ -45,6 +49,11 @@ class Query(graphene.ObjectType):
             
             total_count = PromptTemplate.objects.filter(experiment_id=experimentId).count()
             prompts = PromptTemplate.objects.filter(experiment_id=experimentId).order_by('-updated_at')[offset:offset+limit]
+
+            for prompt in prompts:
+                latest_evaluation_report = []
+                latest_evaluation_report.append(Evaluations.objects.filter(prompt_template_id=prompt.id).order_by("-updated_at").first())
+                prompt.latest_evaluation_report = latest_evaluation_report
 
             return PromptTemplatePaginationType(total_count=total_count, prompts=prompts)
         except Exception as e:
@@ -72,8 +81,28 @@ class Query(graphene.ObjectType):
              }
             )
             return error
+        
+    def resolve_get_report(self, info, reportId=graphene.String(required=True), **kwargs):
+        try:
+            limit = kwargs.get('limit')
+            page = kwargs.get('page')
+            offset = (page - 1) * limit
+            
+            evaluation_report = Evaluations.objects.get(id=reportId)
+            evaluation_report.test_case_evaluation_report = EvaluationTestCaseRelation.objects.filter(evaluation_result_id=reportId).order_by('-updated_at')[offset:offset+limit]
+            return evaluation_report
+        except Exception as e:
+            print(e)
+            error = GraphQLError(
+            message="Something went wrong",
+            extensions= {
+             "code": "g_s_q_r_4",
+             "debug": "Something_went_wrong",
+             }
+            )
+            return error
 
     
-schema = graphene.Schema(query=Query, mutation=Mutations, types=[ExperimentType, PromptTemplateType, ExperimentPaginationType])
+schema = graphene.Schema(query=Query, mutation=Mutations, types=[ExperimentType, PromptTemplatePaginationType, TestCaseType, ReportType])
 
 

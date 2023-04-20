@@ -16,13 +16,13 @@ class Status(Enum):
     RUNNING = 'RUNNING'
     FAILED = 'FAILED'
 
-class EvaluationResult(ModelBase):
+class Evaluations(ModelBase):
     meta = {'collection': 'evaluation_results'}
     model = StringField(required=True)
     eval = StringField(required=True)
     accuracy = FloatField()
     prompt_template_id = ObjectIdField(required=True)
-    evaluation_report_data = DictField()
     run_id = IntField()
     status = EnumField(Status, default=Status.INITIATED)
-    completed_at = DateTimeField()
+    initiated_at = IntField()
+    completed_at = IntField()
