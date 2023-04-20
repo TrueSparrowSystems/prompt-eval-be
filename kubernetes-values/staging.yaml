@@ -9,13 +9,25 @@ ingress:
   className: nginx
   tls:
     - hosts:
-      - prompt-eval-api.nftornot.com
-      secretName: nftornot.com
+      - prompt-eval.quick-poc.com
+      secretName: prompt-eval.quick-poc.com
   hosts:
-    - host: prompt-eval-api.nftornot.com
+    - host: prompt-eval.quick-poc.com
       paths:
         - path: /
           pathType: Prefix
+
+frontendProxy:
+  enabled: true
+  domainName: c.storage.googleapis.com
+  service:
+    name: prompt-eval-staging-frontend
+    path: "/"
+    pathType: Prefix
+    host: prompt-eval.quick-poc.com
+  tls:
+      host: prompt-eval.quick-poc.com
+      secretName: prompt-eval.quick-poc.com
 
 resources:
   limits:

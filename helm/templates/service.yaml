@@ -13,3 +13,13 @@ spec:
       name: http
   selector:
     {{- include "prompt-eval.selectorLabels" . | nindent 4 }}
+---
+{{- if .Values.frontendProxy.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.frontendProxy.service.name}}
+spec:
+  type: ExternalName
+  externalName: {{ .Values.frontendProxy.domainName}}
+{{- end }}

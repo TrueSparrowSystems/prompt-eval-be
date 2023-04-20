@@ -11,6 +11,9 @@ on:
         description: 'Enter description about deployment'
         required: true
         default: 'New feature release' 
+  push:
+    branches:
+      - staging
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
