@@ -20,7 +20,7 @@ class CreateEvaluationMutation(MutateBase):
     @classmethod
     def self_mutate(cls, root, info, evaluation_data=None):
         
-        # Todo:@Shraddha add validations for model and eval
+        # Todo: add validations for model and eval
         # Do query by prompt_template_id 
         
         
