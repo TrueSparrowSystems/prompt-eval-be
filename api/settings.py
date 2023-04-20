@@ -26,8 +26,7 @@ SECRET_KEY = config('PE_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://prompt-eval-api.nftornot.com/', 'http://localhost:3000/']
-
+ALLOWED_HOSTS = ['prompt-eval.quick-poc.com', 'localhost']
 
 # Application definition
 

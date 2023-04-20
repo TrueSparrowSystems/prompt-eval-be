@@ -1,0 +1,41 @@
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 8000
+
+ingress:
+  enabled: true
+  className: nginx
+  tls:
+    - hosts:
+      - prompt-eval.quick-poc.com
+      secretName: prompt-eval.quick-poc.com
+  hosts:
+    - host: prompt-eval.quick-poc.com
+      paths:
+        - path: /graphql
+          pathType: Prefix
+
+frontendProxy:
+  enabled: true
+  domainName: c.storage.googleapis.com
+  service:
+    name: prompt-eval-staging-frontend
+    path: "/"
+    pathType: Prefix
+    host: prompt-eval.quick-poc.com
+  tls:
+      host: prompt-eval.quick-poc.com
+      secretName: prompt-eval.quick-poc.com
+
+resources:
+  limits:
+    cpu: 1
+    memory: 2Gi
+  requests:
+    cpu: 1
+    memory: 2Gi
+
+nodeSelector:
+    cloud.google.com/gke-spot: "true"
