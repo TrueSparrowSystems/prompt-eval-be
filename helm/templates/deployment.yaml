@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "promt-eval.fullname" . }}
+  name: {{ include "prompt-eval.fullname" . }}
   labels:
-    {{- include "promt-eval.labels" . | nindent 4 }}
+    {{- include "prompt-eval.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "promt-eval.selectorLabels" . | nindent 6 }}
+      {{- include "prompt-eval.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,17 +18,17 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "promt-eval.selectorLabels" . | nindent 8 }}
+        {{- include "prompt-eval.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "promt-eval.serviceAccountName" . }}
+      serviceAccountName: {{ include "prompt-eval.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ include "promt-eval.fullname" . }}
+        - name: {{ include "prompt-eval.fullname" . }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"

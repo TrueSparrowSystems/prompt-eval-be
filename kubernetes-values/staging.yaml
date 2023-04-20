@@ -9,10 +9,10 @@ ingress:
   className: nginx
   tls:
     - hosts:
-      - promt-eval-api.nftornot.com
+      - prompt-eval-api.nftornot.com
       secretName: nftornot.com
   hosts:
-    - host: promt-eval-api.nftornot.com
+    - host: prompt-eval-api.nftornot.com
       paths:
         - path: /
           pathType: Prefix
@@ -27,4 +27,3 @@ resources:
 
 nodeSelector:
     cloud.google.com/gke-spot: "true"
-    

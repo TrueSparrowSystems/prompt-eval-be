@@ -51,10 +51,10 @@ jobs:
     - name: Build and push image
       env:
         ENV: "prod"
-        URL: "us-west1-docker.pkg.dev/plg-web3/promt-eval/promt-eval-be"
+        URL: "us-west1-docker.pkg.dev/plg-web3/prompt-eval/prompt-eval-be"
         TAG: ${{ github.run_id }}-${{ github.run_attempt }}
       run: |-
-        mv secrets/propmt-eval-be/.env .env 
+        mv secrets/propmt-eval-be/.env.staging .env 
         rm -rf secrets
         docker build --tag "$URL:$TAG" --build-arg ENV="$ENV" .
         gcloud auth configure-docker us-west1-docker.pkg.dev --quiet --project plg-web3
@@ -68,13 +68,13 @@ jobs:
     - name: "Deploy to Kubernetes"
       id: deploy-eks
       env:         
-        URL: "us-west1-docker.pkg.dev/plg-web3/promt-eval/promt-eval-be"
+        URL: "us-west1-docker.pkg.dev/plg-web3/prompt-eval/prompt-eval-be"
         TAG: ${{ github.run_id }}-${{ github.run_attempt }}
       run: |-
         helm upgrade --install \
         --set image.repository=${URL} \
         --set image.tag=${TAG} \
-        --set fullnameOverride=promt-eval-staging-api \
+        --set fullnameOverride=prompt-eval-staging-api \
         --values ./kubernetes-values/staging.yaml \
         --namespace prompt-eval \
-        promt-eval-staging-api ./helm
+        prompt-eval-staging-api ./helm
