@@ -12,10 +12,6 @@ on:
         required: true
         default: 'New feature release' 
 
-  push:
-    branches:
-      - staging
-
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GAR_LOCATION: us-west1 
