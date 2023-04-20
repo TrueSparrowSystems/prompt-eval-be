@@ -6,7 +6,7 @@ from mongoengine.fields import (
     FloatField
 )
 
-class TestCaseEvaluationResults(ModelBase):
+class EvaluationTestCaseRelation(ModelBase):
     meta = {'collection': 'test_case_evaluation_results'}
     evaluation_result_id = ObjectIdField(required=True)
     prompt = StringField(required=True)
