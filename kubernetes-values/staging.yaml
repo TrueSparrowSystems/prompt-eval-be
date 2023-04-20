@@ -1,0 +1,30 @@
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 8000
+
+ingress:
+  enabled: true
+  className: nginx
+  tls:
+    - hosts:
+      - promt-eval-api.nftornot.com
+      secretName: nftornot.com
+  hosts:
+    - host: promt-eval-api.nftornot.com
+      paths:
+        - path: /
+          pathType: Prefix
+
+resources:
+  limits:
+    cpu: 1
+    memory: 2Gi
+  requests:
+    cpu: 1
+    memory: 2Gi
+
+nodeSelector:
+    cloud.google.com/gke-spot: "true"
+    
