@@ -53,6 +53,16 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware"
 ]
 
+# settings.py
+
+# Celery Configuration
+CELERY_BROKER_URL = 'amqp://localhost'  # URL for RabbitMQ (replace with your RabbitMQ URL)
+CELERY_RESULT_BACKEND = None  # Disable storing Celery task results in a backend
+CELERY_TASK_SERIALIZER = 'json'  # Set task serializer to JSON
+CELERY_RESULT_SERIALIZER = 'json'  # Set result serializer to JSON
+CELERY_ACCEPT_CONTENT = ['json']  # Set accepted content types to JSON
+
+
 CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = "api.urls"
@@ -158,3 +168,11 @@ _MONGODB_PORT = int(config('PE_MONGODB_PORT'))
 mongoengine.connect(_MONGODB_NAME, host=_MONGODB_HOST, port=_MONGODB_PORT)
 
 GRAPHENE = {"SCHEMA": "graphQL.schema.schema"}
+
+# Celery settings
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/'
+CELERY_RESULT_BACKEND = 'mongodb://localhost:27017'
+# settings.py
+
+# Celery settings
+CELERY_IMPORTS = ('graphQL.tasks',)
