@@ -14,7 +14,7 @@ ingress:
   hosts:
     - host: prompt-eval.quick-poc.com
       paths:
-        - path: /
+        - path: /graphql
           pathType: Prefix
 
 frontendProxy:
