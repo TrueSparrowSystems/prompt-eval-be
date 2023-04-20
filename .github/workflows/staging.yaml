@@ -77,4 +77,5 @@ jobs:
         --set fullnameOverride=prompt-eval-staging-api \
         --values ./kubernetes-values/staging.yaml \
         --namespace prompt-eval \
-        prompt-eval-staging-api ./helm
+        prompt-eval-staging-api ./helm \
+        --wait
