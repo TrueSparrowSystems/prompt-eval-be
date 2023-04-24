@@ -4,6 +4,8 @@ from .mutation_base import MutateBase
 from graphQL.lib.helper import CommonValiator
 from graphQL.lib.custom_exception import InvalidLengthError
 from graphQL.graphene_types.report import ReportType
+from graphQL.tasks import backgroundTask
+
 
 class EvaluationInput(graphene.InputObjectType):
     prompt_template_id = graphene.String(required=True)
@@ -28,4 +30,8 @@ class CreateEvaluationMutation(MutateBase):
                              eval=evaluation_data.eval
                              )
         report.save()
+        # Call the Celery task asynchronously
+        print('calling the bg job----------')
+        backgroundTask.delay(100,200)
+        
         return CreateEvaluationMutation(report=report)

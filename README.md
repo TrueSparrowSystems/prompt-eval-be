@@ -51,3 +51,9 @@ coverage run manage.py test
 ```
 coverage report
 ```
+
+9. Command to start Celeary app
+
+   ```
+   celery -A api worker --loglevel=info
+   ```
