@@ -31,7 +31,12 @@ class CreateEvaluationMutation(MutateBase):
                              )
         report.save()
         # Call the Celery task asynchronously
-        print('calling the bg job----------')
-        backgroundTask.delay(100,200)
+        bg_params = {
+            "evaluation_result_id": str(report.id),
+            "prompt_template_id": str(report.prompt_template_id)
+        }
+        print("calling the bg job with params   :" , bg_params)
+
+        backgroundTask.delay(bg_params)
         
         return CreateEvaluationMutation(report=report)
