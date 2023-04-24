@@ -7,7 +7,7 @@ from graphQL.graphene_mutations.create_evaluation import CreateEvaluationMutatio
 from graphQL.db_models.experiment import Experiment
 from graphQL.db_models.prompt_template import PromptTemplate
 from graphQL.db_models.test_case import TestCase
-from graphQL.db_models.evalutaions import Evaluations
+from graphQL.db_models.evalutaions import Evaluation
 from graphQL.db_models.evaluation_test_case_relation import EvaluationTestCaseRelation
 from graphQL.graphene_types.experiment import ExperimentType
 from graphQL.graphene_types.prompt_template import PromptTemplatePaginationType
@@ -54,7 +54,7 @@ class Query(graphene.ObjectType):
 
             for prompt in prompts:
                 latest_evaluation_report = []
-                latest_evaluation_report.append(Evaluations.objects.filter(prompt_template_id=prompt.id).order_by("-updated_at").first())
+                latest_evaluation_report.append(Evaluation.objects.filter(prompt_template_id=prompt.id).order_by("-updated_at").first())
                 prompt.latest_evaluation_report = latest_evaluation_report
 
             return PromptTemplatePaginationType(total_count=total_count, prompts=prompts)
@@ -90,7 +90,7 @@ class Query(graphene.ObjectType):
             page = kwargs.get('page')
             offset = (page - 1) * limit
             
-            evaluation_report = Evaluations.objects.get(id=reportId)
+            evaluation_report = Evaluation.objects.get(id=reportId)
             evaluation_report.test_case_evaluation_report = EvaluationTestCaseRelation.objects.filter(evaluation_result_id=reportId).order_by('-updated_at')[offset:offset+limit]
             return evaluation_report
         except Exception as e:

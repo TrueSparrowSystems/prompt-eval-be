@@ -1,5 +1,5 @@
 import graphene
-from graphQL.db_models.evalutaions import Evaluations
+from graphQL.db_models.evalutaions import Evaluation
 from .mutation_base import MutateBase
 from graphQL.lib.helper import CommonValiator
 from graphQL.lib.custom_exception import InvalidLengthError
@@ -23,8 +23,7 @@ class CreateEvaluationMutation(MutateBase):
         # Todo: add validations for model and eval
         # Do query by prompt_template_id 
         
-        
-        report = Evaluations(prompt_template_id=evaluation_data.prompt_template_id, 
+        report = Evaluation(prompt_template_id=evaluation_data.prompt_template_id, 
                              model=evaluation_data.model,
                              eval=evaluation_data.eval
                              )
