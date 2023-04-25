@@ -18,6 +18,9 @@ class Experiment(ModelBase):
         experiment = cls.objects(id=experiment_id).first()
         if not experiment:
             raise ValueError('Experiment not found')
-        experiment.dynamic_vars = list(dynamic_vars_dict.keys())
+        existing_vars = experiment.dynamic_vars or [] 
+        new_vars = list(dynamic_vars_dict.keys())
+        updated_vars = list(set(existing_vars + new_vars))
+        experiment.dynamic_vars = updated_vars
         experiment.save()
 
