@@ -8,3 +8,4 @@ graphene-mongo==0.2.15
 python-decouple==3.8
 django-cors-headers==3.14.0
 coverage==7.2.3
+bleach==6.0.0
