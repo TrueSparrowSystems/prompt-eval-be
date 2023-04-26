@@ -24,5 +24,7 @@ class Evaluations(ModelBase):
     prompt_template_id = ObjectIdField(required=True)
     run_id = IntField()
     status = EnumField(Status, default=Status.INITIATED)
+    eval_parameter = DictField()
+    error_object = StringField()
     initiated_at = IntField()
     completed_at = IntField()
