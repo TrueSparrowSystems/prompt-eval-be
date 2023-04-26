@@ -34,7 +34,6 @@ class UpdateExperimentMutation(MutateBase):
         
         if update_experiment_data.dynamic_vars:
             experiment.dynamic_vars = update_experiment_data.dynamic_vars
-       
-        experiment.updated_at = int(time.time())
+            
         experiment.save()
         return UpdateExperimentMutation(experiment=experiment)
