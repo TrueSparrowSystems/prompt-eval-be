@@ -111,7 +111,85 @@ class PromptTest(GraphQLTestCase):
         self.assertEqual(content['errors'][0]['locations'][0]['line'], 3)
         self.assertEqual(content['errors'][0]['locations'][0]['column'], 13)
 
-        
+
+    def test_update_prompt_mutaion(self):
+        response = self.query(
+            '''
+            mutation {
+            updatePromptTemplate(
+                updatePromptTemplateData:{
+                    id:"64410a5026f532d486140787",
+                    name:"Test Prompt",
+                    description:"This is a test prompt",
+                    conversation:[{role:"system",content:"newone"}]
+                    }
+                ) {
+                promptTemplate{
+                id
+                name
+                description
+                conversation{
+                    role
+                    content
+                    }
+                createdAt
+                updatedAt
+                }
+             }
+            }
+            '''
+        )
+
+        content = json.loads(response.content)
+        # This validates the status code and if you get errors
+        self.assertResponseNoErrors(response)
+        self.assertEqual(content['data']['updatePromptTemplate']['promptTemplate']['name'], 'Test Prompt')
+        self.assertEqual(content['data']['updatePromptTemplate']['promptTemplate']['description'], 'This is a test prompt')
+
+        # Add some more asserts if you like
+
+    def test_update_prompt_mutaion_invalid_length(self):
+        response = self.query(
+            '''
+            mutation {
+            updatePromptTemplate(
+                updatePromptTemplateData:{
+                    id:"64410a5026f532d486140787",
+                    name:"Test Prompt Test Prompt Test Prompt Test Prompt Test Prompt Test Prompt Test Prompt Test Prompt",
+                    description:"This is a test prompt",
+                    conversation:[{role:"system",content:"newone"}]
+                    }
+                ) {
+                promptTemplate{
+                id
+                name
+                description
+                conversation{
+                    role
+                    content
+                    }
+                createdAt
+                updatedAt
+                }
+             }
+            }
+            '''
+        )
+
+        content = json.loads(response.content)
+        # This validates the status code and if you get errors
+        self.assertResponseHasErrors(response)
+        # assert equal error dictionary with expected dictionary
+         # assert equal error dictionary with expected dictionary
+        print('--------------------------######_----------',content)
+        self.assertEqual(content['errors'][0]['message'], 'Invalid length')
+        self.assertEqual(content['errors'][0]['path'][0], 'updatePromptTemplate')
+        self.assertEqual(content['errors'][0]['locations'][0]['line'], 3)
+        self.assertEqual(content['errors'][0]['locations'][0]['column'], 13)
+
+
+
+
         
       
     
