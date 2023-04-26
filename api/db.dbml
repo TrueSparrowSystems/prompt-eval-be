@@ -40,7 +40,7 @@ Table test_cases {
   updated_at timestamp
 }
 
-Table evaluations {
+Table evaluation {
   _id ObjectId
   model varchar
   eval varchar
@@ -55,16 +55,21 @@ Table evaluations {
       FAILED
     '
   ]
+  evals_parameter  Object [
+    note: '
+      { jsonl_file_name: "abc.jsonl", yaml_file_name: "abc.yaml"}
+    '
+  ]
+  error_object String
   initiated_at timestamp
   completed_at timestamp
   created_at timestamp
   updated_at timestamp
 }
 
-
 Table evaluation_test_case_relation {
   _id ObjectId
-  evaluation_result_id ObjectId [ref: > evaluations._id ]
+  evaluation_id ObjectId [ref: > evaluation._id ]
   prompt String
   test_case_id ObjectId [ref: > test_cases._id]
   test_case_name String
@@ -72,6 +77,7 @@ Table evaluation_test_case_relation {
   actual_result Array
   acceptable_result Array
   accuracy double
+  jsonl_order int
   created_at timestamp
   updated_at timestamp
 
