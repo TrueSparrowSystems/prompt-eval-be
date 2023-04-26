@@ -3,12 +3,13 @@ from mongoengine.fields import (
     StringField,
     ObjectIdField,
     ListField,
-    FloatField
+    FloatField,
+    IntField
 )
 
 class EvaluationTestCaseRelation(ModelBase):
-    meta = {'collection': 'test_case_evaluation_results'}
-    evaluation_result_id = ObjectIdField(required=True)
+    meta = {'collection': 'evaluation_test_case_relation'}
+    evaluation_id = ObjectIdField(required=True)
     prompt = StringField(required=True)
     test_case_id = ObjectIdField(required=True)
     test_case_name = StringField()
@@ -16,3 +17,4 @@ class EvaluationTestCaseRelation(ModelBase):
     actual_result = ListField()
     acceptable_result = ListField()
     accuracy = FloatField()
+    jsonl_order = IntField()
