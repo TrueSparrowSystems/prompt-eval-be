@@ -1,6 +1,7 @@
 import graphene
-from graphQL.graphene_types.test_case import TestCaseType, InputDynamicVarType
+from graphQL.graphene_types.test_case import TestCaseType
 from graphQL.db_models.test_case import TestCase
+from graphQL.db_models.experiment import Experiment
 from .mutation_base import MutateBase
 from graphQL.lib.helper import CommonValiator
 from graphQL.lib.custom_exception import InvalidLengthError
@@ -8,7 +9,7 @@ from graphQL.lib.custom_exception import InvalidLengthError
 class TestCaseInput(graphene.InputObjectType):
     name = graphene.String(required=True)
     description = graphene.String()
-    dynamic_var_values = graphene.List(InputDynamicVarType)
+    dynamic_var_values = graphene.JSONString()
     experiment_id = graphene.ID(required=True)
     expected_result = graphene.List(graphene.String)
 class CreateTestCasesMutation(MutateBase):
@@ -29,6 +30,7 @@ class CreateTestCasesMutation(MutateBase):
             testCase.description = test_case_data.description
         if test_case_data.dynamic_var_values:
             testCase.dynamic_var_values = test_case_data.dynamic_var_values
+            Experiment.update_dynamic_vars(test_case_data.experiment_id, test_case_data.dynamic_var_values)
         if test_case_data.expected_result:
             testCase.expected_result = test_case_data.expected_result
         
