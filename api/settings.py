@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "graphene_django",
-    "corsheaders"
+    "corsheaders",
+    "graphQL",
+    "bg_jobs"
 ]
 
 MIDDLEWARE = [
