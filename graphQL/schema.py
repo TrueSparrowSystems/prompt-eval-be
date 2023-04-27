@@ -3,11 +3,12 @@ from graphQL.graphene_mutations.create_experiment import CreateExperimentMutatio
 from graphQL.graphene_mutations.update_experiment import UpdateExperimentMutation
 from graphQL.graphene_mutations.create_prompt_template import CreatePromptTemplateMutation
 from graphQL.graphene_mutations.update_prompt_template import UpdatePromptTemplateMutation
+from graphQL.graphene_mutations.create_evaluation import CreateEvaluationMutation
 from graphQL.graphene_mutations.create_test_cases import CreateTestCasesMutation
 from graphQL.db_models.experiment import Experiment
 from graphQL.db_models.prompt_template import PromptTemplate
 from graphQL.db_models.test_case import TestCase
-from graphQL.db_models.evalutaions import Evaluations
+from graphQL.db_models.evaluation import Evaluation
 from graphQL.db_models.evaluation_test_case_relation import EvaluationTestCaseRelation
 from graphQL.graphene_types.experiment import ExperimentType
 from graphQL.graphene_types.prompt_template import PromptTemplatePaginationType
@@ -21,6 +22,7 @@ class Mutations(graphene.ObjectType):
     create_prompt_template = CreatePromptTemplateMutation.Field()
     update_prompt_template = UpdatePromptTemplateMutation.Field()
     create_test_cases = CreateTestCasesMutation.Field()
+    create_evaluation = CreateEvaluationMutation.Field()
 
     
 class Query(graphene.ObjectType):
@@ -54,7 +56,7 @@ class Query(graphene.ObjectType):
 
             for prompt in prompts:
                 latest_evaluation_report = []
-                latest_evaluation_report.append(Evaluations.objects.filter(prompt_template_id=prompt.id).order_by("-updated_at").first())
+                latest_evaluation_report.append(Evaluation.objects.filter(prompt_template_id=prompt.id).order_by("-updated_at").first())
                 prompt.latest_evaluation_report = latest_evaluation_report
 
             return PromptTemplatePaginationType(total_count=total_count, prompts=prompts)
@@ -90,7 +92,7 @@ class Query(graphene.ObjectType):
             page = kwargs.get('page')
             offset = (page - 1) * limit
             
-            evaluation_report = Evaluations.objects.get(id=reportId)
+            evaluation_report = Evaluation.objects.get(id=reportId)
             evaluation_report.test_case_evaluation_report = EvaluationTestCaseRelation.objects.filter(evaluation_result_id=reportId).order_by('-updated_at')[offset:offset+limit]
             return evaluation_report
         except Exception as e:
