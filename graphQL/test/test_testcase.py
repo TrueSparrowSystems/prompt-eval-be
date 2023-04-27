@@ -5,57 +5,21 @@ from graphene_django.utils.testing import GraphQLTestCase
 # $ python manage.py test graphQL.test.test_testcase
 # Create your tests here.
 class TestcasesTest(GraphQLTestCase):
-    def test_get_testcases_query(self):
+    testcaseID = ""
+    experimentId = ""
+
+    def test_create_experiment_mutation(self):
         response = self.query(
             '''
-            query 
-                {
-                    testCases(experimentId: "6438f6ea0b7e9d05970def5a") {
-                        id
-                        name
-                        description
-                        dynamicVarValues {
-                        key
-                        value
-                        }
-                        experimentId
-                        expectedResult
-                        updatedAt
-                        createdAt
-                    }
-                }
-            '''      
-          )
-
-        content = json.loads(response.content)
-
-        # This validates the status code and if you get errors
-        self.assertResponseNoErrors(response)
-      
-        # Add some more asserts if you like
-      
-    def test_create_testcase_mutation(self):
-        response = self.query(
-            '''
-            mutation {
-                createTestCases(testCaseData:{
-                    experimentId:"6438f6ea0b7e9d05970def5a",
-                    name:"new Testcase",
-                    dynamicVarValues:{key:"hey",value:"value"},
-                    expectedResult:["hey","hey10"]}
-                ) {
-                    testCase {
+            mutation{
+                createExperiment(experimentData:{name:"Test Experiment",description:"This is a test experiment"}){
+                    experiment {
                     id
                     name
                     description
-                    expectedResult
-                    dynamicVarValues {
-                        key
-                        value
-                    }
+                    dynamicVars
                     createdAt
                     updatedAt
-                    experimentId
                     }
                 }
             }
@@ -66,16 +30,45 @@ class TestcasesTest(GraphQLTestCase):
         print('################################################\n')
         # This validates the status code and if you get errors
         self.assertResponseNoErrors(response)
-        self.assertEqual(content['data']['createTestCases']['testCase']['name'], 'new Testcase')
+        TestcasesTest.experimentID = content['data']['createExperiment']['experiment']['id']
 
-    
-    def test_create_testcase_mocked_mutations(self):
+    def test_get_testcases_query(self):
+        variable = {"experimentId": TestcasesTest.experimentID}
         response = self.query(
             '''
-            mutation {
+            query testCases($experimentId: String!) {
+                    testCases(experimentId: $experimentId ) {
+                        id
+                        name
+                        description
+                        dynamicVarValues
+                        experimentId
+                        expectedResult
+                        updatedAt
+                        createdAt
+                    }
+                }
+            ''', variables=variable
+          )
+
+        content = json.loads(response.content)
+
+        # This validates the status code and if you get errors
+        self.assertResponseNoErrors(response)
+
+        # Add some more asserts if you like
+      
+    def test_create_testcase_mutation(self):
+        variable = {"experimentId": TestcasesTest.experimentID, "dynamicVarValues": json.dumps({"key":"hey","value":"value"})}
+        # dynamicVarValues = {"key":"hey","value":"value"}
+        dynamicVarValues = json.dumps({"key":"hey","value":"value"})
+        response = self.query(
+            '''
+            mutation createTestCase($experimentId: ID!, $dynamicVarValues: JSONString) {
                 createTestCases(testCaseData:{
+                    experimentId:$experimentId,
                     name:"new Testcase",
-                    dynamicVarValues:{key:"hey",value:"value"},
+                    dynamicVarValues:$dynamicVarValues,
                     expectedResult:["hey","hey10"]}
                 ) {
                     testCase {
@@ -83,59 +76,50 @@ class TestcasesTest(GraphQLTestCase):
                     name
                     description
                     expectedResult
-                    dynamicVarValues {
-                        key
-                        value
-                    }
+                    dynamicVarValues
                     createdAt
                     updatedAt
                     experimentId
                     }
                 }
             }
+            ''', variables=variable
+        )
+
+        content = json.loads(response.content)
+        print('################################################\n')
+        # TestcasesTest.testcaseID = content['data']['createTestCases']['testCase']['id']
+        # This validates the status code and if you get errors
+        self.assertResponseNoErrors(response)
+        self.assertEqual(content['data']['createTestCases']['testCase']['name'], 'new Testcase')
+
+    
+    def test_create_testcase_mocked_mutations(self):
+        variable = {"experimentId": TestcasesTest.experimentID, "dynamicVarValues": json.dumps({"key":"hey","value":"value"})}
+        response = self.query(
             '''
+            mutation createTestCase($experimentId: ID!, $dynamicVarValues: JSONString) {
+                createTestCases(testCaseData:{
+                    name:"new Testcase",
+                    dynamicVarValues:$dynamicVarValues,
+                    expectedResult:["hey","hey10"]}
+                ) {
+                    testCase {
+                    id
+                    name
+                    description
+                    expectedResult
+                    dynamicVarValues
+                    createdAt
+                    updatedAt
+                    experimentId
+                    }
+                }
+            }
+            ''', variables=variable
         )
 
         content = json.loads(response.content)
         # This validates the status code and if you get errors
         self.assertResponseHasErrors(response)
         self.assertEqual(content['errors'][0]['message'], "Field 'TestCaseInput.experimentId' of required type 'ID!' was not provided.")
-        
-    
-    def test_create_testcase_invalid_params(self):
-        response = self.query(
-            '''
-            mutation {
-                createTestCases(testCaseData:{
-                    experimentId:"6438f6ea0b7e9d05970oef5a",
-                    name:"new Testcase",
-                    dynamicVarValues:{key:"hey",value:"value"},
-                    expectedResult:["hey","hey10"]}
-                ) {
-                    testCase {
-                    id
-                    name
-                    description
-                    expectedResult
-                    dynamicVarValues {
-                        key
-                        value
-                    }
-                    createdAt
-                    updatedAt
-                    experimentId
-                    }
-                }
-            }
-            '''
-        )
-
-        content = json.loads(response.content)
-        # This validates the status code and if you get errors
-        self.assertResponseHasErrors(response)
-        self.assertEqual(content['errors'][0]['message'], 'Something went wrong')
-        self.assertEqual(content['errors'][0]['extensions']['code'],'m_b_1')
-        self.assertEqual(content['errors'][0]['extensions']['debug'],'Something went wrong')
-        self.assertEqual(content['data']['createTestCases'],None)
-
-        

@@ -5,11 +5,76 @@ from graphene_django.utils.testing import GraphQLTestCase
 # $ python manage.py test graphQL.test.test_prompt
 # Create your tests here.
 class PromptTest(GraphQLTestCase):
-    def test_get_prompts_by_experiment_id(self):
+    promptID = ""
+    experimentId = ""
+
+    def test_create_experiment_mutation(self):
         response = self.query(
             '''
-            query {
-                    promptListByPagination(experimentId:"643d4e97c865c10095c972e5", limit:2, page:1){
+            mutation{
+                createExperiment(experimentData:{name:"Test Experiment",description:"This is a test experiment"}){
+                    experiment {
+                    id
+                    name
+                    description
+                    dynamicVars
+                    createdAt
+                    updatedAt
+                    }
+                }
+            }
+            '''
+        )
+
+        content = json.loads(response.content)
+        print('################################################\n')
+        # This validates the status code and if you get errors
+        self.assertResponseNoErrors(response)
+        PromptTest.experimentID = content['data']['createExperiment']['experiment']['id']
+
+    def test_create_prompt_mutation(self):
+        variable = {"experimentId": PromptTest.experimentID}        
+        response = self.query(
+            '''
+            mutation createPromptTemplate($experimentId: ID!) {
+            createPromptTemplate(
+                promptTemplateData:{
+                    name:"Test Prompt",
+                    description:"This is a test prompt",
+                    experimentId: $experimentId,
+                    conversation:[{role:"system",content:"newone"}]
+                    }
+                ) {
+                promptTemplate{
+                id
+                name
+                description
+                conversation{
+                    role
+                    content
+                    }
+                createdAt
+                updatedAt
+                }
+             }
+            }
+            ''', variables=variable
+        )
+
+        content = json.loads(response.content)
+        # This validates the status code and if you get errors
+        self.assertResponseNoErrors(response)
+        PromptTest.promptID = content['data']['createPromptTemplate']['promptTemplate']['id']
+        self.assertEqual(content['data']['createPromptTemplate']['promptTemplate']['name'], 'Test Prompt')
+        self.assertEqual(content['data']['createPromptTemplate']['promptTemplate']['description'], 'This is a test prompt')
+
+        # Add some more asserts if you like
+    def test_get_prompts_by_experiment_id(self):
+        variable = {"experimentId": PromptTest.experimentID}
+        response = self.query(
+            '''
+            query getPromptListByExperimentId($experimentId: String!) {
+                    promptListByPagination(experimentId: $experimentId , limit:2, page:1){
                         totalCount
                         prompts{
                         id
@@ -25,7 +90,7 @@ class PromptTest(GraphQLTestCase):
                     }
                 }
              
-            '''      
+            ''', variables=variable
           )
 
         content = json.loads(response.content)
@@ -35,52 +100,17 @@ class PromptTest(GraphQLTestCase):
       
         # Add some more asserts if you like
         
-    def test_create_prompt_mutation(self):
-        response = self.query(
-            '''
-            mutation {
-            createPromptTemplate(
-                promptTemplateData:{
-                    name:"Test Prompt",
-                    description:"This is a test prompt",
-                    experimentId:"643d4e97c865c10095c972e5",
-                    conversation:[{role:"system",content:"newone"}]
-                    }
-                ) {
-                promptTemplate{
-                id
-                name
-                description
-                conversation{
-                    role
-                    content
-                    }
-                createdAt
-                updatedAt
-                }
-             }
-            }
-            '''
-        )
-
-        content = json.loads(response.content)
-        # This validates the status code and if you get errors
-        self.assertResponseNoErrors(response)
-        self.assertEqual(content['data']['createPromptTemplate']['promptTemplate']['name'], 'Test Prompt')
-        self.assertEqual(content['data']['createPromptTemplate']['promptTemplate']['description'], 'This is a test prompt')
-
-        # Add some more asserts if you like
-        
     # Write test case for create prompt mutation having length of name greater than 70 characters also compare error dictionary with expcted dictionary
     def test_create_prompt_mutation_invalid_length(self):
+        variable = {"experimentId": PromptTest.experimentID}
         response = self.query(
             '''
-            mutation {
+            mutation createPromptTemplate($experimentId: ID!) {
             createPromptTemplate(
                 promptTemplateData:{
                     name:"Test Prompt Test Prompt Test Prompt Test Prompt Test Prompt Test Prompt Test Prompt Test Prompt",
                     description:"This is a test prompt",
-                    experimentId:"643d4e97c865c10095c972e5",
+                    experimentId:$experimentId,
                     conversation:[{role:"system",content:"newone"}]
                     }
                 ) {
@@ -97,7 +127,7 @@ class PromptTest(GraphQLTestCase):
                 }
              }
             }
-            '''
+            ''', variables=variable
         )
 
         content = json.loads(response.content)
@@ -113,12 +143,13 @@ class PromptTest(GraphQLTestCase):
 
 
     def test_update_prompt_mutaion(self):
+        variable = {"promptId": PromptTest.promptID}
         response = self.query(
             '''
-            mutation {
+            mutation updatePromptTemplate($promptId: String!) {
             updatePromptTemplate(
                 updatePromptTemplateData:{
-                    id:"64410a5026f532d486140787",
+                    id:$promptId,
                     name:"Test Prompt",
                     description:"This is a test prompt",
                     conversation:[{role:"system",content:"newone"}]
@@ -137,7 +168,7 @@ class PromptTest(GraphQLTestCase):
                 }
              }
             }
-            '''
+            ''', variables=variable
         )
 
         content = json.loads(response.content)
@@ -149,12 +180,13 @@ class PromptTest(GraphQLTestCase):
         # Add some more asserts if you like
 
     def test_update_prompt_mutaion_invalid_length(self):
+        variable = {"promptId": PromptTest.promptID}
         response = self.query(
             '''
-            mutation {
+            mutation updatePromptTemplate($promptId: String!) {
             updatePromptTemplate(
                 updatePromptTemplateData:{
-                    id:"64410a5026f532d486140787",
+                    id:$promptId,
                     name:"Test Prompt Test Prompt Test Prompt Test Prompt Test Prompt Test Prompt Test Prompt Test Prompt",
                     description:"This is a test prompt",
                     conversation:[{role:"system",content:"newone"}]
@@ -173,7 +205,7 @@ class PromptTest(GraphQLTestCase):
                 }
              }
             }
-            '''
+            ''', variables=variable
         )
 
         content = json.loads(response.content)

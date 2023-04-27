@@ -50,8 +50,9 @@ class Query(graphene.ObjectType):
             limit = kwargs.get('limit')
             page = kwargs.get('page')
             offset = (page - 1) * limit
-            
-            total_count = PromptTemplate.objects.filter(experiment_id=experimentId).count()
+            total_count = None
+            if page == 1:
+                total_count = PromptTemplate.objects.filter(experiment_id=experimentId).count()
             prompts = PromptTemplate.objects.filter(experiment_id=experimentId).order_by('-updated_at')[offset:offset+limit]
 
             for prompt in prompts:
@@ -91,9 +92,12 @@ class Query(graphene.ObjectType):
             limit = kwargs.get('limit')
             page = kwargs.get('page')
             offset = (page - 1) * limit
-            
+            total_count = None
+            if page == 1:
+                total_count = EvaluationTestCaseRelation.objects.filter(evaluation_id=reportId).count()
             evaluation_report = Evaluation.objects.get(id=reportId)
-            evaluation_report.test_case_evaluation_report = EvaluationTestCaseRelation.objects.filter(evaluation_result_id=reportId).order_by('-updated_at')[offset:offset+limit]
+            evaluation_report.test_case_evaluation_report = EvaluationTestCaseRelation.objects.filter(evaluation_id=reportId).order_by('-updated_at')[offset:offset+limit]
+            evaluation_report.total_count = total_count 
             return evaluation_report
         except Exception as e:
             print(e)
