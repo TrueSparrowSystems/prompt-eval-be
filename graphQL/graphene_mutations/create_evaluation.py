@@ -5,6 +5,9 @@ from graphQL.lib.helper import CommonValiator
 from graphQL.lib.custom_exception import InvalidLengthError
 from graphQL.graphene_types.report import ReportBaseType
 
+from bg_jobs.background_job import background_job
+from bg_jobs.executor import executor
+
 
 class EvaluationInput(graphene.InputObjectType):
     prompt_template_id = graphene.String(required=True)
@@ -29,4 +32,8 @@ class CreateEvaluationMutation(MutateBase):
             "evaluation_result_id": str(report.id),
             "prompt_template_id": str(report.prompt_template_id)
         }
+        
+        executor.submit(background_job, bg_params)
+
+        
         return CreateEvaluationMutation(report=report)

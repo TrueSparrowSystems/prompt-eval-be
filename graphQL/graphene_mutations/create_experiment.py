@@ -4,10 +4,6 @@ from graphQL.graphene_types.experiment import ExperimentType
 from .mutation_base import MutateBase
 from graphQL.lib.helper import CommonValiator
 from graphQL.lib.custom_exception import InvalidLengthError
-
-from bg_jobs.background_job import background_job
-from bg_jobs.executor import executor
-
 class ExperimentInput(graphene.InputObjectType):
     name = graphene.String(required=True)
     description = graphene.String()
@@ -30,11 +26,5 @@ class CreateExperimentMutation(MutateBase):
             experiment.description = experiment_data.description
 
         experiment.save()
-        
-        for i in range(5):
-            params = {'p1': i, 'p2': i+1}
-            executor.submit(background_job, params)
-        print('Main thread execution done, bg is still processing')
-    
 
         return CreateExperimentMutation(experiment=experiment)

@@ -2,7 +2,7 @@ from django.apps import AppConfig
 from django.conf import settings
 from bg_jobs.background_job import background_job
 from bg_jobs.executor import executor
-from graphQL.db_models.evalutaions import Evaluation
+from graphQL.db_models.evaluation import Evaluation
 
 
 class GraphqlConfig(AppConfig):
@@ -21,7 +21,7 @@ class GraphqlConfig(AppConfig):
         # print('tasks-------', tasks)
         # params = {'p1': 'initial2', 'p2': 'initial2'}
 
-        # # before submit write a code to get what are the tasks presen in bg job tasks
+        # # before submit write a code to get what are the tasks present in bg job tasks
         # executor.submit(background_job, params)
         
         
