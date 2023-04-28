@@ -27,6 +27,7 @@ class Evaluation(ModelBase):
     run_id = IntField(default=lambda: 1)
     status = EnumField(Status, default=Status.INITIATED)
     eval_parameter = DictField()
+    retry_count = IntField(default=lambda: 0)
     error_object = StringField()
     initiated_at = IntField(default=lambda: int(time()))
     completed_at = IntField()

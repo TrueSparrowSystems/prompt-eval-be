@@ -60,6 +60,7 @@ Table evaluation {
       { jsonl_file_name: "abc.jsonl", yaml_file_name: "abc.yaml"}
     '
   ]
+  retry_count int
   error_object String
   initiated_at timestamp
   completed_at timestamp
