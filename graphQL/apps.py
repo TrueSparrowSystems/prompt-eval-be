@@ -10,13 +10,14 @@ class GraphqlConfig(AppConfig):
     name = "graphQL"
 
     def ready(self):
-        params = {'p1': 'initial', 'p2': 'initial'}
-        print(' I am here---------')
-        all_evaluations = Evaluation.objects.all()
-        for evaluation in all_evaluations:
-            print('Evaluation_id-------', evaluation.id)
+        pass
+        # params = {'p1': 'initial', 'p2': 'initial'}
+        # print(' I am here---------')
+        # all_evaluations = Evaluation.objects.all()
+        # for evaluation in all_evaluations:
+        #     print('Evaluation_id-------', evaluation.id)
 
-        executor.submit(background_job, params)
+        # executor.submit(background_job, params)
         # tasks = executor.get_queue()
         # print('tasks-------', tasks)
         # params = {'p1': 'initial2', 'p2': 'initial2'}

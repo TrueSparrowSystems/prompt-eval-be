@@ -25,7 +25,6 @@ class FetchTestCasesByPromptId:
             test_cases = TestCase.objects(experiment_id=experiment_id)
             print("test_cases length:   ", test_cases.count())
             
-            # Todo: make a prompt
             return test_cases
         except Exception as e:
             print(e)

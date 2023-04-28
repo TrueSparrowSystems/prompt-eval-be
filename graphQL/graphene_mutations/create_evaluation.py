@@ -29,7 +29,7 @@ class CreateEvaluationMutation(MutateBase):
                              )
         report.save()
         bg_params = {
-            "evaluation_result_id": str(report.id),
+            "evaluation_id": str(report.id),
             "prompt_template_id": str(report.prompt_template_id)
         }
         

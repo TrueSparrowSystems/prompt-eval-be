@@ -1,7 +1,7 @@
 from celery import Task
 from api.celery import app
 from graphQL.db_models.evaluation_test_case_relation import EvaluationTestCaseRelation
-from graphQL.lib.fetch_test_cases import FetchTestCasesByPromptId
+from bg_jobs.background.fetch_test_cases import FetchTestCasesByPromptId
 
 class BgJob(Task):
 
