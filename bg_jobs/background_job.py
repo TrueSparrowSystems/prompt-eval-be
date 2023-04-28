@@ -1,6 +1,5 @@
 import time
 
 def background_job(params):
-    print("Background job started", params['p1'], params['p2'])
-    time.sleep(5)  # simulate a long-running task
+    print(f"**********Background job started with given params {params['evaluation_result_id']}, {params['prompt_template_id']}**********     :")
     print("Background job finished")

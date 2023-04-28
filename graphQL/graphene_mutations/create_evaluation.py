@@ -33,7 +33,7 @@ class CreateEvaluationMutation(MutateBase):
             "prompt_template_id": str(report.prompt_template_id)
         }
         
+        print('report ----------------', report, type(report))
         executor.submit(background_job, bg_params)
 
-        
         return CreateEvaluationMutation(report=report)
