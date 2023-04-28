@@ -4,7 +4,11 @@ from graphene_django.utils.testing import GraphQLTestCase
 # Command to run test cases for experiment
 # $ python manage.py test graphQL.test.test_experiment
 # Create your tests here.
+
+
 class ExperimentTest(GraphQLTestCase):
+    experimentID = ""
+
     def test_get_experiments_query(self):
         response = self.query(
             '''
@@ -18,16 +22,16 @@ class ExperimentTest(GraphQLTestCase):
                     dynamicVars
                 }
             }
-            '''      
-          )
+            '''
+        )
 
         content = json.loads(response.content)
 
         # This validates the status code and if you get errors
         self.assertResponseNoErrors(response)
-      
+
         # Add some more asserts if you like
-      
+
     def test_create_experiment_mutation(self):
         response = self.query(
             '''
@@ -50,12 +54,14 @@ class ExperimentTest(GraphQLTestCase):
         print('################################################\n')
         # This validates the status code and if you get errors
         self.assertResponseNoErrors(response)
-        self.assertEqual(content['data']['createExperiment']['experiment']['name'], 'Test Experiment')
-        self.assertEqual(content['data']['createExperiment']['experiment']['description'], 'This is a test experiment')
+        ExperimentTest.experimentID = content['data']['createExperiment']['experiment']['id']
+        self.assertEqual(content['data']['createExperiment']
+                         ['experiment']['name'], 'Test Experiment')
+        self.assertEqual(content['data']['createExperiment']
+                         ['experiment']['description'], 'This is a test experiment')
 
-    
     def test_create_experiment_mocked_mutations(self):
-      response = self.query(
+        response = self.query(
             '''
             mutation {
                 createExperiment(experimentData:{description:"description of 1 "}) {
@@ -71,31 +77,32 @@ class ExperimentTest(GraphQLTestCase):
             }
             '''
         )
-    
-      self.assertResponseHasErrors(response)
-      
+
+        self.assertResponseHasErrors(response)
+
     def test_update_experiment_mutation(self):
+        variables = {'id': ExperimentTest.experimentID}
         response = self.query(
             '''
-            mutation {
+            mutation UpdateExperiment($id: String!) {
                 updateExperiment(
                     updateExperimentData:
                         {
                             name:"Test Experiment Update",
-                            id:"6438f6ea0b7e9d05970def5a"
+                            id:$id
                         }
                 ) {
                     experiment{
-                    id
-                    name
-                    description
-                    dynamicVars
-                    createdAt
-                    updatedAt
-                  }
+                        id
+                        name
+                        description
+                        dynamicVars
+                        createdAt
+                        updatedAt
+                    }
                 }
             }
-            '''
+            ''', variables=variables
         )
 
         content = json.loads(response.content)
@@ -104,11 +111,12 @@ class ExperimentTest(GraphQLTestCase):
         self.assertResponseNoErrors(response)
 
         # Add some more asserts if you like
-    
+
     def test_update_experiment_mocked_mutation(self):
+        variables = {'id': ExperimentTest.experimentID}
         response = self.query(
             '''
-            mutation {
+            mutation UpdateExperiment($id: String!) {
                 updateExperiment(updateExperimentData:
                     {
                     name:"Test Experiment Update",
@@ -126,7 +134,7 @@ class ExperimentTest(GraphQLTestCase):
                   }
                 }
             }
-            '''
+            ''', variables=variables
         )
 
         content = json.loads(response.content)
@@ -136,11 +144,12 @@ class ExperimentTest(GraphQLTestCase):
         self.assertResponseHasErrors(response)
 
         # Add some more asserts if you like
-        
+
     def test_update_experiment_with_incorrect_id(self):
+        variables = {'id': ExperimentTest.experimentID}
         response = self.query(
             '''
-            mutation {
+            mutation UpdateExperiment($id: String!) {
                 updateExperiment(updateExperimentData:
                     {
                     name:"Test Experiment Update",
@@ -158,17 +167,11 @@ class ExperimentTest(GraphQLTestCase):
                   }
                 }
             }
-            '''
+            ''', variables=variables
         )
 
-        content = json.loads(response.content)                
+        content = json.loads(response.content)
 
         # This validates the status code and if you get errors
         self.assertResponseHasErrors(response)
         # Add some more asserts if you like
-
-    
-    
-
-
-      

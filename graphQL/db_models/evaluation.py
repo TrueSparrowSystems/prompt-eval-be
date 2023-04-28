@@ -9,6 +9,7 @@ from mongoengine.fields import (
     EnumField,
     DateTimeField
 )
+from time import time
 from graphQL.db_models.model_base import ModelBase
 
 class Status(Enum):
@@ -25,5 +26,7 @@ class Evaluation(ModelBase):
     prompt_template_id = ObjectIdField(required=True)
     run_id = IntField(default=lambda: 1)
     status = EnumField(Status, default=Status.INITIATED)
+    eval_parameter = DictField()
+    error_object = StringField()
     initiated_at = IntField(default=lambda: int(time()))
     completed_at = IntField()
