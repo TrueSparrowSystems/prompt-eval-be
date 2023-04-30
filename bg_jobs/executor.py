@@ -1,15 +1,24 @@
-from concurrent.futures import ThreadPoolExecutor
 
-# Create a ThreadPoolExecutor with 4 worker threads
-executor = ThreadPoolExecutor(max_workers=4)
-# from concurrent.futures import ThreadPoolExecutor
+import concurrent.futures
 
-# class CustomThreadPoolExecutor(ThreadPoolExecutor):
-#     def get_queue(self):
-#         with self._work_queue.queue.mutex:
-#             return list(self._work_queue.queue)
+#submitted_tasks = []
+class SingletonThreadPoolExecutor(concurrent.futures.ThreadPoolExecutor):
+    def __new__(cls):
+        if not hasattr(cls, '_instance'):
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def execute(self, fn, *args):   
+        print('In execute method    :',args)  
+        # if len(submitted_tasks) == 0:
+        #     print('task array in if block   :', args)
+        #     print('submitted_task array in if block   :', submitted_tasks)
+        # else:
+        #     for task in submitted_tasks:
+        #         if args.index(task):
+        #             args.remove(task)
+        #     print('task array in else block   :', args)
+        #     print('submitted_task array in else block   :', submitted_tasks)
+        return super().map(fn, *args)
 
 
-# executor = CustomThreadPoolExecutor(max_workers=4)
-
-     
