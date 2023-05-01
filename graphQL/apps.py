@@ -1,5 +1,4 @@
 from django.apps import AppConfig
-from django.conf import settings
 from bg_jobs.executor import SingletonThreadPoolExecutor
 from bg_jobs.background_job import background_job
 
@@ -21,7 +20,6 @@ class GraphqlConfig(AppConfig):
         ]
         
         executor = SingletonThreadPoolExecutor()
-        #executor.execute(background_job, array)
 
         if len(submitted_task) != 0:
             for task in submitted_task:
@@ -29,7 +27,9 @@ class GraphqlConfig(AppConfig):
                     array.remove(task)
             print('task array in if block   :', array)
             print('submitted_task array in if block   :', submitted_task)
-        executor.execute(background_job, array)
+        
+        for task in array:
+            executor.submit(background_job, task)
 
             
 # fidnd error on above code

@@ -1,5 +1,7 @@
 
 import concurrent.futures
+from bg_jobs.background_job import background_job
+
 
 submitted_tasks = []
 class SingletonThreadPoolExecutor(concurrent.futures.ThreadPoolExecutor):
@@ -8,36 +10,24 @@ class SingletonThreadPoolExecutor(concurrent.futures.ThreadPoolExecutor):
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def execute(self, fn, *args):   
-        print('In execute method    :',args)  
-        # if len(submitted_tasks) == 0:
-        #     print('task array in if block   :', args)
-        #     print('submitted_task array in if block   :', submitted_tasks)
-        # else:
-        #     for task in submitted_tasks:
-        #         if args.index(task):
-        #             args.remove(task)
-        #     print('task array in else block   :', args)
-        #     print('submitted_task array in else block   :', submitted_tasks)
-        # submitted_tasks.extend(args)
-        return super().map(fn, *args)
+    # def execute(self, fn, *args):   
+    #     print('In execute method    :',args, fn)  
+    #     # if len(submitted_tasks) == 0:
+    #     #     print('task array in if block   :', args)
+    #     #     print('submitted_task array in if block   :', submitted_tasks)
+    #     # else:
+    #     #     for task in submitted_tasks:
+    #     #         if args.index(task):
+    #     #             args.remove(task)
+    #     #     print('task array in else block   :', args)
+    #     #     print('submitted_task array in else block   :', submitted_tasks)
+    #     # submitted_tasks.extend(args)
+    #     for arg in args:
+    #         print("arg-----",arg)
+    #         super().submit(fn, arg)
     
-    # def submit(self, fn, *args, **kwargs):
-    #     print('In execute method    :',args)  
-    #     if len(submitted_tasks) == 0:
-    #         print('task array in if block   :', args)
-    #         print('submitted_task array in if block   :', submitted_tasks)
-    #         submitted_tasks.append(args)
-    #     else:
-    #         for task in submitted_tasks:
-    #             if args.index(task):
-    #                 #args.remove(task)
-    #                 return
-    #         submitted_tasks.append(args)
-    #         print('task array in else block   :', args)
-    #         print('submitted_task array in else block   :', submitted_tasks)
-         
-    #     print('In submit method')
-    #     return super().submit(fn, *args, **kwargs)
+    def submit(self, background_job, *args, **kwargs):
+        print('In submit method')
+        super().submit(background_job, *args, **kwargs)
 
 
