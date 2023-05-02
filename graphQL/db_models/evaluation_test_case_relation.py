@@ -18,3 +18,31 @@ class EvaluationTestCaseRelation(ModelBase):
     acceptable_result = ListField()
     accuracy = FloatField()
     jsonl_order = IntField()
+
+    @classmethod
+    def bulk_create_evaluation_test_case_relation(cls, params):
+        evaluation_test_case_relations = []
+        for param in params:
+            evaluation_test_case_relation = cls()
+            evaluation_test_case_relation.evaluation_id = param['evaluation_id']
+            evaluation_test_case_relation.prompt = param['prompt']
+            evaluation_test_case_relation.test_case_id = param['test_case_id']
+            evaluation_test_case_relation.test_case_name = param['test_case_name'] 
+            evaluation_test_case_relation.test_case_description = param['test_case_description'] 
+            evaluation_test_case_relation.acceptable_result = param['acceptable_result']
+            evaluation_test_case_relation.jsonl_order = param['jsonl_order']
+            
+            if param.get('accuracy') and param.get('actual_result'):
+                evaluation_test_case_relation.accuracy = param['accuracy'] 
+                evaluation_test_case_relation.actual_result = param['actual_result']
+                
+            evaluation_test_case_relations.append(evaluation_test_case_relation)
+        print("evaluation_test_case_relations length:   ", len(evaluation_test_case_relations))
+            
+        try:
+            cls.objects.insert(evaluation_test_case_relations)
+        except Exception as e:
+            print("Error in bulk_create_evaluation_test_case_relation method", e)
+            return False
+        
+        return evaluation_test_case_relations
