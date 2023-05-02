@@ -31,3 +31,8 @@ class Evaluation(ModelBase):
     error_object = StringField()
     initiated_at = IntField(default=lambda: int(time()))
     completed_at = IntField()
+    
+    # Method to get the evaluation object by id
+    @classmethod
+    def evaluation_by_id(cls, evaluation_id):
+        return cls.objects.get(id=evaluation_id)

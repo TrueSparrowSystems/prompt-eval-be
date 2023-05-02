@@ -9,4 +9,5 @@ python-decouple==3.8
 django-cors-headers==3.14.0
 coverage==7.2.3
 celery==5.2.7
+pyyaml==6.0
 
