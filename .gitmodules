@@ -1,0 +1,4 @@
+[submodule "evals_framework"]
+	path = evals_framework
+	url = https://github.com/TrueSparrowSystems/evals.git
+	branch = as_package
