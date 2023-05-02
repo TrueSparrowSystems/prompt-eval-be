@@ -6,6 +6,7 @@ from graphQL.graphene_mutations.update_prompt_template import UpdatePromptTempla
 from graphQL.graphene_mutations.create_evaluation import CreateEvaluationMutation
 from graphQL.graphene_mutations.create_test_cases import CreateTestCasesMutation
 from graphQL.graphene_mutations.create_evaluation import CreateEvaluationMutation
+from graphQL.graphene_mutations.update_test_cases import UpdateTestCasesMutation
 from graphQL.db_models.experiment import Experiment
 from graphQL.db_models.prompt_template import PromptTemplate
 from graphQL.db_models.test_case import TestCase
@@ -23,6 +24,7 @@ class Mutations(graphene.ObjectType):
     create_prompt_template = CreatePromptTemplateMutation.Field()
     update_prompt_template = UpdatePromptTemplateMutation.Field()
     create_test_cases = CreateTestCasesMutation.Field()
+    update_test_cases = UpdateTestCasesMutation.Field()
     create_evaluation = CreateEvaluationMutation.Field()
 
     
