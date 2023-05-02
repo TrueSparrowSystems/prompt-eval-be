@@ -30,24 +30,32 @@ pip install -r requirements.txt
 ```
 
 5. Copy the contents of .env.sample file in .env file and add the values for all env variables.
-6. Run the api server using following command
+
+6. Clone the [evals](https://github.com/openai/evals) submodule
+```
+git submodule init
+git submodule update
+```
+
+7. Install submodule dependencies
+```
+pip install -e evals_framework
+```
+8. Run the api server using following command
 
 ```
 python manage.py runserver 8000
 ```
 
-7. Run the test cases using following command
+9. Run the test cases using following command
 
 ```
 python manage.py test graphQL
 ```
 
-8. Run the following command to generate test coverage report
+10. Run the following command to generate test coverage report
 
 ```
 coverage run manage.py test
-```
-
-```
 coverage report
 ```
