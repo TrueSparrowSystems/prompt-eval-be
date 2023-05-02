@@ -2,7 +2,26 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+import signal
+import time
+import bg_jobs.globals as globals
 
+
+
+def handle_sigint(signal_num, frame):
+    #global sigint_triggered
+    #sigint_triggered = True
+    globals.SIGINT_TRIGGERED = True
+    #global process_completed
+    print("SIGINT received. Stopping background task...")
+    while not globals.PROCESS_COMPLETED:
+        time.sleep(10)
+        print("Waiting for background task to complete...")
+      
+    sys.exit(0)
+
+
+signal.signal(signal.SIGINT, handle_sigint)
 
 def main():
     """Run administrative tasks."""
@@ -20,3 +39,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
+

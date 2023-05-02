@@ -6,7 +6,7 @@ from graphQL.lib.custom_exception import InvalidLengthError
 from graphQL.graphene_types.report import ReportBaseType
 
 from bg_jobs.background_job import background_job
-#from bg_jobs.executor import ConcurrentExecutor
+from bg_jobs.executor import SingletonThreadPoolExecutor
 
 
 class EvaluationInput(graphene.InputObjectType):
@@ -33,7 +33,8 @@ class CreateEvaluationMutation(MutateBase):
             "prompt_template_id": str(report.prompt_template_id)
         }
         
-        print('report ----------------', report, type(report))
-        #executor.submit(background_job, bg_params)
+        # executor = SingletonThreadPoolExecutor.__new__(SingletonThreadPoolExecutor)
+        # executor.__init__(max_workers=1)
+        # executor.submit(background_job, bg_params)
 
         return CreateEvaluationMutation(report=report)

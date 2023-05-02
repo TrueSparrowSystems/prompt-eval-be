@@ -1,29 +1,29 @@
 from bg_jobs.background.bg_job import BgJob
+import bg_jobs.globals as globals
 import time
-import signal
-
-stop_requested = False
-
-def handle_sigint(signal_num, frame):
-    global stop_requested
-    stop_requested = True
-    print("SIGINT received. Stopping background task...")
 
 def background_job(params):
-    # Register the SIGINT signal handler
-    signal.signal(signal.SIGINT, handle_sigint)
+    #global sigint_triggered
+    print('sigint_triggered:::', globals.SIGINT_TRIGGERED)
+    #global process_completed
 
-    # Start the background task
-    while not stop_requested:
+    if not globals.SIGINT_TRIGGERED:
+        globals.PROCESS_COMPLETED = False
         try:
             print(f"**********Background job started with given params {params['evaluation_id']}, {params['prompt_template_id']}**********")
-            #task = BgJob(params)
-            #return task.perform()
-            print("Started sleeping")
+            # task = BgJob(params)
+            # return task.perform()
             time.sleep(1)
-            print("Sleeping done")
+            print(f"Sleeping done {params['evaluation_id']}, {params['prompt_template_id']}")
         except Exception as e:
             print("error while executing BG job------", e)
             return e
+        finally:
+            globals.PROCESS_COMPLETED = True
+            print("process_completed:::", globals.PROCESS_COMPLETED)
+            
+    
+        
+ 
+        
 
-    signal.signal(signal.SIGINT, signal.SIG_DFL)

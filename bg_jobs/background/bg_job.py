@@ -1,7 +1,11 @@
 from graphQL.db_models.evaluation_test_case_relation import EvaluationTestCaseRelation
+from graphQL.db_models.evaluation import Evaluation
 from graphQL.db_models.prompt_template import PromptTemplate
 from .fetch_test_cases import FetchTestCasesByPromptId
 from .create_prompt import CreatePrompt
+from decouple import config
+import json, time
+
 
 class BgJob():
     def __init__(self, params):
@@ -10,6 +14,8 @@ class BgJob():
     def perform(self):
         try:
             self.params_validation()
+            
+            self.update_evaluation_status()
             
             self.fetch_testcases_by_prompt_template_id()
             
@@ -33,6 +39,11 @@ class BgJob():
             not self.params.get('prompt_template_id')  
             ):
             self.raise_error("invalid params", "bg_j_b_bg_j_p_v_1")
+            
+    def update_evaluation_status(self):
+        self.evaluation = Evaluation.objects.get(id=self.params['evaluation_id'])
+        self.evaluation.status = 'RUNNING'
+        self.evaluation.save()
             
     def fetch_testcases_by_prompt_template_id(self):
         self.test_cases = FetchTestCasesByPromptId(self.params).perform()
@@ -73,12 +84,32 @@ class BgJob():
         return prompt    
     
     def create_jsonl_file(self):
-        # Add path to base path
-        # folder name evaluation_id.timestamp
-        pass   
-    
+        
+        evaluation_test_case_relation_records = EvaluationTestCaseRelation.objects.filter(
+            evaluation_id=self.params['evaluation_id']
+        ).order_by('jsonl_order')
+        
+        print('evaluation_test_case_relation_records:   ', evaluation_test_case_relation_records.count())
+        
+        jsonl_base_path = config('PE_JSONL_FOLDER_BASE_PATH')
+        unix_time = int(time.time())
+        jsonl_file = jsonl_base_path + str(self.params['evaluation_id']) + '_' + unix_time + '.jsonl'
+        print('jsonl_file:   ', jsonl_file)
+        with open(jsonl_file, mode='w') as output_jsonl:
+            for evaluation_test_case_relation_record in evaluation_test_case_relation_records:
+                prompt = evaluation_test_case_relation_record['prompt']
+                acceptable_result = evaluation_test_case_relation_record['acceptable_result']
+                data = {'input': prompt, 'ideal': acceptable_result}
+                print('data:   ', data)
+                json.dump(data, output_jsonl)
+                output_jsonl.write('\n')
+ 
     def create_yaml_file(self):
         
+        yaml_base_path = config('PE_YAML_FOLDER_BASE_PATH')
+        unix_time = int(time.time())
+        yaml_path = yaml_base_path + str(self.params['evaluation_id']) + '_' + unix_time + '.yaml'
+        print('yaml_path:   ', yaml_path)        
         pass  
     
     def run_evaluation(self):
