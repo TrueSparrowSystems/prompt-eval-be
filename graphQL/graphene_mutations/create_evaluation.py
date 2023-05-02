@@ -33,8 +33,7 @@ class CreateEvaluationMutation(MutateBase):
             "prompt_template_id": str(report.prompt_template_id)
         }
         
-        # executor = SingletonThreadPoolExecutor.__new__(SingletonThreadPoolExecutor)
-        # executor.__init__(max_workers=1)
-        # executor.submit(background_job, bg_params)
+        executor = SingletonThreadPoolExecutor()
+        executor.submit(background_job, bg_params)
 
         return CreateEvaluationMutation(report=report)
