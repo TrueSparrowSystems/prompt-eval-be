@@ -1,6 +1,7 @@
 import graphene
 from graphQL.graphene_types.prompt_template import PromptTemplateType, InputConversationType
 from graphQL.db_models.prompt_template import PromptTemplate
+from graphQL.db_models.experiment import Experiment
 from .mutation_base import MutateBase
 from graphQL.lib.helper import CommonValiator
 from graphQL.lib.custom_exception import InvalidLengthError
@@ -29,6 +30,7 @@ class CreatePromptTemplateMutation(MutateBase):
             promptTemplate.description = prompt_template_data.description
         if prompt_template_data.conversation:
             promptTemplate.conversation = prompt_template_data.conversation
+            Experiment.update_dynamic_vars(prompt_template_data.experiment_id,prompt_template_data.conversation)
         
         promptTemplate.save()
         return CreatePromptTemplateMutation(promptTemplate=promptTemplate)

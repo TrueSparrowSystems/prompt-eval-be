@@ -1,5 +1,6 @@
 import json
 from graphene_django.utils.testing import GraphQLTestCase
+from graphQL.db_models.experiment import Experiment
 
 # Command to run test cases for experiment
 # $ python manage.py test graphQL.test.test_experiment
@@ -7,7 +8,6 @@ from graphene_django.utils.testing import GraphQLTestCase
 
 
 class ExperimentTest(GraphQLTestCase):
-    experimentID = ""
 
     def test_get_experiments_query(self):
         response = self.query(
@@ -54,11 +54,12 @@ class ExperimentTest(GraphQLTestCase):
         print('################################################\n')
         # This validates the status code and if you get errors
         self.assertResponseNoErrors(response)
-        ExperimentTest.experimentID = content['data']['createExperiment']['experiment']['id']
         self.assertEqual(content['data']['createExperiment']
                          ['experiment']['name'], 'Test Experiment')
         self.assertEqual(content['data']['createExperiment']
                          ['experiment']['description'], 'This is a test experiment')
+        
+        Experiment.objects.filter(id=content['data']['createExperiment']['experiment']['id']).delete()
 
     def test_create_experiment_mocked_mutations(self):
         response = self.query(
@@ -81,25 +82,28 @@ class ExperimentTest(GraphQLTestCase):
         self.assertResponseHasErrors(response)
 
     def test_update_experiment_mutation(self):
-        variables = {'id': ExperimentTest.experimentID}
+        experiment = Experiment.objects.create(name="Test Experiment", description="This is a test experiment")
+        variables = {'documentId': str(experiment.id)}
         response = self.query(
             '''
-            mutation UpdateExperiment($id: String!) {
+            mutation updateExperiment(
+                $documentId: String!
+            ) {
                 updateExperiment(
-                    updateExperimentData:
-                        {
-                            name:"Test Experiment Update",
-                            id:$id
-                        }
+                updateExperimentData: {
+                    name: "Updated Experiment"
+                    id: $documentId
+                    description: "new description"
+                }
                 ) {
-                    experiment{
-                        id
-                        name
-                        description
-                        dynamicVars
-                        createdAt
-                        updatedAt
-                    }
+                experiment {
+                    id
+                    name
+                    description
+                    dynamicVars
+                    createdAt
+                    updatedAt
+                }
                 }
             }
             ''', variables=variables
@@ -109,11 +113,12 @@ class ExperimentTest(GraphQLTestCase):
 
         # This validates the status code and if you get errors
         self.assertResponseNoErrors(response)
-
+        Experiment.objects.filter(id=experiment.id).delete()
         # Add some more asserts if you like
 
     def test_update_experiment_mocked_mutation(self):
-        variables = {'id': ExperimentTest.experimentID}
+        experiment = Experiment.objects.create(name="Test Experiment", description="This is a test experiment")
+        variables = {'id': str(experiment.id)}
         response = self.query(
             '''
             mutation UpdateExperiment($id: String!) {
@@ -142,11 +147,10 @@ class ExperimentTest(GraphQLTestCase):
 
         # This validates the status code and if you get errors
         self.assertResponseHasErrors(response)
-
+        Experiment.objects.filter(id=experiment.id).delete()
         # Add some more asserts if you like
 
     def test_update_experiment_with_incorrect_id(self):
-        variables = {'id': ExperimentTest.experimentID}
         response = self.query(
             '''
             mutation UpdateExperiment($id: String!) {
@@ -167,7 +171,7 @@ class ExperimentTest(GraphQLTestCase):
                   }
                 }
             }
-            ''', variables=variables
+            '''
         )
 
         content = json.loads(response.content)
