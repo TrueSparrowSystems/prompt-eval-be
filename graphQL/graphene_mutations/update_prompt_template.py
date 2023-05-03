@@ -36,6 +36,6 @@ class UpdatePromptTemplateMutation(MutateBase):
         
         if update_prompt_template_data.conversation:
             prompt_template.conversation = update_prompt_template_data.conversation
-            Experiment.update_dynamic_vars(update_prompt_template_data.experiment_id,update_prompt_template_data.conversation)
+            Experiment.update_dynamic_vars(prompt_template.experiment_id,update_prompt_template_data.conversation)
         prompt_template.save()
         return UpdatePromptTemplateMutation(prompt_template=prompt_template)
