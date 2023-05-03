@@ -21,4 +21,5 @@ class PromptTemplateType(ObjectType):
 
 class PromptTemplatePaginationType(ObjectType):
     total_count = Int()
+    total_test_cases_count = Int()
     prompts = List(PromptTemplateType)

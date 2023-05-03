@@ -16,7 +16,11 @@ from graphQL.graphene_types.experiment import ExperimentType
 from graphQL.graphene_types.prompt_template import PromptTemplatePaginationType
 from graphQL.graphene_types.test_case import TestCaseType
 from graphQL.graphene_types.report import ReportType
+from graphQL.graphene_types.get_eval_and_model import GetEvalAndModelType
 from graphql import GraphQLError
+from bg_jobs.globals import EVALS_CLASS_DICT
+from decouple import config
+import openai
 
 class Mutations(graphene.ObjectType):
     create_experiment = CreateExperimentMutation.Field()
@@ -33,6 +37,7 @@ class Query(graphene.ObjectType):
     prompt_list_by_pagination = graphene.Field(PromptTemplatePaginationType, experimentId=graphene.String(required=True), limit=graphene.Int(required=True), page=graphene.Int(required=True))
     test_cases = graphene.List(TestCaseType, experimentId=graphene.String(required=True))
     get_report = graphene.Field(ReportType, reportId=graphene.String(required=True),limit=graphene.Int(required=True), page=graphene.Int(required=True))
+    get_eval_and_models = graphene.Field(GetEvalAndModelType)
 
     def resolve_experiment_list(root, info): 
         try:
@@ -56,6 +61,7 @@ class Query(graphene.ObjectType):
             total_count = None
             if page == 1:
                 total_count = PromptTemplate.objects.filter(experiment_id=experimentId).count()
+                total_test_cases_count = TestCase.objects.filter(experiment_id=experimentId).count()
             prompts = PromptTemplate.objects.filter(experiment_id=experimentId).order_by('-updated_at')[offset:offset+limit]
 
             for prompt in prompts:
@@ -63,7 +69,7 @@ class Query(graphene.ObjectType):
                 latest_evaluation_report.append(Evaluation.objects.filter(prompt_template_id=prompt.id).order_by("-updated_at").first())
                 prompt.latest_evaluation_report = latest_evaluation_report
 
-            return PromptTemplatePaginationType(total_count=total_count, prompts=prompts)
+            return PromptTemplatePaginationType(total_count=total_count, prompts=prompts, total_test_cases_count=total_test_cases_count)
         except Exception as e:
             print(e)
             error = GraphQLError(
@@ -112,8 +118,26 @@ class Query(graphene.ObjectType):
              }
             )
             return error
+    
+    def resolve_get_eval_and_models(self, info):
+        try:
+            openai.api_key = config('PE_OPENAI_API_KEY')
+            models = openai.Model.list()
+            model_ids = [model["id"] for model in models["data"]]
+            evals = list(EVALS_CLASS_DICT.keys())
+            return GetEvalAndModelType(evals=evals, models=model_ids)
+        except Exception as e:
+            print(e)
+            error = GraphQLError(
+            message="Something went wrong",
+            extensions= {
+             "code": "g_s_q_r_5",
+             "debug": "Something_went_wrong",
+             }
+            )
+            return error
 
     
-schema = graphene.Schema(query=Query, mutation=Mutations, types=[ExperimentType, PromptTemplatePaginationType, TestCaseType, ReportType])
+schema = graphene.Schema(query=Query, mutation=Mutations, types=[ExperimentType, PromptTemplatePaginationType, TestCaseType, ReportType, GetEvalAndModelType])
 
 
