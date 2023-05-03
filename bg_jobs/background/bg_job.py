@@ -10,9 +10,6 @@ from evals_framework.evals.cli import oaieval
 from bg_jobs.background.eval_arguments import EvalArguments
 import  bg_jobs.globals as globals
 import subprocess
-
-
-
 import os
 class BgJob():
     def __init__(self, params):
@@ -42,17 +39,18 @@ class BgJob():
             
             self.update_evaluation_test_case_relation()
             
-            # self.update_evaluation()
+            self.update_evaluation()
             
-            # self.clean_up()
+            self.clean_up()
+            
         except Exception as e:
             print(str(e))
-            # self.update_evaluation_on_error(e)
-            # self.evaluation = Evaluation.objects.get(id=self.params['evaluation_id'])
-            # if(self.evaluation.retry_count < 3 and self.evaluation.status == 'FAILED'):
-            #     self.perform()
-            # else:
-            #     return str(e)
+            self.update_evaluation_on_error(e)
+            self.evaluation = Evaluation.objects.get(id=self.params['evaluation_id'])
+            if(self.evaluation.retry_count < 3 and self.evaluation.status == 'FAILED'):
+                self.perform()
+            else:
+                return str(e)
             
         
     def params_validation(self) :
