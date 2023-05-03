@@ -1,39 +1,16 @@
 import json
 from graphene_django.utils.testing import GraphQLTestCase
+from graphQL.db_models.experiment import Experiment
+from graphQL.db_models.test_case import TestCase
 
 # Command to run test cases for experiment
 # $ python manage.py test graphQL.test.test_testcase
 # Create your tests here.
 class TestcasesTest(GraphQLTestCase):
-    testcaseID = ""
-    experimentId = ""
-
-    def test_create_experiment_mutation(self):
-        response = self.query(
-            '''
-            mutation{
-                createExperiment(experimentData:{name:"Test Experiment",description:"This is a test experiment"}){
-                    experiment {
-                    id
-                    name
-                    description
-                    dynamicVars
-                    createdAt
-                    updatedAt
-                    }
-                }
-            }
-            '''
-        )
-
-        content = json.loads(response.content)
-        print('################################################\n')
-        # This validates the status code and if you get errors
-        self.assertResponseNoErrors(response)
-        TestcasesTest.experimentID = content['data']['createExperiment']['experiment']['id']
 
     def test_get_testcases_query(self):
-        variable = {"experimentId": TestcasesTest.experimentID}
+        experiment = Experiment.objects.create(name="Test Experiment", description="This is a test experiment")
+        variable = {'experimentId': str(experiment.id)}
         response = self.query(
             '''
             query testCases($experimentId: String!) {
@@ -55,13 +32,12 @@ class TestcasesTest(GraphQLTestCase):
 
         # This validates the status code and if you get errors
         self.assertResponseNoErrors(response)
-
+        Experiment.objects.filter(id=experiment.id).delete()
         # Add some more asserts if you like
       
     def test_create_testcase_mutation(self):
-        variable = {"experimentId": TestcasesTest.experimentID, "dynamicVarValues": json.dumps({"key":"hey","value":"value"})}
-        # dynamicVarValues = {"key":"hey","value":"value"}
-        dynamicVarValues = json.dumps({"key":"hey","value":"value"})
+        experiment = Experiment.objects.create(name="Test Experiment", description="This is a test experiment")
+        variable = {"experimentId": str(experiment.id), "dynamicVarValues": json.dumps({"key":"hey","value":"value"})}
         response = self.query(
             '''
             mutation createTestCase($experimentId: ID!, $dynamicVarValues: JSONString) {
@@ -87,15 +63,17 @@ class TestcasesTest(GraphQLTestCase):
         )
 
         content = json.loads(response.content)
-        print('################################################\n')
-        TestcasesTest.testcaseID = content['data']['createTestCases']['testCase']['id']
         # This validates the status code and if you get errors
         self.assertResponseNoErrors(response)
         self.assertEqual(content['data']['createTestCases']['testCase']['name'], 'new Testcase')
 
+        Experiment.objects.filter(id=experiment.id).delete()
+        TestCase.objects.filter(id=content['data']['createTestCases']['testCase']['id']).delete()
+
     
     def test_create_testcase_mocked_mutations(self):
-        variable = {"experimentId": TestcasesTest.experimentID, "dynamicVarValues": json.dumps({"key":"hey","value":"value"})}
+        experiment = Experiment.objects.create(name="Test Experiment", description="This is a test experiment")
+        variable = {"experimentId": str(experiment.id), "dynamicVarValues": json.dumps({"key":"hey","value":"value"})}
         response = self.query(
             '''
             mutation createTestCase($experimentId: ID!, $dynamicVarValues: JSONString) {
@@ -123,9 +101,13 @@ class TestcasesTest(GraphQLTestCase):
         # This validates the status code and if you get errors
         self.assertResponseHasErrors(response)
         self.assertEqual(content['errors'][0]['message'], "Field 'TestCaseInput.experimentId' of required type 'ID!' was not provided.")
+        Experiment.objects.filter(id=experiment.id).delete()
+
     
     def test_update_testcase_mutation(self):
-        variable = {"id": TestcasesTest.testcaseID, "dynamicVarValues": json.dumps({"key":"hey","value":"value"})}
+        experiment = Experiment.objects.create(name="Test Experiment", description="This is a test experiment")
+        testcase = TestCase.objects.create(name="Testcase", description="This is a test testcase", experiment_id=str(experiment.id))
+        variable = {"id": str(testcase.id), "dynamicVarValues": json.dumps({"key":"hey","value":"value"})}
         response = self.query(
             '''
             mutation updateTestCase($id: String!, $dynamicVarValues: JSONString) {
@@ -155,8 +137,13 @@ class TestcasesTest(GraphQLTestCase):
         self.assertResponseNoErrors(response)
         self.assertEqual(content['data']['updateTestCases']['testCase']['name'], 'new Testcase')
 
+        Experiment.objects.filter(id=experiment.id).delete()
+        TestCase.objects.filter(id=testcase.id).delete()
+
     def test_update_testcase_mocked_mutations(self):
-        variable = {"id": TestcasesTest.testcaseID, "dynamicVarValues": json.dumps({"key":"hey","value":"value"})}
+        experiment = Experiment.objects.create(name="Test Experiment", description="This is a test experiment")
+        testcase = TestCase.objects.create(name="Testcase", description="This is a test testcase", experiment_id=str(experiment.id))
+        variable = {"id": str(testcase.id), "dynamicVarValues": json.dumps({"key":"hey","value":"value"})}
         response = self.query(
             '''
             mutation updateTestCase($id: String!, $dynamicVarValues: JSONString) {
@@ -184,3 +171,6 @@ class TestcasesTest(GraphQLTestCase):
         # This validates the status code and if you get errors
         self.assertResponseHasErrors(response)
         self.assertEqual(content['errors'][0]['message'], "Field 'UpdateTestCaseInput.id' of required type 'String!' was not provided.")
+
+        Experiment.objects.filter(id=experiment.id).delete()
+        TestCase.objects.filter(id=testcase.id).delete()

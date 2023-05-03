@@ -1,39 +1,16 @@
 import json
 from graphene_django.utils.testing import GraphQLTestCase
+from graphQL.db_models.experiment import Experiment
+from graphQL.db_models.prompt_template import PromptTemplate
 
 # Command to run test cases for experiment
 # $ python manage.py test graphQL.test.test_prompt
 # Create your tests here.
 class PromptTest(GraphQLTestCase):
-    promptID = ""
-    experimentId = ""
-
-    def test_create_experiment_mutation(self):
-        response = self.query(
-            '''
-            mutation{
-                createExperiment(experimentData:{name:"Test Experiment",description:"This is a test experiment"}){
-                    experiment {
-                    id
-                    name
-                    description
-                    dynamicVars
-                    createdAt
-                    updatedAt
-                    }
-                }
-            }
-            '''
-        )
-
-        content = json.loads(response.content)
-        print('################################################\n')
-        # This validates the status code and if you get errors
-        self.assertResponseNoErrors(response)
-        PromptTest.experimentID = content['data']['createExperiment']['experiment']['id']
 
     def test_create_prompt_mutation(self):
-        variable = {"experimentId": PromptTest.experimentID}        
+        experiment = Experiment.objects.create(name="Test Experiment", description="This is a test experiment")
+        variables = {"experimentId": str(experiment.id)}       
         response = self.query(
             '''
             mutation createPromptTemplate($experimentId: ID!) {
@@ -58,19 +35,22 @@ class PromptTest(GraphQLTestCase):
                 }
              }
             }
-            ''', variables=variable
+            ''', variables=variables
         )
 
         content = json.loads(response.content)
         # This validates the status code and if you get errors
         self.assertResponseNoErrors(response)
-        PromptTest.promptID = content['data']['createPromptTemplate']['promptTemplate']['id']
         self.assertEqual(content['data']['createPromptTemplate']['promptTemplate']['name'], 'Test Prompt')
         self.assertEqual(content['data']['createPromptTemplate']['promptTemplate']['description'], 'This is a test prompt')
 
+        Experiment.objects.filter(id=str(experiment.id)).delete()
+        PromptTemplate.objects.filter(id=str(content['data']['createPromptTemplate']['promptTemplate']['id'])).delete()
+
         # Add some more asserts if you like
     def test_get_prompts_by_experiment_id(self):
-        variable = {"experimentId": PromptTest.experimentID}
+        experiment = Experiment.objects.create(name="Test Experiment", description="This is a test experiment")
+        variables = {'experimentId': str(experiment.id)}  
         response = self.query(
             '''
             query getPromptListByExperimentId($experimentId: String!) {
@@ -90,19 +70,21 @@ class PromptTest(GraphQLTestCase):
                     }
                 }
              
-            ''', variables=variable
+            ''', variables=variables
           )
 
         content = json.loads(response.content)
 
         # This validates the status code and if you get errors
         self.assertResponseNoErrors(response)
+        Experiment.objects.filter(id=str(experiment.id)).delete()
       
         # Add some more asserts if you like
         
     # Write test case for create prompt mutation having length of name greater than 70 characters also compare error dictionary with expcted dictionary
     def test_create_prompt_mutation_invalid_length(self):
-        variable = {"experimentId": PromptTest.experimentID}
+        experiment = Experiment.objects.create(name="Test Experiment", description="This is a test experiment")
+        variables = {'experimentId': str(experiment.id)}  
         response = self.query(
             '''
             mutation createPromptTemplate($experimentId: ID!) {
@@ -127,7 +109,7 @@ class PromptTest(GraphQLTestCase):
                 }
              }
             }
-            ''', variables=variable
+            ''', variables=variables
         )
 
         content = json.loads(response.content)
@@ -141,9 +123,13 @@ class PromptTest(GraphQLTestCase):
         self.assertEqual(content['errors'][0]['locations'][0]['line'], 3)
         self.assertEqual(content['errors'][0]['locations'][0]['column'], 13)
 
+        Experiment.objects.filter(id=str(experiment.id)).delete()
+
 
     def test_update_prompt_mutaion(self):
-        variable = {"promptId": PromptTest.promptID}
+        experiment = Experiment.objects.create(name="Test Experiment", description="This is a test experiment")
+        prompt = PromptTemplate.objects.create(experiment_id=str(experiment.id),name="Test Prompt", description="This is a test prompt")
+        variables = {"promptId": str(prompt.id)}
         response = self.query(
             '''
             mutation updatePromptTemplate($promptId: String!) {
@@ -151,8 +137,7 @@ class PromptTest(GraphQLTestCase):
                 updatePromptTemplateData:{
                     id:$promptId,
                     name:"Test Prompt",
-                    description:"This is a test prompt",
-                    conversation:[{role:"system",content:"newone"}]
+                    description:"This is a test prompt"
                     }
                 ) {
                 promptTemplate{
@@ -168,19 +153,23 @@ class PromptTest(GraphQLTestCase):
                 }
              }
             }
-            ''', variables=variable
+            ''', variables=variables
         )
-
         content = json.loads(response.content)
         # This validates the status code and if you get errors
         self.assertResponseNoErrors(response)
         self.assertEqual(content['data']['updatePromptTemplate']['promptTemplate']['name'], 'Test Prompt')
         self.assertEqual(content['data']['updatePromptTemplate']['promptTemplate']['description'], 'This is a test prompt')
 
+        Experiment.objects.filter(id=str(experiment.id)).delete()
+        PromptTemplate.objects.filter(id=str(prompt.id)).delete()
+
         # Add some more asserts if you like
 
     def test_update_prompt_mutaion_invalid_length(self):
-        variable = {"promptId": PromptTest.promptID}
+        experiment = Experiment.objects.create(name="Test Experiment", description="This is a test experiment")
+        prompt = PromptTemplate.objects.create(experiment_id=str(experiment.id),name="Test Prompt", description="This is a test prompt")
+        variables = {"promptId": str(prompt.id)}
         response = self.query(
             '''
             mutation updatePromptTemplate($promptId: String!) {
@@ -205,7 +194,7 @@ class PromptTest(GraphQLTestCase):
                 }
              }
             }
-            ''', variables=variable
+            ''', variables=variables
         )
 
         content = json.loads(response.content)
@@ -218,6 +207,9 @@ class PromptTest(GraphQLTestCase):
         self.assertEqual(content['errors'][0]['path'][0], 'updatePromptTemplate')
         self.assertEqual(content['errors'][0]['locations'][0]['line'], 3)
         self.assertEqual(content['errors'][0]['locations'][0]['column'], 13)
+
+        Experiment.objects.filter(id=str(experiment.id)).delete()
+        PromptTemplate.objects.filter(id=str(prompt.id)).delete()
 
 
 
