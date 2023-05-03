@@ -1,11 +1,10 @@
-{{eval_name}}:
-  id: {{eval_name}}.{{evaluation_id}}.{{version}}
-  metrics: [accuracy]
+eval_name:
+  id: eval_name.evaluation_id.version
+  metrics: accuracy
 
-{{eval_name}}.{{evaluation_id}}.{{version}}:
-  class: {{class_name}}
+eval_name.evaluation_id.version:
+  class: class_name
   args:
-    samples_jsonl: {{jsonl_file_path}}
-    fuzzy: {{fuzzy}}
-    extract_gql: {{extract_gql}}
-
+    samples_jsonl: jsonl_file_path
+    fuzzy: fuzzy_boolean
+    extract_gql: extract_gql_boolean
