@@ -1,4 +1,4 @@
-from graphene import relay,String,Int, List, ObjectType, ID, Float, InputObjectType
+from graphene import relay,String,Int, List, ObjectType, ID, Float, InputObjectType, Boolean
 from graphene_mongo import MongoengineObjectType
 from graphQL.graphene_types.report import ReportType, ReportBaseType
 class InputConversationType(InputObjectType):
@@ -21,5 +21,5 @@ class PromptTemplateType(ObjectType):
 
 class PromptTemplatePaginationType(ObjectType):
     total_count = Int()
-    total_test_cases_count = Int()
+    is_runnable = Boolean()
     prompts = List(PromptTemplateType)

@@ -61,7 +61,7 @@ class Query(graphene.ObjectType):
             total_count = None
             if page == 1:
                 total_count = PromptTemplate.objects.filter(experiment_id=experimentId).count()
-                total_test_cases_count = TestCase.objects.filter(experiment_id=experimentId).count()
+            is_runnable = bool(TestCase.objects(experiment_id__exists=experimentId))
             prompts = PromptTemplate.objects.filter(experiment_id=experimentId).order_by('-updated_at')[offset:offset+limit]
 
             for prompt in prompts:
@@ -69,7 +69,7 @@ class Query(graphene.ObjectType):
                 latest_evaluation_report.append(Evaluation.objects.filter(prompt_template_id=prompt.id).order_by("-updated_at").first())
                 prompt.latest_evaluation_report = latest_evaluation_report
 
-            return PromptTemplatePaginationType(total_count=total_count, prompts=prompts, total_test_cases_count=total_test_cases_count)
+            return PromptTemplatePaginationType(total_count=total_count, prompts=prompts, is_runnable=is_runnable)
         except Exception as e:
             print(e)
             error = GraphQLError(
