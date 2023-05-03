@@ -3,9 +3,7 @@ import bg_jobs.globals as globals
 import time
 
 def background_job(params):
-    #global sigint_triggered
     print('sigint_triggered:::', globals.SIGINT_TRIGGERED)
-    #global process_completed
 
     if not globals.SIGINT_TRIGGERED:
         globals.PROCESS_COMPLETED = False
