@@ -11,6 +11,8 @@ from bg_jobs.background.eval_arguments import EvalArguments
 import  bg_jobs.globals as globals
 import subprocess
 import os
+import shutil
+
 class BgJob():
     def __init__(self, params):
         self.params = params
@@ -47,13 +49,13 @@ class BgJob():
             print('Error while perform: ',str(e))
             self.update_evaluation_on_error(e)
             self.evaluation = Evaluation.objects.get(id=self.params['evaluation_id'])
-            EvaluationTestCaseRelation.delete_records_by_evaluation_id(self.params['evaluation_id'])
+            EvaluationTestCaseRelation.delete_records_by_evaluation_id(evaluation_id=self.params['evaluation_id'])
             self.clean_up()
-            if(self.evaluation.retry_count < 3 and self.evaluation.status == 'FAILED'):
-                print('*************Retrying BGJOB Perform ****************')
+            if(self.evaluation.retry_count <= 3 and self.evaluation.status == Status['FAILED']):
+                print('************* Retrying BGJOB Perform ****************')
                 self.perform()
             else:
-                print('************** Failed executing BG job tried 3 times ****************')
+                print('************** Failed executing BG job after retries ****************')
                 return str(e)
             
         
@@ -298,7 +300,7 @@ class BgJob():
             self.evaluation.status = 'COMPLETED'
             self.evaluation.accuracy = self.accuracy
             self.evaluation.run_id = self.run_id
-            self.evaluation.completed_at  = int(time())
+            self.evaluation.completed_at  = int(time.time())
             self.evaluation.save()
         except Exception as e:
             self.raise_error(str(e), "u_e_1" )
@@ -318,7 +320,7 @@ class BgJob():
     def clean_up(self):
         try:
             if os.path.exists(self.yaml_folder):
-                os.rmdir(self.yaml_folder)
+                shutil.rmtree(self.yaml_folder)
                 print(f"Folder '{self.yaml_folder}' has been deleted successfully!")
             if os.path.exists(self.jsonl_file):
                 os.remove(self.jsonl_file)
