@@ -58,3 +58,12 @@ class EvaluationTestCaseRelation(ModelBase):
             return False
         
         return True
+    
+    def delete_records_by_evaluation_id(self, evaluation_id):
+        try:
+            self.objects(evaluation_id=evaluation_id).delete()
+        except Exception as e:
+            print("Error in delete_records method", e)
+            return False
+        
+        return True
