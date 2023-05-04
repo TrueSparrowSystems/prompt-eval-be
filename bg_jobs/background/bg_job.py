@@ -166,7 +166,7 @@ class BgJob():
             jsonl_file_path = self.jsonl_file
             fuzzy_boolean = False
             extract_gql_boolean = False
-            if eval_name == 'extract_gql':
+            if eval_name == 'graphql-fuzzy':
                 fuzzy_boolean = True
                 extract_gql_boolean = True
 
