@@ -4,7 +4,6 @@ from graphQL.graphene_types.experiment import ExperimentType
 from .mutation_base import MutateBase
 from graphQL.lib.helper import CommonValiator
 from graphQL.lib.custom_exception import InvalidLengthError
-
 class ExperimentInput(graphene.InputObjectType):
     name = graphene.String(required=True)
     description = graphene.String()
@@ -27,4 +26,5 @@ class CreateExperimentMutation(MutateBase):
             experiment.description = experiment_data.description
 
         experiment.save()
+
         return CreateExperimentMutation(experiment=experiment)

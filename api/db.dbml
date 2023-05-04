@@ -14,7 +14,7 @@ Table prompt_template {
   description string
   conversation  Array [
     note: '
-      [{ role: system, content: "asdasd"},
+      [{ role: system, content: "asdasd"}, 
        { role: user, content: "asdasd"}, 
        { role: assistant, content: "asdasd"},
         { role: user, content: "asdasd"}]
@@ -40,7 +40,7 @@ Table test_cases {
   updated_at timestamp
 }
 
-Table evaluations {
+Table evaluation {
   _id ObjectId
   model varchar
   eval varchar
@@ -55,23 +55,30 @@ Table evaluations {
       FAILED
     '
   ]
+  evals_parameter  Object [
+    note: '
+      { jsonl_file_path: "abc.jsonl", yaml_file_path: "abc.yaml"}
+    '
+  ]
+  retry_count int
+  error_object String
   initiated_at timestamp
   completed_at timestamp
   created_at timestamp
   updated_at timestamp
 }
 
-
 Table evaluation_test_case_relation {
   _id ObjectId
-  evaluation_result_id ObjectId [ref: > evaluations._id ]
-  prompt String
+  evaluation_id ObjectId [ref: > evaluation._id ]
+  prompt Array
   test_case_id ObjectId [ref: > test_cases._id]
   test_case_name String
   test_case_description String
   actual_result Array
   acceptable_result Array
   accuracy double
+  jsonl_order int
   created_at timestamp
   updated_at timestamp
 

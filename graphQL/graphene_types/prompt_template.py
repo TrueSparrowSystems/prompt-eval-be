@@ -1,6 +1,6 @@
-from graphene import relay,String,Int, List, ObjectType, ID, Float, InputObjectType
+from graphene import relay,String,Int, List, ObjectType, ID, Float, InputObjectType, Boolean
 from graphene_mongo import MongoengineObjectType
-from graphQL.graphene_types.report import ReportType
+from graphQL.graphene_types.report import ReportType, ReportBaseType
 class InputConversationType(InputObjectType):
     role = String()
     content = String()
@@ -15,10 +15,11 @@ class PromptTemplateType(ObjectType):
     description = String()
     conversation = List(OutputConversationType)
     experiment_id = ID()
-    latest_evaluation_report = List(ReportType)
+    latest_evaluation_report = List(ReportBaseType)
     created_at = Int()
     updated_at = Int()
 
 class PromptTemplatePaginationType(ObjectType):
     total_count = Int()
+    is_runnable = Boolean()
     prompts = List(PromptTemplateType)

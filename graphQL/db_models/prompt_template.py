@@ -13,3 +13,8 @@ class PromptTemplate(ModelBase):
     description = StringField(max_length=255)
     conversation = ListField()
     experiment_id = ObjectIdField(required=True)
+    
+    #Write method to get prompt by prompt id
+    @classmethod
+    def prompt_by_id(cls, prompt_id):
+        return cls.objects.get(id=prompt_id)
