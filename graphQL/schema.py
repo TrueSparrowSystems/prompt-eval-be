@@ -121,7 +121,7 @@ class Query(graphene.ObjectType):
     
     def resolve_get_eval_and_models(self, info):
         try:
-            openai.api_key = config('PE_OPENAI_API_KEY')
+            openai.api_key = config('OPENAI_API_KEY')
             models = openai.Model.list()
             model_ids = [model["id"] for model in models["data"]]
             evals = list(EVALS_CLASS_DICT.keys())
