@@ -8,3 +8,5 @@ etc/tempest.conf.sample
 etc/logging.conf
 .env
 .coverage
+*.jsonl
+*.yaml
