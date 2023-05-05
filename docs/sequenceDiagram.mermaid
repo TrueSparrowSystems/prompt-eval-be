@@ -30,9 +30,9 @@ User->>Server: API call for evaluating given prompts whith selected model and ev
 Server->>DB: Creating entries in reports table 
 Server->>BG: Gave Parameters to create ymal and jsonl files
 BG->>Eval: Sending Prompts to evaluate  
-Eval->>Server: Return a report in jsonl file
-Server->>DB: Store report in DB
+Eval->>BG: Return a report in jsonl file
+BG->>DB: Store report in DB
 
 note over User: Click on view report
-User->>Server: API call for getting reprot 
-Server->>User: Return lateast report with accuracy
+User->>Server: API call for getting report 
+Server->>User: Return latest report with accuracy
