@@ -61,7 +61,7 @@ class Query(graphene.ObjectType):
             total_count = None
             if page == 1:
                 total_count = PromptTemplate.objects.filter(experiment_id=experimentId).count()
-            is_runnable = bool(TestCase.objects(experiment_id__exists=experimentId))
+            is_runnable = TestCase.objects(experiment_id=experimentId).count() > 0
             prompts = PromptTemplate.objects.filter(experiment_id=experimentId).order_by('-updated_at')[offset:offset+limit]
 
             for prompt in prompts:
