@@ -1,0 +1,38 @@
+%% Documentation: https://github.com/mermaid-js/mermaid
+%% Editor: https://mermaid.live/edit
+
+sequenceDiagram
+title Prompt Evaluator
+
+participant User
+participant Server
+participant DB as Database
+participant BG as Background Job
+participant Eval
+
+note over User: Click on create experiment
+User->>Server: API call for create new experiment
+Server->>DB: Store created experiment
+DB->>User: Retrun created experiment ID 
+
+note over User: create new prompt template
+User->>Server: API call for create new prompt template
+Server->>DB: Store created prompt template and Update dynamic vars on experiment
+DB->>User: Retrun created prompt template ID
+
+note over User: Add new testcases for experiment
+User->>Server: API call for Add new test cases
+Server->>DB: Store created test cases
+DB->>User: Retrun created test cases ID 
+
+note over User: Click on Run prompt template and select model and eval
+User->>Server: API call for evaluating given prompts whith selected model and eval
+Server->>DB: Creating entries in reports table 
+Server->>BG: Gave Parameters to create ymal and jsonl files
+BG->>Eval: Sending Prompts to evaluate  
+Eval->>Server: Return a report in jsonl file
+Server->>DB: Store report in DB
+
+note over User: Click on view report
+User->>Server: API call for getting reprot 
+Server->>User: Return lateast report with accuracy
