@@ -128,9 +128,9 @@ class BgJob():
             print('evaluation_test_case_relation_records:   ', self.evaluation_test_case_relation_records.count())
             
             jsonl_base_path = config('PE_JSONL_FOLDER_BASE_PATH')
-            self.base_dir = config('PE_DIRECTORY_BASE_PATH')
             unix_time = int(time.time())
-            self.jsonl_file = self.base_dir + jsonl_base_path + str(self.params['evaluation_id']) + '_' + str(unix_time) + '.jsonl'
+            print('base_dir', os.getcwd())
+            self.jsonl_file = os.path.join(os.getcwd(), jsonl_base_path, str((self.params['evaluation_id'])) + '_' + str(unix_time) + '.jsonl')
             print('jsonl_file:   ', self.jsonl_file)
             with open(self.jsonl_file, mode='w') as output_jsonl:
                 for evaluation_test_case_relation_record in self.evaluation_test_case_relation_records:
@@ -146,15 +146,20 @@ class BgJob():
  
     def create_yaml_file(self):
         try:
-            self.yaml_folder = config('PE_YAML_FOLDER_BASE_PATH')
+            self.yaml_folder = os.path.join(os.getcwd(), config('PE_YAML_FOLDER_BASE_PATH'))
+            self.eval_folder = os.path.join(self.yaml_folder, 'evals')
+            
             unix_time = int(time.time())
             if not os.path.exists(self.yaml_folder):
                 os.mkdir(self.yaml_folder)
+                
+            if not os.path.exists(self.eval_folder):
+                os.mkdir(self.eval_folder)
 
-            self.yaml_file = os.path.join(self.yaml_folder, 'evals/', str(self.params['evaluation_id']) + '_' + str(unix_time) + '.yaml')
+            self.yaml_file = os.path.join(self.eval_folder, str(self.params['evaluation_id']) + '_' + str(unix_time) + '.yaml')
             print('yaml_file:   ', self.yaml_file)  
                 
-            base_yaml_file = self.yaml_folder + 'base.yaml'
+            base_yaml_file = os.path.join(self.yaml_folder, 'base.yaml')
             print('base_yaml_file:   ', base_yaml_file)
             
             eval_name = self.evaluation['eval']
@@ -210,7 +215,7 @@ class BgJob():
             
             completion_fn = self.evaluation['model']
             eval = self.evaluation['eval'] + '.' + str(self.params['evaluation_id'])
-            self.record_path = os.path.join(self.yaml_folder + f"evals/output_{str(self.params['evaluation_id'])}.jsonl")
+            self.record_path = os.path.join(self.eval_folder, f"output_{str(self.params['evaluation_id'])}.jsonl")
             registry_path = self.yaml_folder
             
             # completion_fn = 'gpt-3.5-turbo'
@@ -334,6 +339,7 @@ class BgJob():
             if os.path.exists(self.yaml_file):
                 os.remove(self.yaml_file)
                 print(f"File '{self.yaml_file}' has been deleted successfully!")
+           
         except OSError as e:
             self.raise_error(str(e), 'c_u_1')
        
