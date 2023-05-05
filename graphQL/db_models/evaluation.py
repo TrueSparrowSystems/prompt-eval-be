@@ -24,7 +24,7 @@ class Evaluation(ModelBase):
     eval = StringField(required=True)
     accuracy = FloatField()
     prompt_template_id = ObjectIdField(required=True)
-    run_id = IntField(default=lambda: 1)
+    run_id = StringField()
     status = EnumField(Status, default=Status.INITIATED)
     eval_parameter = DictField()
     retry_count = IntField(default=lambda: 0)
