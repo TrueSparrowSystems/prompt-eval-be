@@ -128,9 +128,9 @@ class BgJob():
             print('evaluation_test_case_relation_records:   ', self.evaluation_test_case_relation_records.count())
             
             jsonl_base_path = config('PE_JSONL_FOLDER_BASE_PATH')
-            base_dir = config('PE_DIRECTORY_BASE_PATH')
+            self.base_dir = config('PE_DIRECTORY_BASE_PATH')
             unix_time = int(time.time())
-            self.jsonl_file = base_dir + jsonl_base_path + str(self.params['evaluation_id']) + '_' + str(unix_time) + '.jsonl'
+            self.jsonl_file = self.base_dir + jsonl_base_path + str(self.params['evaluation_id']) + '_' + str(unix_time) + '.jsonl'
             print('jsonl_file:   ', self.jsonl_file)
             with open(self.jsonl_file, mode='w') as output_jsonl:
                 for evaluation_test_case_relation_record in self.evaluation_test_case_relation_records:
@@ -146,17 +146,15 @@ class BgJob():
  
     def create_yaml_file(self):
         try:
-            yaml_base_path = config('PE_YAML_FOLDER_BASE_PATH')
+            self.yaml_folder = config('PE_YAML_FOLDER_BASE_PATH')
             unix_time = int(time.time())
-            base_dir = config('PE_DIRECTORY_BASE_PATH')
-            self.yaml_folder = base_dir + yaml_base_path + str(self.params['evaluation_id']) + '_' + str(unix_time)
             if not os.path.exists(self.yaml_folder):
                 os.mkdir(self.yaml_folder)
 
-            self.yaml_file = os.path.join(self.yaml_folder, str(self.params['evaluation_id']) + '_' + str(unix_time) + '.yaml')
+            self.yaml_file = os.path.join(self.yaml_folder, 'evals/', str(self.params['evaluation_id']) + '_' + str(unix_time) + '.yaml')
             print('yaml_file:   ', self.yaml_file)  
                 
-            base_yaml_file = base_dir + 'YAML/base.yaml'
+            base_yaml_file = self.yaml_folder + 'base.yaml'
             print('base_yaml_file:   ', base_yaml_file)
             
             eval_name = self.evaluation['eval']
@@ -166,7 +164,7 @@ class BgJob():
             jsonl_file_path = self.jsonl_file
             fuzzy_boolean = False
             extract_gql_boolean = False
-            if eval_name == 'graphql-fuzzy':
+            if eval_name == 'graphql':
                 fuzzy_boolean = True
                 extract_gql_boolean = True
 
@@ -181,7 +179,7 @@ class BgJob():
                 yaml_str = yaml_str.replace("eval_name", eval_name)
                 yaml_str = yaml_str.replace("evaluation_id", str(evaluation_id))
                 yaml_str = yaml_str.replace("version", version)
-                yaml_str = yaml_str.replace("accuracy", "[accuracy]")
+                yaml_str = yaml_str.replace("metrics_list", "[accuracy]")
                 yaml_str = yaml_str.replace("class_name", class_name)
                 yaml_str = yaml_str.replace("jsonl_file_path", jsonl_file_path)
                 yaml_str = yaml_str.replace("fuzzy_boolean", str(fuzzy_boolean))
@@ -191,7 +189,7 @@ class BgJob():
             with open(self.yaml_file, "w") as file:
                 file.write(yaml_str)
         except Exception as e:
-            print("Error while creating yaml file: ", str(e))
+            print("Error while creating yaml file: ", e)
             self.raise_error(str(e), "c_y_f_1" )
 
 
@@ -211,9 +209,14 @@ class BgJob():
         try:
             
             completion_fn = self.evaluation['model']
-            eval = self.evaluation['eval']
-            self.record_path = self.yaml_folder + '/output.jsonl'
+            eval = self.evaluation['eval'] + '.' + str(self.params['evaluation_id'])
+            self.record_path = os.path.join(self.yaml_folder + f"evals/output_{str(self.params['evaluation_id'])}.jsonl")
             registry_path = self.yaml_folder
+            
+            # completion_fn = 'gpt-3.5-turbo'
+            # eval = 'graphql.6453a63ea80680d9183b7d6b'
+            # self.record_path = '/Users/shraddha/git/prompt-eval-be/YAML/evals/output.jsonl'
+            # registry_path = '/Users/shraddha/git/prompt-eval-be/YAML'
             print('completion_fn:   ', completion_fn)
             print('eval:   ', eval)
             print('record_path:   ', self.record_path)
@@ -231,7 +234,7 @@ class BgJob():
             #     eval='graphql-fuzzy',
             #     seed=20220722,
             #     record_path='/Users/shraddha/git/prompt-eval-be/JSONL/output.jsonl',
-            #     registry_path=['/Users/shraddha/git/prompt-eval-be/evals_framework/evals/registry/evals'],
+            #     registry_path=['/Users/shraddha/git/prompt-eval-be/YAML'],
             #     debug=True,
             #     local_run=True,
             #     dry_run_logging=True
@@ -261,19 +264,22 @@ class BgJob():
                 for line in f:
 
                     line = line.strip()
+                    print("\n\nbefore load",)
                     data = json.loads(line)
-
+                    print("\n\n",line_number)
                     if data.get('final_report'):
+                        print('Inside final report:')
                         self.accuracy = data['final_report']['accuracy']
                     elif data.get('spec'):
+                        print('Inside spec :')
                         self.run_id = data['spec']['run_id']
                     elif data.get('type') == 'sampling':
-                        jsonl_order = data['sample_id'].split('.')[3]
+                        jsonl_order = data['sample_id'].split('.')[2]
                         sampled = data['data']['sampled']
                         actual_results[jsonl_order] = sampled
                         pass
                     elif data.get('type') == 'metrics':
-                        jsonl_order = data['sample_id'].split('.')[3]
+                        jsonl_order = data['sample_id'].split('.')[2]
                         accuracy = data['data']['accuracy']
                         accuracy_results[jsonl_order] = accuracy
                     line_number += 1
@@ -319,12 +325,15 @@ class BgJob():
         
     def clean_up(self):
         try:
-            if os.path.exists(self.yaml_folder):
-                shutil.rmtree(self.yaml_folder)
-                print(f"Folder '{self.yaml_folder}' has been deleted successfully!")
+            if os.path.exists(self.record_path):
+                os.remove(self.record_path)
+                print(f"File '{self.record_path}' has been deleted successfully!")
             if os.path.exists(self.jsonl_file):
                 os.remove(self.jsonl_file)
-                print(f"Folder '{self.jsonl_file}' has been deleted successfully!")
+                print(f"File '{self.jsonl_file}' has been deleted successfully!")
+            if os.path.exists(self.yaml_file):
+                os.remove(self.yaml_file)
+                print(f"File '{self.yaml_file}' has been deleted successfully!")
         except OSError as e:
             self.raise_error(str(e), 'c_u_1')
        
