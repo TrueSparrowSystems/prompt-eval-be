@@ -9,8 +9,8 @@ def background_job(params):
         globals.PROCESS_COMPLETED = False
         try:
             print(f"**********Background job started with given params {params['evaluation_id']}, {params['prompt_template_id']}**********")
-            # task = BgJob(params)
-            # return task.perform()
+            task = BgJob(params)
+            return task.perform()
             time.sleep(1)
             print(f"Sleeping done {params['evaluation_id']}, {params['prompt_template_id']}")
         except Exception as e:
