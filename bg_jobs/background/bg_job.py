@@ -179,6 +179,10 @@ class BgJob():
                 # Load the YAML contents into a Python dictionary
                 yaml_dict = yaml.load(file, Loader=yaml.FullLoader)
                 print('yaml_dict-----', yaml_dict)
+                if eval_name != 'graphql':
+                    # Remove the two lines from the dictionary
+                    del yaml_dict['eval_name.evaluation_id.version']['args']['fuzzy']
+                    del yaml_dict['eval_name.evaluation_id.version']['args']['extract_gql']
                 yaml_str = yaml.dump(yaml_dict)
                 print('yaml_str-----', yaml_dict)
                 yaml_str = yaml_str.replace("eval_name", eval_name)
@@ -295,8 +299,8 @@ class BgJob():
                     
             for key in actual_results.keys():  
                     params = {}
-                    params['actual_result'] = actual_results[str(key)]
-                    params['accuracy'] = accuracy_results[str(key)]
+                    params['actual_result'] = actual_results.get(str(key),None)
+                    params['accuracy'] = accuracy_results.get(str(key),None)
                     params['jsonl_order'] = key
                     params['evaluation_id'] = self.params['evaluation_id']
                     print("params:   ", params)
