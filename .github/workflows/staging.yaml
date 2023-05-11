@@ -52,6 +52,7 @@ jobs:
       run: |-
         mv secrets/propmt-eval-be/.env.staging .env 
         rm -rf secrets
+        git submodule update --init --recursive
         docker build --tag "$URL:$TAG" --build-arg ENV="$ENV" .
         gcloud auth configure-docker us-west1-docker.pkg.dev --quiet --project plg-web3
         docker push "$URL:$TAG"
