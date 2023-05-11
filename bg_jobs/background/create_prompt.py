@@ -18,6 +18,8 @@ class CreatePrompt:
                 #content = "{a} and {b} are friends"
                 matches = re.findall(pattern, content)
                 print('matches:   ', matches)
+                replaced_content = content
+                print('replaced_content:   ', replaced_content)
                 for match in matches:
                     key = match.replace("{", "").replace("}", "")
                     print('self.test_case.dynamic_var_values:   ', self.test_case.dynamic_var_values)
