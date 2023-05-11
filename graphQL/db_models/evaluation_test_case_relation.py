@@ -16,7 +16,7 @@ class EvaluationTestCaseRelation(ModelBase):
     test_case_description = StringField()
     actual_result = ListField()
     acceptable_result = ListField()
-    accuracy = FloatField()
+    accuracy = FloatField(null=True)
     jsonl_order = IntField()
 
     @classmethod

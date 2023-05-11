@@ -128,9 +128,12 @@ class BgJob():
             print('evaluation_test_case_relation_records:   ', self.evaluation_test_case_relation_records.count())
             
             jsonl_base_path = config('PE_JSONL_FOLDER_BASE_PATH')
+            jsonl_folder_path = os.path.join(os.getcwd(), jsonl_base_path)
+            if not os.path.exists(jsonl_folder_path):
+                os.makedirs(jsonl_folder_path)
             unix_time = int(time.time())
             print('base_dir', os.getcwd())
-            self.jsonl_file = os.path.join(os.getcwd(), jsonl_base_path, str((self.params['evaluation_id'])) + '_' + str(unix_time) + '.jsonl')
+            self.jsonl_file = os.path.join(jsonl_folder_path, str((self.params['evaluation_id'])) + '_' + str(unix_time) + '.jsonl')
             print('jsonl_file:   ', self.jsonl_file)
             with open(self.jsonl_file, mode='w') as output_jsonl:
                 for evaluation_test_case_relation_record in self.evaluation_test_case_relation_records:

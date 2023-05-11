@@ -84,7 +84,7 @@ class Query(graphene.ObjectType):
 
     def resolve_test_cases(self, info, experimentId=graphene.String(required=True)):
         try:
-            return TestCase.objects.filter(experiment_id=experimentId)
+            return TestCase.objects.filter(experiment_id=experimentId).order_by('-updated_at')
         except Exception as e:
             print(e)
             error = GraphQLError(
