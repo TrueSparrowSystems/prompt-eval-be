@@ -17,6 +17,10 @@ spec:
       roles:
         - name: clusterAdmin
           db: admin
+        - name: readWriteAnyDatabase
+          db: admin
+        - name: dbAdminAnyDatabase
+          db: admin
         - name: userAdminAnyDatabase
           db: admin
       scramCredentialsSecretName: {{ include "prompt-eval.fullname" . }}-scram

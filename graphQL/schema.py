@@ -41,7 +41,7 @@ class Query(graphene.ObjectType):
 
     def resolve_experiment_list(root, info): 
         try:
-            return Experiment.objects.all()
+            return Experiment.objects.order_by("-updated_at")
         except Exception as e:
             print(e)
             error = GraphQLError(
