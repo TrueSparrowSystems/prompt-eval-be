@@ -178,6 +178,9 @@ mongoengine.connect(
     port=_MONGODB_PORT
 )
 
+# for local testing without authentication use below line and comment above line 
+# mongoengine.connect(_MONGODB_NAME, host=_MONGODB_HOST, port=_MONGODB_PORT)
+
 GRAPHENE = {"SCHEMA": "graphQL.schema.schema"}
 
 # Celery settings
