@@ -65,5 +65,5 @@ coverage report
 
 ## Documents
 
-1. Sequence diagrams: - docs/ sequenceDiagram.mermaid
-2. DBML diagrams: - docs/ db.dbml
+1. Sequence diagrams: - [docs/sequenceDiagram.mermaid](./docs/sequenceDiagram.mermaid)
+2. DBML diagrams: - [docs/db.dbml](./docs/db.dbml)
