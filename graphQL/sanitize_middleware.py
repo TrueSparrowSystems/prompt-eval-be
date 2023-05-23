@@ -4,19 +4,19 @@ from graphql import parse
 from django.http import HttpRequest
 from io import BytesIO
 
-class MyMiddleware:
+class SanitizeMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
     
-    def sanitize_dict_values(self, d):
-        for k, v in d.items():
-            if isinstance(v, dict):
-                self.sanitize_dict_values(v)
-            elif isinstance(v, str):
-                d[k] = bleach.clean(v)
-            elif isinstance(v, list):
-                for i in range(len(v)):
-                    self.sanitize_dict_values(v[i])
+    def sanitize_dict_values(self, dict):
+        for key, value in dict.items():
+            if isinstance(value, dict):
+                self.sanitize_dict_values(value)
+            elif isinstance(value, str):
+                dict[key] = bleach.clean(value)
+            elif isinstance(value, list):
+                for i in range(len(value)):
+                    self.sanitize_dict_values(value[i])
 
     def __call__(self, request: HttpRequest):
         if request.method == 'POST' and request.content_type == 'application/json':
