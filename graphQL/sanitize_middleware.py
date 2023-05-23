@@ -8,12 +8,12 @@ class SanitizeMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
     
-    def sanitize_dict_values(self, dict):
-        for key, value in dict.items():
+    def sanitize_dict_values(self, request):
+        for key, value in request.items():
             if isinstance(value, dict):
                 self.sanitize_dict_values(value)
             elif isinstance(value, str):
-                dict[key] = bleach.clean(value)
+                request[key] = bleach.clean(value)
             elif isinstance(value, list):
                 for i in range(len(value)):
                     self.sanitize_dict_values(value[i])

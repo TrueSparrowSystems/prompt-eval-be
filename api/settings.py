@@ -55,7 +55,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
-    "graphQL.middleware.SanitizeMiddleware"
+    "graphQL.sanitize_middleware.SanitizeMiddleware"
 ]
 
 # settings.py
