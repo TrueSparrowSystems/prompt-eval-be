@@ -14,6 +14,9 @@ class MyMiddleware:
                 self.sanitize_dict_values(v)
             elif isinstance(v, str):
                 d[k] = bleach.clean(v)
+            elif isinstance(v, list):
+                for i in range(len(v)):
+                    self.sanitize_dict_values(v[i])
 
     def __call__(self, request: HttpRequest):
         if request.method == 'POST' and request.content_type == 'application/json':
