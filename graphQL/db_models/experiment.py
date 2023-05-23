@@ -15,13 +15,13 @@ class Experiment(ModelBase):
 
     def get_dynamic_vars_dict(conversation):
         dynamic_vars_list = []
-        pattern = r"\{\s*[a-zA-Z0-9\s]+\s*\}"
+        pattern = r"\{\{[a-zA-Z0-9_]+\}\}"
         for conversion in conversation:
             content = conversion['content']
             matches = re.findall(pattern, content)
-
+            print('matches:   ', matches)
             for match in matches:
-                key = match.replace("{", "").replace("}", "")
+                key = match.replace("{{", "").replace("}}", "")
                 dynamic_vars_list.append(key)
         return dynamic_vars_list
 

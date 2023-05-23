@@ -11,5 +11,6 @@ RUN pip install -r requirements.txt
 COPY . /code/
 EXPOSE 8000
 RUN pip install gunicorn
+RUN pip install -e evals_framework
 
 CMD ["gunicorn", "-b", "0.0.0.0:8000", "api.wsgi"]

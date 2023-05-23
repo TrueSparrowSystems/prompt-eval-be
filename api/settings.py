@@ -12,6 +12,7 @@ import mongoengine
 from pymongo import monitoring
 import logging
 from decouple import config
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,6 +21,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
+#setting OPENAI_API_KEY
+os.environ['OPENAI_API_KEY'] = config('OPENAI_API_KEY')
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('PE_SECRET_KEY')
 
@@ -168,7 +171,16 @@ _MONGODB_HOST = config('PE_MONGODB_HOST')
 _MONGODB_NAME = config('PE_MONGODB_NAME')
 _MONGODB_PORT = int(config('PE_MONGODB_PORT'))
 
-mongoengine.connect(_MONGODB_NAME, host=_MONGODB_HOST, port=_MONGODB_PORT)
+mongoengine.connect(
+    _MONGODB_NAME,
+    username=_MONGODB_USER,
+    password=_MONGODB_PASSWD,
+    host=_MONGODB_HOST,
+    port=_MONGODB_PORT
+)
+
+# for local testing without authentication use below line and comment above line 
+# mongoengine.connect(_MONGODB_NAME, host=_MONGODB_HOST, port=_MONGODB_PORT)
 
 GRAPHENE = {"SCHEMA": "graphQL.schema.schema"}
 

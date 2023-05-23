@@ -14,4 +14,4 @@ class EvaluationTestCaseRelationType(ObjectType):
     test_case_description = String()
     actual_result = List(String)
     acceptable_result = List(String)
-    accuracy = Float()
+    accuracy = Float(default_value=None)

@@ -1,5 +1,8 @@
 import json
 from graphene_django.utils.testing import GraphQLTestCase
+from graphQL.db_models.experiment import Experiment
+from graphQL.db_models.prompt_template import PromptTemplate
+from graphQL.db_models.evaluation import Evaluation
 
 # Command to run test cases for experiment
 # $ python manage.py test graphQL.test.test_report
@@ -7,10 +10,14 @@ from graphene_django.utils.testing import GraphQLTestCase
 
 class ReportTest(GraphQLTestCase):
     def test_get_report_query(self):
+        experiment = Experiment.objects.create(name="Test Experiment", description="This is a test experiment")
+        prompt = PromptTemplate.objects.create(experiment_id=str(experiment.id),name="Test Prompt", description="This is a test prompt")
+        evaluation = Evaluation.objects.create(prompt_template_id=str(prompt.id),model="Test Model",eval="Test Eval")
+        variables = {"reportID": str(evaluation.id)}
         response = self.query(
             '''
-            query {
-                getReport(reportId:"64410b5c8402313be9d1f85e",page:1,limit:2){
+            query getReport($reportID:String!){
+                getReport(reportId:$reportID,page:1,limit:2){
                     id
                     model
                     eval
@@ -24,8 +31,10 @@ class ReportTest(GraphQLTestCase):
                     updatedAt
                     testCaseEvaluationReport{
                         id
-                        evaluationResultId
-                        prompt
+                        prompt{
+                            role,
+                            content
+                        }
                         testCaseId
                         testCaseName
                         testCaseDescription
@@ -35,11 +44,11 @@ class ReportTest(GraphQLTestCase):
                     }
                 }
                 }
-            '''      
+            '''  , variables=variables    
           )
 
         content = json.loads(response.content)
-
+        print('----------------------content----------------------',content)
         # This validates the status code and if you get errors
         self.assertResponseNoErrors(response)
       
@@ -62,8 +71,10 @@ class ReportTest(GraphQLTestCase):
                     updatedAt
                     testCaseEvaluationReport{
                         id
-                        evaluationResultId
-                        prompt
+                        prompt{
+                            role,
+                            content
+                        }
                         testCaseId
                         testCaseName
                         testCaseDescription
@@ -102,8 +113,10 @@ class ReportTest(GraphQLTestCase):
                     updatedAt
                     testCaseEvaluationReport{
                         id
-                        evaluationResultId
-                        prompt
+                        prompt{
+                            role,
+                            content
+                        }
                         testCaseId
                         testCaseName
                         testCaseDescription
@@ -144,8 +157,10 @@ class ReportTest(GraphQLTestCase):
                     updatedAt
                     testCaseEvaluationReport{
                         id
-                        evaluationResultId
-                        prompt
+                        prompt{
+                            role,
+                            content
+                        }
                         testCaseId
                         testCaseName
                         testCaseDescription
@@ -187,8 +202,10 @@ class ReportTest(GraphQLTestCase):
                     updatedAt
                     testCaseEvaluationReport{
                         id
-                        evaluationResultId
-                        prompt
+                        prompt{
+                            role,
+                            content
+                        }
                         testCaseId
                         testCaseName
                         testCaseDescription

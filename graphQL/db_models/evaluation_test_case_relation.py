@@ -16,7 +16,7 @@ class EvaluationTestCaseRelation(ModelBase):
     test_case_description = StringField()
     actual_result = ListField()
     acceptable_result = ListField()
-    accuracy = FloatField()
+    accuracy = FloatField(null=True)
     jsonl_order = IntField()
 
     @classmethod
@@ -55,6 +55,16 @@ class EvaluationTestCaseRelation(ModelBase):
                 set__actual_result=params['actual_result'], set__accuracy=params['accuracy'])
         except Exception as e:
             print("Error in update_evaluation_test_case_relation method", e)
+            return False
+        
+        return True
+    
+    @classmethod
+    def delete_records_by_evaluation_id(cls, evaluation_id):
+        try:
+            cls.objects(evaluation_id=evaluation_id).delete()
+        except Exception as e:
+            print("Error in delete_records method", e)
             return False
         
         return True

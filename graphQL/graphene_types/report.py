@@ -7,7 +7,7 @@ class ReportBaseType(ObjectType):
     eval = String()
     accuracy = Float()
     prompt_template_id = ID()
-    run_id = Int()
+    run_id = String()
     status = String()
     initiated_at = Int()
     completed_at = Int()
