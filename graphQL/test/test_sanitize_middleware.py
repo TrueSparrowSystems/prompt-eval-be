@@ -31,6 +31,14 @@ class SanitizeMiddlewareTestCase(TestCase):
             },
         }
         return JsonResponse(data)
+    
+    def get_response_for_test_middleware_sanitizes_string_values_query_params(self, request):
+        data = {
+            'name': '&lt;script&gt;alert("XSS")&lt;/script&gt;',
+            'age': '20',
+            'city': 'New York',
+        }
+        return JsonResponse(data)
 
     def test_middleware_sanitizes_string_values(self):
         request = HttpRequest()
@@ -87,5 +95,26 @@ class SanitizeMiddlewareTestCase(TestCase):
                         'city': 'New York',
                     },
                 },
+            })
+        )
+    
+    def test_middleware_sanitizes_query_params(self):
+        request = HttpRequest()
+        request.method = 'GET'
+        request.GET = {
+            'name': '<script>alert("XSS")</script>',
+            'age': '20',
+            'city': 'New York',
+        }
+
+        self.middleware.get_response = self.get_response_for_test_middleware_sanitizes_string_values_query_params
+        middleware_response = self.middleware(request)
+
+        self.assertEqual(
+            middleware_response.content.decode('utf-8'),
+            json.dumps({
+                'name': '&lt;script&gt;alert("XSS")&lt;/script&gt;',
+                'age': '20',
+                'city': 'New York'
             })
         )
