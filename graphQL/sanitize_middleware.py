@@ -19,16 +19,22 @@ class SanitizeMiddleware:
                     self.sanitize_dict_values(value[i])
 
     def __call__(self, request: HttpRequest):
-        if request.method == 'POST' and request.content_type == 'application/json':
-            try:
+        try:
+            if request.body:
                 body = json.loads(request.body)
                 self.sanitize_dict_values(body)
                 sanitized_body = json.dumps(body).encode('utf-8')
                 request._stream = BytesIO(sanitized_body)
                 request._body = sanitized_body
                 request._content_length = len(sanitized_body)
-            except Exception as e:
-                print('error in middleware',e)
+                print('request.body', sanitized_body)
+            # Sanitize query parameters
+            query_params = request.GET.copy()
+            self.sanitize_dict_values(query_params)
+            request.GET = query_params
+
+        except Exception as e:
+            print('Error in middleware:', e)
 
         response = self.get_response(request)
 
