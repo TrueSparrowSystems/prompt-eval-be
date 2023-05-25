@@ -18,7 +18,7 @@ class Experiment(ModelBase):
     name = StringField(required=True)
     description = StringField(max_length=255)
     dynamic_vars = ListField(StringField(max_length=255))
-    status = EnumField(Status, default=Status.ACTIVE)
+    status = EnumField(Status)
 
     def get_dynamic_vars_dict(conversation):
         dynamic_vars_list = []

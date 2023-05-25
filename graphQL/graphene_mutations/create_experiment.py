@@ -24,7 +24,7 @@ class CreateExperimentMutation(MutateBase):
             if not CommonValiator.max_length_validation(experiment_data.description, 240):
                 raise InvalidLengthError(code = "g_gm_ce_2", param="description")
             experiment.description = experiment_data.description
-
+        experiment.status = 'ACTIVE'
         experiment.save()
 
         return CreateExperimentMutation(experiment=experiment)

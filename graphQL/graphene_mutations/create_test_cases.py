@@ -31,6 +31,6 @@ class CreateTestCasesMutation(MutateBase):
             testCase.dynamic_var_values = test_case_data.dynamic_var_values
         if test_case_data.expected_result:
             testCase.expected_result = test_case_data.expected_result
-        
+        testCase.status = 'ACTIVE'
         testCase.save()
         return CreateTestCasesMutation(testCase=testCase)
