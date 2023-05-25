@@ -19,7 +19,7 @@ class PromptTemplate(ModelBase):
     description = StringField(max_length=255)
     conversation = ListField()
     experiment_id = ObjectIdField(required=True)
-    status = EnumField(Status, default=Status.ACTIVE)
+    status = EnumField(Status)
     
     #Write method to get prompt by prompt id
     @classmethod

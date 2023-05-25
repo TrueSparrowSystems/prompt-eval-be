@@ -20,7 +20,7 @@ class TestCase(ModelBase):
     dynamic_var_values = DictField()
     experiment_id = ObjectIdField(required=True)
     expected_result= ListField()
-    status = EnumField(Status, default=Status.ACTIVE)
+    status = EnumField(Status)
     
     @classmethod
     def test_case_by_id(cls, prompt_id):
