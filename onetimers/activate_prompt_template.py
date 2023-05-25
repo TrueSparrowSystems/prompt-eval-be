@@ -18,14 +18,14 @@ mongoengine.connect(
 )
 
 if len(sys.argv) < 2:
-    print("Please provide archive_prompt_templates_ids values as command line arguments.")
+    print("Please provide activate_prompt_templates_ids values as command line arguments.")
     sys.exit(1)
 
-archive_prompt_templates_ids = sys.argv[1:]
+activate_prompt_templates_ids = sys.argv[1:]
 
-print('archive_prompt_templates_ids:   ', archive_prompt_templates_ids)
+print('activate_prompt_templates_ids:   ', activate_prompt_templates_ids)
 
-promptTemplates = PromptTemplate.objects.filter(id__in=archive_prompt_templates_ids)
+promptTemplates = PromptTemplate.objects.filter(id__in=activate_prompt_templates_ids)
 print('promptTemplatess:   ', promptTemplates)
 for promptTemplate in promptTemplates:
     promptTemplate.status = 'ACTIVE'

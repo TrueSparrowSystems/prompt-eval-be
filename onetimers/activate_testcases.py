@@ -21,11 +21,11 @@ if len(sys.argv) < 2:
     print("Please provide archive_testcase_id values as command line arguments.")
     sys.exit(1)
 
-archive_testcases_ids = sys.argv[1:]
+activate_testcases_ids = sys.argv[1:]
 
-print('archive_testcases_ids:   ', archive_testcases_ids)
+print('activate_testcases_ids:   ', activate_testcases_ids)
 
-testcases = TestCase.objects.filter(id__in=archive_testcases_ids)
+testcases = TestCase.objects.filter(id__in=activate_testcases_ids)
 print('testcases:   ', testcases)
 for testcase in testcases:
     testcase.status = 'ACTIVE'

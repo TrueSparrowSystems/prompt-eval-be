@@ -23,23 +23,23 @@ if len(sys.argv) < 2:
     print("Please provide archive_experiment_id values as command line arguments.")
     sys.exit(1)
 
-archive_experiment_ids = sys.argv[1:]
+activate_experiment_ids = sys.argv[1:]
 
-print('archive_experiment_ids:   ', archive_experiment_ids)
+print('activate_experiment_ids:   ', activate_experiment_ids)
 
-experiments = Experiment.objects.filter(id__in=archive_experiment_ids)
+experiments = Experiment.objects.filter(id__in=activate_experiment_ids)
 print('experiments:   ', experiments)
 for experiment in experiments:
     experiment.status = 'ACTIVE'
     experiment.save()
 
-testCases = TestCase.objects.filter(experiment_id__in=archive_experiment_ids)
+testCases = TestCase.objects.filter(experiment_id__in=activate_experiment_ids)
 print('testCases:   ', testCases)
 for testCase in testCases:
     testCase.status = 'ACTIVE'
     testCase.save()
 
-promptTemplates = PromptTemplate.objects.filter(experiment_id__in=archive_experiment_ids)
+promptTemplates = PromptTemplate.objects.filter(experiment_id__in=activate_experiment_ids)
 print('promptTemplates:   ', promptTemplates)
 for promptTemplate in promptTemplates:
     promptTemplate.status = 'ACTIVE'
