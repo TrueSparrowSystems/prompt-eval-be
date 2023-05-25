@@ -3,15 +3,22 @@ from mongoengine.fields import (
     StringField,
     ListField,
     IntField,
+    EnumField
 )
 import re
 from graphQL.db_models.model_base import ModelBase
+from enum import Enum
+
+class Status(Enum):
+    ACTIVE = 'ACTIVE'
+    DELETED = 'DELETED'
 
 class Experiment(ModelBase):
     meta = {'collection': 'experiment'}
     name = StringField(required=True)
     description = StringField(max_length=255)
     dynamic_vars = ListField(StringField(max_length=255))
+    status = EnumField(Status, default=Status.ACTIVE)
 
     def get_dynamic_vars_dict(conversation):
         dynamic_vars_list = []
