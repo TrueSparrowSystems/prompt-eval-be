@@ -11,12 +11,14 @@ Follow the instructions below for installation
 ```sh { language=sh }
 python3 -m venv .venv
 
+
 ```
 
 4. Activate the virtual environment
 
 ```sh { language=sh }
 source .venv/bin/activate
+
 
 ```
 
@@ -25,6 +27,7 @@ source .venv/bin/activate
 ```sh { language=sh }
 python -m pip install --upgrade pip
 
+
 ```
 
 6. Clone the [evals](https://github.com/openai/evals) submodule
@@ -32,12 +35,14 @@ python -m pip install --upgrade pip
 ```sh { language=sh }
 git submodule update --init --recursive
 pip install -e evals_framework
+
 ```
 
 7. Install the dependencies
 
 ```sh { language=sh }
 pip install -r requirements.txt
+
 
 ```
 
@@ -47,12 +52,14 @@ pip install -r requirements.txt
 ```sh { language=sh }
 python manage.py runserver 8000
 
+
 ```
 
 10. Run the test cases using following command
 
 ```sh { language=sh }
 python manage.py test graphQL
+
 
 ```
 
@@ -62,9 +69,11 @@ python manage.py test graphQL
 coverage run manage.py test
 coverage report
 
+
 ```
 
 ## Documents
 
 1. Sequence diagrams: - [docs/sequenceDiagram.mermaid](./docs/sequenceDiagram.mermaid)
 2. DBML diagrams: - [docs/db.dbml](./docs/db.dbml)
+3. Product usage guide: - [docs/productUsageGuide.md](./docs/productUsageGuide.md)
