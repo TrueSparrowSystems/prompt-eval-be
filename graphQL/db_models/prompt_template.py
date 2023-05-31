@@ -2,9 +2,15 @@ from mongoengine.fields import (
     StringField,
     ObjectIdField,
     ListField,
-    IntField
+    IntField,
+    EnumField
 )
 from graphQL.db_models.model_base import ModelBase
+from enum import Enum
+
+class Status(Enum):
+    ACTIVE = 'ACTIVE'
+    DELETED = 'DELETED'
 
     
 class PromptTemplate(ModelBase):
@@ -13,6 +19,7 @@ class PromptTemplate(ModelBase):
     description = StringField(max_length=255)
     conversation = ListField()
     experiment_id = ObjectIdField(required=True)
+    status = EnumField(Status)
     
     #Write method to get prompt by prompt id
     @classmethod

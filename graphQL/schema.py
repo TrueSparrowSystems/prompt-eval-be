@@ -41,7 +41,7 @@ class Query(graphene.ObjectType):
 
     def resolve_experiment_list(root, info): 
         try:
-            return Experiment.objects.order_by("-created_at")
+            return Experiment.objects.filter(status="ACTIVE").order_by("-created_at")
         except Exception as e:
             print(e)
             error = GraphQLError(
@@ -60,9 +60,11 @@ class Query(graphene.ObjectType):
             offset = (page - 1) * limit
             total_count = None
             if page == 1:
-                total_count = PromptTemplate.objects.filter(experiment_id=experimentId).count()
-            is_runnable = TestCase.objects(experiment_id=experimentId).count() > 0
-            prompts = PromptTemplate.objects.filter(experiment_id=experimentId).order_by('-created_at')[offset:offset+limit]
+                # i want both condition to be true in filter write a code for that
+                total_count = PromptTemplate.objects.filter(experiment_id=experimentId, status="ACTIVE").count()
+                # (experiment_id=experimentId).count()
+            is_runnable = TestCase.objects(experiment_id=experimentId, status="ACTIVE").count() > 0
+            prompts = PromptTemplate.objects.filter(experiment_id=experimentId, status="ACTIVE").order_by('-created_at')[offset:offset+limit]
 
             for prompt in prompts:
                 latest_evaluation_report = []
@@ -84,7 +86,7 @@ class Query(graphene.ObjectType):
 
     def resolve_test_cases(self, info, experimentId=graphene.String(required=True)):
         try:
-            return TestCase.objects.filter(experiment_id=experimentId).order_by('-created_at')
+            return TestCase.objects.filter(experiment_id=experimentId, status="ACTIVE").order_by('-created_at')
         except Exception as e:
             print(e)
             error = GraphQLError(
