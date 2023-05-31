@@ -1,8 +1,17 @@
+<div align="center">
+   
 # Prompt Evaluator
+</div>
 
-Table of Contents:
+Prompt Evaluator is an AI assistant tool specifically designed for product managers and developers. With a strong emphasis on versatility, our tool empowers users to effectively solve a wide range of problems tailored to their unique use cases. By enabling prompt template engineering and enhancement, we ensure that prompts are both easily testable and maintainable. We are constantly working towards addressing broader, more generic issues to provide a clear and user-centric solution that unleashes your full potential. Stay tuned for exciting updates as we continue to enhance our tool.
+
+<details>
+   <summary>
+Table of Content
+   </summary>
 
 - [Experiments](#experiments)
+   - [What are experiments?](#what-are-experiments)
    - [Viewing Experiment Details](#to-see-details-of-individual-experiment)
    - [Creating and Updating Experiments](#to-create-update-experiments)
 
@@ -14,16 +23,14 @@ Table of Contents:
    - [Creating Test Cases](#to-create-new-test-case)
 
 - [Running Prompt Templates](#to-run-the-prompt-template)
-- [Comparing Expected and Actual Outputs](#compare-expected-output-and-actual-output-in-reports)
-   - [Sharing Reports](#share-report)
-
-This document is a detailed guide that provides clear instructions and step-by-step explanations, enabling users to efficiently utilize the product.
-
-Introducing our revolutionary AI assistant tool designed for product managers and developers, who are the primary users! With a focus on versatility, it empowers users to solve a wide range of problems specific to their unique use cases. Our tool enables the engineering and enhancement of prompt templates, ensuring prompts are easily testable and maintainable. Stay tuned for exciting updates as we aim to tackle a broader, more generic problem. Our goal is to provide a clear, user-centric solution that unleashes your potential.
+- [Reports](#reports)
+   - [Comparing Expected and Actual Outputs](#compare-expected-output-and-actual-output-in-reports)
+   - [Share Reports](#share-report)
+</details>
 
 # Experiments:
 
-What are experiments?
+## What are experiments?
 
 The experiment feature in our product allows users to create collections of prompt templates. These templates are for user-defined conversations that may include variables. Users can define their own conversations with various roles and prompts, incorporating variables where necessary. Users can evaluate the performance of prompts by executing them with different OpenAI models and associated test cases. By running prompt templates with different models and test cases, users gain valuable insights into the performance and suitability of their prompts for different scenarios.
 
@@ -33,9 +40,11 @@ Select the desired experiment to view its details. Read the experiment title, de
 
 ![img](https://promt-eval-assests.s3.amazonaws.com/snapShots/experiment_1.png)
 
-## To create update experiments:
+## To create/update experiments:
 
-To start a new experiment, just click on the "Create experiment" button. A brand new experiment will be created with a default title and description. The title and description are basic details that briefly explain what the experiment is about. ![img](https://promt-eval-assests.s3.amazonaws.com/snapShots/Experiment_2.png)
+To start a new experiment, just click on the "Create experiment" button. A brand new experiment will be created with a default title and description. The title and description are basic details that briefly explain what the experiment is about. 
+
+![img](https://promt-eval-assests.s3.amazonaws.com/snapShots/Experiment_2.png)
 
 ## To update the experiment
 
@@ -45,7 +54,7 @@ We can update the title for the experiment in two ways:
 
 ![img](https://promt-eval-assests.s3.amazonaws.com/snapShots/Experiment_3.png)
 
-1. Simply click on the title located at the top of the page.
+2. Simply click on the title located at the top of the page.
 
 ![img](https://promt-eval-assests.s3.amazonaws.com/snapShots/Experiment_4.png)
 
@@ -163,7 +172,9 @@ Step 4: After a few seconds, a report will be generated, which you can then exam
 
 ![img](https://promt-eval-assests.s3.amazonaws.com/snapShots/RunPropmts_4.png)
 
-# Compare Expected Output and Actual Output in Reports:
+# Reports:
+
+## Compare Expected Output and Actual Output in Reports:
 
 To view the report, click the view report button located under the desired prompt template cell.
 
