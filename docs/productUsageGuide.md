@@ -13,7 +13,7 @@ Table of Content
 - [Experiments](#experiments)
    - [What are experiments?](#what-are-experiments)
    - [Viewing Experiment Details](#to-see-details-of-individual-experiment)
-   - [Creating and Updating Experiments](#to-create-update-experiments)
+   - [Creating and Updating Experiments](#to-create/update-experiments)
 
 - [Prompt Templates](#prompt-templates)
    - [Creating and Updating Templates](#to-create-new-template)
