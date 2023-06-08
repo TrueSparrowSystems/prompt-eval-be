@@ -4,9 +4,9 @@ AWS is where we have set up our application. The following document provides a c
 
 ### Contents:
 
-- **[Install Terraform](https://www.notion.so/Deploy-an-Application-to-AWS-4603994803e84783b2f966972ff1d17c?pvs=21)**
-- [**Terraform Code for Provisioning AWS EKS**](https://www.notion.so/Deploy-an-Application-to-AWS-4603994803e84783b2f966972ff1d17c?pvs=21)
-- **CI/CD**
+- **[Install Terraform]([https://www.notion.so/Deploy-an-Application-to-AWS-4603994803e84783b2f966972ff1d17c?pvs=21](https://github.com/TrueSparrowSystems/prompt-eval-be/blob/documentation/docs/deployment.md#install-terraform))**
+- [**Terraform Code for Provisioning AWS EKS**]([https://www.notion.so/Deploy-an-Application-to-AWS-4603994803e84783b2f966972ff1d17c?pvs=21](https://github.com/TrueSparrowSystems/prompt-eval-be/blob/documentation/docs/deployment.md#install-terraform))
+- [**CI/CD**]([https://github.com/TrueSparrowSystems/prompt-eval-be/blob/documentation/docs/deployment.md#cicd-for-backend))
 
 ### Install Terraform
 
