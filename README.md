@@ -77,3 +77,4 @@ coverage report
 1. Sequence diagrams: - [docs/sequenceDiagram.mermaid](./docs/sequenceDiagram.mermaid)
 2. DBML diagrams: - [docs/db.dbml](./docs/db.dbml)
 3. Product usage guide: - [docs/productGuide.md](./docs/productGuide.md)
+4. Deployment to AWS guide: - [docs/deployment.md](./docs/deployment.md)
