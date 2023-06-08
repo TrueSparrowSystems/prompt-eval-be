@@ -454,4 +454,4 @@ jobs:
 
 To proceed, please create the following secrets in your GitHub repository's settings under Secrets and variables → Actions → New Repository Secret:
 
-The Docker image is then built and uploaded to the ECR (ECR). Helm is responsible for installing or updating the service with the latest Docker image during each deployment. As a new deployment occurs, a new Pod is created and enters a running state. Once it is verified that the newly spawned Pod is functioning correctly, Kubernetes removes the old Pod and ensures that all requirements are met.
+The Docker image is then built and uploaded to the ECR. Helm is responsible for installing or updating the service with the latest Docker image during each deployment. As a new deployment occurs, a new Pod is created and enters a running state. Once it is verified that the newly spawned Pod is functioning correctly, Kubernetes removes the old Pod and ensures that all requirements are met.
