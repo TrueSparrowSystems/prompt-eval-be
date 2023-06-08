@@ -1,4 +1,4 @@
-# Deploy an Application to AWS
+# Deploy Prompt Eval to AWS
 
 AWS is where we have set up our application. The following document provides a clear explanation of the necessary components for launching applications on AWS that run on Kubernetes.  If you have already provisioned a Kubernetes cluster on EKS using Terraform, jump right into CI/CD section.
 
