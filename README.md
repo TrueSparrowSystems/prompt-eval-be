@@ -38,7 +38,15 @@ pip install -e evals_framework
 
 ```
 
-7. Install the dependencies
+7. Run below command if **Unable to checkout git submodule path** error faced
+
+```sh { language=sh }
+brew install git-lfs
+
+
+```
+
+8. Install the dependencies
 
 ```sh { language=sh }
 pip install -r requirements.txt
@@ -46,8 +54,9 @@ pip install -r requirements.txt
 
 ```
 
-8. Copy the contents of .env.sample file in .env file and add the values for all env variables.
-9. Run the api server using following command
+9. Copy the contents of .env.sample file in .env file and add the values for all env variables.
+10. Generate OPENAI_API_KEY using this [link](https://platform.openai.com/account/api-keys) and update the same in .env 
+11. Run the api server using following command
 
 ```sh { language=sh }
 python manage.py runserver 8000
@@ -55,7 +64,7 @@ python manage.py runserver 8000
 
 ```
 
-10. Run the test cases using following command
+12. Run the test cases using following command
 
 ```sh { language=sh }
 python manage.py test graphQL
@@ -63,7 +72,7 @@ python manage.py test graphQL
 
 ```
 
-11. Run the following command to generate test coverage report
+13. Run the following command to generate test coverage report
 
 ```sh { language=sh }
 coverage run manage.py test
