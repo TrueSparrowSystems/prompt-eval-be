@@ -279,6 +279,7 @@ class BgJob():
                     print("\n\nbefore load",)
                     data = json.loads(line)
                     print("\n\n",line_number)
+                    eval_name = self.evaluation['eval']
                     if data.get('final_report'):
                         print('Inside final report:')
                         self.accuracy = data['final_report']['accuracy']
@@ -289,7 +290,10 @@ class BgJob():
                         jsonl_order = data['sample_id'].split('.')[2]
                         sampled = data['data']['sampled']
                         actual_results[jsonl_order] = sampled
-                        pass
+                    elif data.get('type') == 'match' and eval_name == 'match':
+                        jsonl_order = data['sample_id'].split('.')[2]
+                        matched = 1 if data['data']['correct'] else 0
+                        accuracy_results[jsonl_order] = matched
                     elif data.get('type') == 'metrics':
                         jsonl_order = data['sample_id'].split('.')[2]
                         accuracy = data['data']['accuracy']
