@@ -8,11 +8,11 @@ Prompt Evaluator is an AI assistant tool specifically designed for product manag
 
 - **Experiments** - The experiment feature in our product allows users to create collections of prompt templates. Users can define their own conversations with various roles and prompts, incorporating variables where necessary. Users can evaluate the performance of prompts by executing them with different OpenAI models and associated test cases. 
 
-- **Prompt Templates** - Prompt templates are the building blocks of an Experiment which allow users to define their own prompts. They are highly customizable, allowing users the flexibility to modify the content, format, and variables according to their requirements. 
+- **Prompt Templates** - Prompt templates are the building blocks of an Experiment which allow users to define their own prompts. They are highly customizable, allowing users the flexibility to modify the content, format, and variables according to their requirements.
 
-- **Test Cases** - These are the cases on which the accuracy of a prompt is evaluated. Users can define their own test cases and associate them with prompts. Test cases can be defined as a list of inputs and expected outputs. 
+- **Test Cases** - These are the cases on which the accuracy of a prompt is evaluated. Users can define their own test cases and associate them with prompts. Test cases can be defined as a list of inputs and expected outputs.
 
-By running prompt templates with different models and test cases, users gain valuable insights into the performance and suitability of their prompts for different scenarios. For detailed information on the features, please refer to the [product guide](./docs/productGuide.md).
+By running prompt templates with different models and test cases, users gain valuable insights into the performance and suitability of their prompts for different scenarios. For detailed information on the features, please refer to the [**product guide**](./docs/productGuide.md).
 
 ## Architecture
 
@@ -25,7 +25,6 @@ This is the backend component of the Prompt Evaluator tool. It is built using Dj
 
 - [**Sequence diagrams**](./docs/sequenceDiagram.mermaid)
 - [**DBML diagrams**](./docs/db.dbml)
-
 
 ## Tech Stack
 
