@@ -6,7 +6,7 @@ Prompt Evaluator is an AI assistant tool specifically designed for product manag
 
 ## Features
 
-- **Experiments** - The experiment feature in our product allows users to create collections of prompt templates. Users can define their own conversations with various roles and prompts, incorporating variables where necessary. Users can evaluate the performance of prompts by executing them with different OpenAI models and associated test cases. 
+- **Experiments** - The experiment feature in our product allows users to create collections of prompt templates. Users can define their own conversations with various roles and prompts, incorporating variables where necessary. Users can evaluate the performance of prompts by executing them with different OpenAI models and associated test cases.
 
 - **Prompt Templates** - Prompt templates are the building blocks of an Experiment which allow users to define their own prompts. They are highly customizable, allowing users the flexibility to modify the content, format, and variables according to their requirements.
 
@@ -106,6 +106,13 @@ python manage.py test graphQL
 coverage run manage.py test
 coverage report
 ```
+
+## Documents
+
+1. Sequence diagrams: - [docs/sequenceDiagram.mermaid](./docs/sequenceDiagram.mermaid)
+2. DBML diagrams: - [docs/db.dbml](./docs/db.dbml)
+3. Product usage guide: - [docs/productGuide.md](./docs/productGuide.md)
+4. Deployment to AWS guide: - [docs/deployment.md](./docs/deployment.md)
 
 ## Contribution
 
