@@ -21,7 +21,7 @@ Prompt Evaluator has two components:
 - [**Frontend**](https://github.com/TrueSparrowSystems/prompt-eval-fe)
 - [**Backend**](https://github.com/TrueSparrowSystems/prompt-eval-be)
 
-This is the backend component of the Prompt Evaluator tool. It is built using Django and MongoDB. It exposes a GraphQL API for the frontend to consume. The frontend is built using React. It is a standalone application that can be deployed separately. The frontend and backend communicate with each other using the GraphQL API. For better understanding of the architecture, please refer to the following diagrams:
+This is the backend component of the Prompt Evaluator tool. It is built using Django and MongoDB. It exposes a GraphQL API for the frontend to consume. The frontend is built using Next.js. The frontend and backend communicate with each other using the GraphQL API. It is a standalone application that can be deployed separately. For better understanding of the architecture, please refer to the following diagrams:
 
 - [**Sequence diagrams**](./docs/sequenceDiagram.mermaid)
 - [**DBML diagrams**](./docs/db.dbml)
@@ -50,60 +50,58 @@ cp .env.sample .env
 copy .env.sample .env
 ```
 
-4. Generate OPENAI_API_KEY using this [link](https://platform.openai.com/account/api-keys) and update the same in .env file.
+4. Generate `OPENAI_API_KEY` using this [link](https://platform.openai.com/account/api-keys) and update the same in .env file.
 
-5. Generate a random string and add it to PE_SECRET_KEY in .env file.
-
-6. Run below command to specify the management of large files with Git.
+5. Run below command to specify the management of large files with Git.
 
 ```sh { language=sh }
 brew install git-lfs
 ```
 
-7. Create a python virtual environment
+6. Create a python virtual environment
 
 ```sh { language=sh }
 python3 -m venv .venv
 ```
 
-8. Activate the virtual environment
+7. Activate the virtual environment
 
 ```sh { language=sh }
 source .venv/bin/activate
 ```
 
-9. Upgrade to the latest pip version
+8. Upgrade to the latest pip version
 
 ```sh { language=sh }
 python -m pip install --upgrade pip
 ```
 
-10. Clone the [evals](https://github.com/openai/evals) submodule
+9. Clone the [evals](https://github.com/openai/evals) submodule
 
 ```sh { language=sh }
 git submodule update --init --recursive
 pip install -e evals_framework
 ```
 
-11. Install the dependencies
+10. Install the dependencies
 
 ```sh { language=sh }
 pip install -r requirements.txt
 ```
 
-12. Run the api server using following command
+11. Run the api server using following command
 
 ```sh { language=sh }
 python manage.py runserver 8000
 ```
 
-13. Run the test cases using following command
+12. Run the test cases using following command
 
 ```sh { language=sh }
 python manage.py test graphQL
 ```
 
-14. Run the following command to generate test coverage report
+13. Run the following command to generate test coverage report
 
 ```sh { language=sh }
 coverage run manage.py test
