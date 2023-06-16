@@ -23,6 +23,13 @@ class CreateEvaluationMutation(MutateBase):
 
     @classmethod
     def self_mutate(cls, root, info, evaluation_data=None):
+        """
+        create evaluation report
+
+        @params: evaluation_data: A dictionary containing the parameters for the evaluation report.
+
+        @return: A dictionary containing the evaluation report.
+        """
         report = Evaluation(prompt_template_id=evaluation_data.prompt_template_id, 
                              model=evaluation_data.model,
                              eval=evaluation_data.eval

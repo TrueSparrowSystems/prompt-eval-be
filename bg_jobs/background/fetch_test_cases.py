@@ -6,6 +6,13 @@ class FetchTestCasesByPromptId:
         self.params = params
 
     def perform(self):
+        """
+        Perform fetch all test cases by prompt id
+
+        @params: params: A dictionary containing the parameters for the test case.
+
+        @return: A dictionary containing the test case.
+        """
         try:
             print("FetchTestCasesByPromptId perform method called", self.params)
             if not self.params.get('prompt_template_id'):

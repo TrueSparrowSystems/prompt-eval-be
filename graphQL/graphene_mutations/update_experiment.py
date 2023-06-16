@@ -20,6 +20,13 @@ class UpdateExperimentMutation(MutateBase):
 
     @classmethod
     def self_mutate(cls, root, info, update_experiment_data=None):
+        """
+        update experiment
+        
+        @params: update_experiment_data: A dictionary containing the parameters for the experiment.
+
+        @return: A dictionary containing the experiment.
+        """
         experiment = Experiment.objects.get(id=update_experiment_data.id)
 
         if update_experiment_data.name:

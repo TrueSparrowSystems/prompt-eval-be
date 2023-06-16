@@ -19,6 +19,13 @@ class CreateTestCasesMutation(MutateBase):
 
     @classmethod
     def self_mutate(cls, root, info, test_case_data=None):
+        """
+        create test case
+        
+        @params: test_case_data: A dictionary containing the parameters for the test case.
+
+        @return: A dictionary containing the test case.
+        """
         if not CommonValiator.max_length_validation(test_case_data.name, 70):
             raise InvalidLengthError(code = "g_gm_ctc_1", param="name")       
 

@@ -21,6 +21,13 @@ class UpdatePromptTemplateMutation(MutateBase):
 
     @classmethod
     def self_mutate(cls, root, info, update_prompt_template_data=None):
+        """
+        update prompt template
+
+        @params: update_prompt_template_data: A dictionary containing the parameters for the prompt template.
+
+        @return: A dictionary containing the prompt template.
+        """
         prompt_template = PromptTemplate.objects.get(id=update_prompt_template_data.id)
 
         if update_prompt_template_data.name:

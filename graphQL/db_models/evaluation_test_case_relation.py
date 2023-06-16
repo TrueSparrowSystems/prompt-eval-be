@@ -21,6 +21,14 @@ class EvaluationTestCaseRelation(ModelBase):
 
     @classmethod
     def bulk_create_evaluation_test_case_relation(cls, params):
+        """
+        Bulk creates evaluation test case relations.
+        
+        @params: A list of dictionaries containing the parameters for each evaluation test case relation.
+                Each dictionary should contain the keys.
+                
+        @return: A list of created evaluation test case relations.
+        """
         evaluation_test_case_relations = []
         for param in params:
             evaluation_test_case_relation = cls()
@@ -50,6 +58,13 @@ class EvaluationTestCaseRelation(ModelBase):
     @classmethod
     # update actual_result and accuracy in evaluation_test_case_relation collection using jsol_order and evaluation_id
     def update_evaluation_test_case_relation(cls, params):
+        """
+        Updates evaluation test case relation.
+
+        @params: A dictionary containing the parameters for each evaluation test case relation.
+
+        @return: True if the update is successful, False otherwise.
+        """
         try:
             cls.objects(evaluation_id=params['evaluation_id'], jsonl_order=params['jsonl_order']).update(
                 set__actual_result=params['actual_result'], set__accuracy=params['accuracy'])
@@ -61,6 +76,14 @@ class EvaluationTestCaseRelation(ModelBase):
     
     @classmethod
     def delete_records_by_evaluation_id(cls, evaluation_id):
+        """
+        Deletes evaluation test case relation records by evaluation ID.
+
+        @params: Evaluation ID.
+
+        @return: True if the deletion is successful, False otherwise.
+        """
+
         try:
             cls.objects(evaluation_id=evaluation_id).delete()
         except Exception as e:

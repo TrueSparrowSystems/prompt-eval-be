@@ -20,6 +20,13 @@ class UpdateTestCasesMutation(MutateBase):
 
     @classmethod
     def self_mutate(cls, root, info, update_test_case_data=None):
+        """
+        update test case
+
+        @params: update_test_case_data: A dictionary containing the parameters for the test case.
+
+        @return: A dictionary containing the test case.
+        """
         testCase = TestCase.objects.get(id=update_test_case_data.id)
 
         if update_test_case_data.name:

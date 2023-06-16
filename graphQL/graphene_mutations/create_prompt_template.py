@@ -20,6 +20,13 @@ class CreatePromptTemplateMutation(MutateBase):
 
     @classmethod
     def self_mutate(cls, root, info, prompt_template_data=None):
+        """
+        create prompt template
+
+        @params: prompt_template_data: A dictionary containing the parameters for the prompt template.
+
+        @return: A dictionary containing the prompt template.
+        """
         if not CommonValiator.max_length_validation(prompt_template_data.name, 70):
             raise InvalidLengthError(code = "g_gm_cpt_1", param="name")
 
