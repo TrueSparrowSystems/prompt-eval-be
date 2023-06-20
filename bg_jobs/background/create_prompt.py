@@ -11,21 +11,16 @@ class CreatePrompt:
             template_conversations = self.prompt_template_obj.conversation
             pattern = r"\{\{[a-zA-Z0-9_]+\}\}"
 
-            print('Conversations:   ', template_conversations)
             for conversion in template_conversations:
                 content = conversion['content']
-                print('content:   ', content)
-                #content = "{a} and {b} are friends"
+        
                 matches = re.findall(pattern, content)
-                print('matches:   ', matches)
+    
                 replaced_content = content
-                print('replaced_content:   ', replaced_content)
                 for match in matches:
                     key = match.replace("{{", "").replace("}}", "")
-                    print('self.test_case.dynamic_var_values:   ', self.test_case.dynamic_var_values)
                     if key in self.test_case.dynamic_var_values:
                         replaced_content = content.replace(match, self.test_case.dynamic_var_values[key])
-                print('replaced_content:   ', replaced_content)
                 prompt.append({'role': conversion['role'], 'content': replaced_content})          
             
             return prompt

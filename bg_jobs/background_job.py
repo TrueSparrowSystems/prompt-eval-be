@@ -3,7 +3,7 @@ import bg_jobs.globals as globals
 import time
 
 def background_job(params):
-    print('sigint_triggered:::', globals.SIGINT_TRIGGERED)
+    print('Sigint Triggered::: ', globals.SIGINT_TRIGGERED)
 
     if not globals.SIGINT_TRIGGERED:
         globals.PROCESS_COMPLETED = False
@@ -12,11 +12,10 @@ def background_job(params):
             task = BgJob(params)
             return task.perform()
         except Exception as e:
-            print("error while executing BG job------", e)
             return e
         finally:
             globals.PROCESS_COMPLETED = True
-            print("process_completed:::", globals.PROCESS_COMPLETED)
+            print("Process Completed::: ", globals.PROCESS_COMPLETED)
             
     
         
