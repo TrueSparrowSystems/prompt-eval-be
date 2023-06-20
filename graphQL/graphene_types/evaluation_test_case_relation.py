@@ -1,4 +1,4 @@
-from graphene import ObjectType, String, Int, List, Field, Float, ID
+from graphene import ObjectType, String, List, Float, ID
 
 
 class OutputConversationType(ObjectType):
