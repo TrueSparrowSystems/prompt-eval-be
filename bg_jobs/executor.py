@@ -1,6 +1,5 @@
 
 import concurrent.futures
-from bg_jobs.background_job import background_job
 from decouple import config
 
 
