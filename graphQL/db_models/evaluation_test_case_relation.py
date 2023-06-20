@@ -48,7 +48,6 @@ class EvaluationTestCaseRelation(ModelBase):
         return evaluation_test_case_relations
     
     @classmethod
-    # update actual_result and accuracy in evaluation_test_case_relation collection using jsol_order and evaluation_id
     def update_evaluation_test_case_relation(cls, params):
         try:
             cls.objects(evaluation_id=params['evaluation_id'], jsonl_order=params['jsonl_order']).update(

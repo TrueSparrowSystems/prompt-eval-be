@@ -20,8 +20,7 @@ class PromptTemplate(ModelBase):
     conversation = ListField()
     experiment_id = ObjectIdField(required=True)
     status = EnumField(Status)
-    
-    #Write method to get prompt by prompt id
+   
     @classmethod
     def prompt_by_id(cls, prompt_id):
         return cls.objects.get(id=prompt_id)
