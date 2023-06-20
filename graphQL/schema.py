@@ -60,8 +60,10 @@ class Query(graphene.ObjectType):
             offset = (page - 1) * limit
             total_count = None
             if page == 1:
+                # TODO - Review - Remove below
                 # i want both condition to be true in filter write a code for that
                 total_count = PromptTemplate.objects.filter(experiment_id=experimentId, status="ACTIVE").count()
+                # TODO - Review - Remove below
                 # (experiment_id=experimentId).count()
             is_runnable = TestCase.objects(experiment_id=experimentId, status="ACTIVE").count() > 0
             prompts = PromptTemplate.objects.filter(experiment_id=experimentId, status="ACTIVE").order_by('-created_at')[offset:offset+limit]
