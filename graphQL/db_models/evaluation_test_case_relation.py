@@ -8,7 +8,7 @@ from mongoengine.fields import (
 )
 
 class EvaluationTestCaseRelation(ModelBase):
-    meta = {'collection': 'evaluation_test_case_relation'}
+    meta = {'collection': 'evaluation_test_case_relations'}
     evaluation_id = ObjectIdField(required=True)
     prompt = ListField(required=True)
     test_case_id = ObjectIdField(required=True)

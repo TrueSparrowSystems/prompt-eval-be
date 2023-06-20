@@ -14,7 +14,7 @@ class Status(Enum):
 
     
 class PromptTemplate(ModelBase):
-    meta = {'collection': 'prompt_template'}
+    meta = {'collection': 'prompt_templates'}
     name = StringField(required=True)
     description = StringField(max_length=255)
     conversation = ListField()

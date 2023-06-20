@@ -14,7 +14,7 @@ class Status(Enum):
     DELETED = 'DELETED'
 
 class Experiment(ModelBase):
-    meta = {'collection': 'experiment'}
+    meta = {'collection': 'experiments'}
     name = StringField(required=True)
     description = StringField(max_length=255)
     dynamic_vars = ListField(StringField(max_length=255))
