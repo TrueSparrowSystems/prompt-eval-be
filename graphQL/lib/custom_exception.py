@@ -19,7 +19,6 @@ class ParamValidationError(GraphQLError):
             "paramName": paramName
         }
 
-# TODO - Review - Why do we have INVALID_LENGTH_ERROR here and code above
 class InvalidLengthError(ParamValidationError):
     def __init__(self, code, param, message="Invalid length", debug=INVALID_LENGTH_ERROR):
         super().__init__(message, param, debug, code)
