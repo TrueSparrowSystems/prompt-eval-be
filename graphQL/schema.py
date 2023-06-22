@@ -67,8 +67,6 @@ class Query(graphene.ObjectType):
             if page == 1:
                 # Count the total number of active prompt templates for the given experiment
                 total_count = PromptTemplate.objects.filter(experiment_id=experimentId, status="ACTIVE").count()
-                # TODO - Review - Remove below
-                # (experiment_id=experimentId).count()
             is_runnable = TestCase.objects(experiment_id=experimentId, status="ACTIVE").count() > 0
             # Retrieve active prompt templates for the given experiment, ordered by creation date
             prompts = PromptTemplate.objects.filter(experiment_id=experimentId, status="ACTIVE").order_by('-created_at')[offset:offset+limit]
