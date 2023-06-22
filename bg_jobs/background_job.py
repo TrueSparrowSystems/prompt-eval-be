@@ -21,16 +21,12 @@ def background_job(params):
             # Create an instance of the BgJob class and perform the task
             task = BgJob(params)
             return task.perform()
-            time.sleep(1)
-            print(f"Sleeping done {params['evaluation_id']}, {params['prompt_template_id']}")
         except Exception as e:
-            # Print an error message if an exception occurs during the execution of the background job
-            print("error while executing BG job------", e)
             return e
         finally:
             # Set the global variable PROCESS_COMPLETED to True
             globals.PROCESS_COMPLETED = True
-            print("process_completed:::", globals.PROCESS_COMPLETED)
+            print("Process Completed::: ", globals.PROCESS_COMPLETED)
             
     
         

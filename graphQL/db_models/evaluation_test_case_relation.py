@@ -8,7 +8,7 @@ from mongoengine.fields import (
 )
 
 class EvaluationTestCaseRelation(ModelBase):
-    meta = {'collection': 'evaluation_test_case_relation'}
+    meta = {'collection': 'evaluation_test_case_relations'}
     evaluation_id = ObjectIdField(required=True)
     prompt = ListField(required=True)
     test_case_id = ObjectIdField(required=True)
@@ -56,7 +56,6 @@ class EvaluationTestCaseRelation(ModelBase):
         return evaluation_test_case_relations
     
     @classmethod
-    # update actual_result and accuracy in evaluation_test_case_relation collection using jsol_order and evaluation_id
     def update_evaluation_test_case_relation(cls, params):
         """
         Updates evaluation test case relation.

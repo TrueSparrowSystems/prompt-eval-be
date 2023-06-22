@@ -1,4 +1,4 @@
-from graphene import relay,String,Int, List, ObjectType, ID, Float, InputObjectType, JSONString
+from graphene import String, List, ObjectType
 
 
 class GetEvalAndModelType(ObjectType):

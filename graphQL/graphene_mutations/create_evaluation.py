@@ -1,8 +1,6 @@
 import graphene
 from graphQL.db_models.evaluation import Evaluation
 from .mutation_base import MutateBase
-from graphQL.lib.helper import CommonValiator
-from graphQL.lib.custom_exception import InvalidLengthError
 from graphQL.graphene_types.report import ReportBaseType
 
 from bg_jobs.background_job import background_job

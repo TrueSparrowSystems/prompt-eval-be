@@ -1,4 +1,4 @@
-from graphene import relay,String,Int, List, ObjectType, ID, Float, InputObjectType
+from graphene import String, Int, List, ObjectType, ID, Float
 from graphQL.graphene_types.evaluation_test_case_relation import EvaluationTestCaseRelationType
 
 class ReportBaseType(ObjectType):
