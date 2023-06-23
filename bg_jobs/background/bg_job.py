@@ -83,7 +83,7 @@ class BgJob():
             self.raise_error("invalid params", "bg_j_b_bg_j_p_v_1")
             
     """
-    update status of evaluation to RUNNING and update initiated_at
+    Update evaluation status to RUNNING
 
     @sets {Object} self.evaluation
     """
@@ -100,7 +100,7 @@ class BgJob():
 
             
     """
-    fetch testcases by prompt_template_id
+    Fetch Test Cases by prompt template id
 
     @sets {Object} self.test_cases
     """
@@ -113,7 +113,7 @@ class BgJob():
             self.raise_error(f"error while fetching test cases: {str(e)}", "f_t_c_b_p_t_i_2")
     
     """
-    create evaluation test case relation make entry in evaluation_test_case_relation table
+    Create records in evaluation test case relation table
 
     @sets {Object} self.evaluation_test_case_relation_records
     """
@@ -140,10 +140,9 @@ class BgJob():
             self.raise_error(f"error while creating evaluation test case relation {str(e)}", "c_e_t_c_r_1")
         
     """
-    create prompt by replacing dynamic variables with values in prompt template by test case
+    Create prompt for each test case
 
     @params {Object} testcase
-    @params {Object} self.prompt_template_obj
 
     @returns {Object} prompt
     """
@@ -156,7 +155,7 @@ class BgJob():
         return prompt    
     
     """
-    create input jsonl file for evals framework
+    Create input jsonl file for evals framework
 
     @sets {Object} self.evaluation_test_case_relation_records
     """
@@ -186,8 +185,8 @@ class BgJob():
             self.raise_error(str(e), "c_j_f_1")
  
     """
-    create ymal file for choosing evaluator for evals framework
-    build new ymal file from base ymal file according to eval name
+    Create ymal file for choosing evaluator for evals framework
+    Build new ymal file from base ymal file according to eval name
 
     @sets {Object} self.yaml_file
     """
@@ -323,7 +322,7 @@ class BgJob():
                 
 
     """
-    update evaluation table by setting status to COMPLETED and update accuracy and run_id
+    Update evaluation status to COMPLETED and update accuracy and run_id
 
     @sets {Object} self.evaluation
     """

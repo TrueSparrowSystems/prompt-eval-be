@@ -21,7 +21,7 @@ class SanitizeMiddleware:
         self.get_response = get_response
 
     """
-    Recursively sanitizes dictionary values by applying cleaning operations.
+    Sanitize the request body and query parameters.
 
     @param {Dict} request
 

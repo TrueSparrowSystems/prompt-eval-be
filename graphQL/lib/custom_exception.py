@@ -6,7 +6,7 @@ custom exception class for defining custom exceptions
 
 @class CustomExpetion
 """
-class CustomExpetion(GraphQLError):
+class CustomException(GraphQLError):
     """
     custom exception extend graphene error class
 

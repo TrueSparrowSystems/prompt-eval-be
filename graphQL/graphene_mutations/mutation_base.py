@@ -1,6 +1,6 @@
 import graphene
 from django.core.exceptions import ObjectDoesNotExist
-from graphQL.lib.custom_exception import CustomExpetion,ParamValidationError
+from graphQL.lib.custom_exception import CustomException,ParamValidationError
 from graphql import GraphQLError
 from graphQL.lib.constants.error_codes import INVALID_LENGTH_ERROR
 
@@ -19,7 +19,7 @@ class MutateBase(graphene.Mutation):
     def mutate(cls,root, info, **kwargs):
         try:
             return cls.self_mutate(root, info, **kwargs)
-        except CustomExpetion as e:
+        except CustomException as e:
             return e
         except ParamValidationError as e:
             return e
