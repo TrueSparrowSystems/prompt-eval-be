@@ -8,7 +8,7 @@ from mongoengine.fields import (
 )
 
 class EvaluationTestCaseRelation(ModelBase):
-    meta = {'collection': 'evaluation_test_case_relation'}
+    meta = {'collection': 'evaluation_test_case_relations'}
     evaluation_id = ObjectIdField(required=True)
     prompt = ListField(required=True)
     test_case_id = ObjectIdField(required=True)
@@ -19,6 +19,22 @@ class EvaluationTestCaseRelation(ModelBase):
     accuracy = FloatField(null=True)
     jsonl_order = IntField()
 
+    """
+    Bulk creates evaluation test case relations.
+    
+    @params {Object} params
+    @params {String} params.evaluation_id
+    @params {String} params.prompt
+    @params {String} params.test_case_id
+    @params {String} params.test_case_name
+    @params {String} params.test_case_description
+    @params {String} params.acceptable_result
+    @params {String} params.jsonl_order
+    @params {String} params.accuracy
+    @params {String} params.actual_result   
+
+    @returns {Object} evaluation_test_case_relations
+    """
     @classmethod
     def bulk_create_evaluation_test_case_relation(cls, params):
         evaluation_test_case_relations = []
@@ -47,8 +63,18 @@ class EvaluationTestCaseRelation(ModelBase):
         
         return evaluation_test_case_relations
     
+    """
+    Updates evaluation test case relation.
+
+    @params {Object} params
+    @params {String} params.evaluation_id
+    @params {String} params.jsonl_order
+    @params {String} params.actual_result
+    @params {String} params.accuracy
+
+    @returns {Boolean} 
+    """
     @classmethod
-    # update actual_result and accuracy in evaluation_test_case_relation collection using jsol_order and evaluation_id
     def update_evaluation_test_case_relation(cls, params):
         try:
             cls.objects(evaluation_id=params['evaluation_id'], jsonl_order=params['jsonl_order']).update(
@@ -59,8 +85,16 @@ class EvaluationTestCaseRelation(ModelBase):
         
         return True
     
+    """
+    Deletes evaluation test case relation records by evaluation ID.
+
+    @params {String} evaluation_id
+
+    @returns {Boolean}
+    """
     @classmethod
     def delete_records_by_evaluation_id(cls, evaluation_id):
+
         try:
             cls.objects(evaluation_id=evaluation_id).delete()
         except Exception as e:

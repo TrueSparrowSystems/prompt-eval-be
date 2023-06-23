@@ -1,10 +1,12 @@
-from graphene import ObjectType, String, Int, List, Field, Float, ID
+from graphene import ObjectType, String, List, Float, ID
 
 
+# Define custom conversation type
 class OutputConversationType(ObjectType):
     role = String()
     content = String()
 
+# Define custom evaluation test case relation type
 class EvaluationTestCaseRelationType(ObjectType):
     id = ID()
     evaluation_id = ID()

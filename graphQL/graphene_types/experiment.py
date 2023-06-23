@@ -1,4 +1,4 @@
-from graphene import relay,String,Int, List, ObjectType, ID, Float, InputObjectType
+from graphene import String, Int, List, ObjectType, ID
 
 class ExperimentType(ObjectType):
     id = ID()

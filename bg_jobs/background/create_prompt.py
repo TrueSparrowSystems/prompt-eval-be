@@ -1,31 +1,47 @@
 import re
 
+"""
+create prompt by replacing dynamic variables with values in prompt template by test case
+
+@class CreatePrompt
+"""
 class CreatePrompt:
+    """
+    Initialize the CreatePrompt object with the provided parameters
+    
+    @params {Object} params
+    @params {Object} params.test_case
+    @params {Object} params.prompt_template_obj
+
+    @returns {Object} params
+    """
     def __init__(self, params):
         self.test_case = params['test_case']
         self.prompt_template_obj = params['prompt_template_obj']
 
+    """
+    perfrom create prompt which replace dynamic variables with values in prompt template by test case
+
+    @returns {Object} prompt
+    """
     def perform(self):
         try:
             prompt = []
             template_conversations = self.prompt_template_obj.conversation
+            
+            # Regex pattern to find dynamic variables in prompt template
             pattern = r"\{\{[a-zA-Z0-9_]+\}\}"
 
-            print('Conversations:   ', template_conversations)
             for conversion in template_conversations:
                 content = conversion['content']
-                print('content:   ', content)
-                #content = "{a} and {b} are friends"
+        
                 matches = re.findall(pattern, content)
-                print('matches:   ', matches)
+    
                 replaced_content = content
-                print('replaced_content:   ', replaced_content)
                 for match in matches:
                     key = match.replace("{{", "").replace("}}", "")
-                    print('self.test_case.dynamic_var_values:   ', self.test_case.dynamic_var_values)
                     if key in self.test_case.dynamic_var_values:
                         replaced_content = content.replace(match, self.test_case.dynamic_var_values[key])
-                print('replaced_content:   ', replaced_content)
                 prompt.append({'role': conversion['role'], 'content': replaced_content})          
             
             return prompt

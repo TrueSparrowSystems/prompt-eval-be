@@ -3,6 +3,8 @@ import sys
 from decouple import config
 from graphQL.db_models.test_case import TestCase
 
+# To Execute: python -m onetimers.delete_testcases <testcaseIDs>
+
 _MONGODB_USER = config('PE_MONGODB_USER')
 _MONGODB_PASSWD = config('PE_MONGODB_PASSWORD')
 _MONGODB_HOST = config('PE_MONGODB_HOST')

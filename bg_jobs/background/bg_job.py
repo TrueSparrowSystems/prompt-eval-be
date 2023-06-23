@@ -13,7 +13,19 @@ import subprocess
 import os
 import shutil
 
+"""
+bg job class which perform background job for evaluation
+
+@class BgJob
+"""
 class BgJob():
+    """
+    Constructor for the BgJob class.
+
+    @params {Object} params
+    @params {String} params.evaluation_id
+    @params {String} params.prompt_template_id
+    """
     def __init__(self, params):
         self.params = params
         self.accuracy = 0
@@ -46,11 +58,12 @@ class BgJob():
             self.clean_up()
             
         except Exception as e:
-            print('Error while perform: ',str(e))
             self.update_evaluation_on_error(e)
             self.evaluation = Evaluation.objects.get(id=self.params['evaluation_id'])
+            
             EvaluationTestCaseRelation.delete_records_by_evaluation_id(evaluation_id=self.params['evaluation_id'])
             self.clean_up()
+
             if(self.evaluation.retry_count <= 3 and self.evaluation.status == Status['FAILED']):
                 print('************* Retrying BGJOB Perform ****************')
                 self.perform()
@@ -59,6 +72,9 @@ class BgJob():
                 return str(e)
             
         
+    """
+    check if evaluation_id or prompt_template_id is present in params
+    """
     def params_validation(self) :
         print('****************BGJOB params_validation ****************')
         if (not self.params.get('evaluation_id') and 
@@ -66,6 +82,11 @@ class BgJob():
             ):
             self.raise_error("invalid params", "bg_j_b_bg_j_p_v_1")
             
+    """
+    Update evaluation status to RUNNING
+
+    @sets {Object} self.evaluation
+    """
     def update_evaluation_status(self):
         try:
             print('****************BGJOB update_evaluation_status ****************')
@@ -75,10 +96,14 @@ class BgJob():
             self.evaluation.status = Status['RUNNING']
             self.evaluation.save()
         except Exception as e:
-            print('error while updating status', str(e))
             self.raise_error(f"error while updating status:: {str(e)}", "bg_j_b_u_e_s_1")
 
             
+    """
+    Fetch Test Cases by prompt template id
+
+    @sets {Object} self.test_cases
+    """
     def fetch_testcases_by_prompt_template_id(self):
         try:
             self.test_cases = FetchTestCasesByPromptId(self.params).perform()
@@ -87,6 +112,11 @@ class BgJob():
         except Exception as e:
             self.raise_error(f"error while fetching test cases: {str(e)}", "f_t_c_b_p_t_i_2")
     
+    """
+    Create records in evaluation test case relation table
+
+    @sets {Object} self.evaluation_test_case_relation_records
+    """
     def create_evaluation_test_case_relation(self):
         try:
             self.prompt_template_obj = PromptTemplate.prompt_by_id(self.params['prompt_template_id'])
@@ -105,13 +135,18 @@ class BgJob():
                 })
                 jsonl_order += 1
             
-            print("insertObjects length:   ", len(insertObjects), insertObjects[0])
             EvaluationTestCaseRelation.bulk_create_evaluation_test_case_relation(insertObjects)  
         except Exception as e:
             self.raise_error(f"error while creating evaluation test case relation {str(e)}", "c_e_t_c_r_1")
         
+    """
+    Create prompt for each test case
+
+    @params {Object} testcase
+
+    @returns {Object} prompt
+    """
     def create_prompt(self, testcase):
-        
         prompt = CreatePrompt({
             'test_case': testcase, 
             'prompt_template_obj': self.prompt_template_obj
@@ -119,34 +154,42 @@ class BgJob():
                 
         return prompt    
     
+    """
+    Create input jsonl file for evals framework
+
+    @sets {Object} self.evaluation_test_case_relation_records
+    """
     def create_jsonl_file(self):
         try:
             self.evaluation_test_case_relation_records = EvaluationTestCaseRelation.objects.filter(
                 evaluation_id=self.params['evaluation_id']
             ).order_by('jsonl_order')
             
-            print('evaluation_test_case_relation_records:   ', self.evaluation_test_case_relation_records.count())
-            
             jsonl_base_path = config('PE_JSONL_FOLDER_BASE_PATH')
             jsonl_folder_path = os.path.join(os.getcwd(), jsonl_base_path)
             if not os.path.exists(jsonl_folder_path):
                 os.makedirs(jsonl_folder_path)
             unix_time = int(time.time())
-            print('base_dir', os.getcwd())
+            
             self.jsonl_file = os.path.join(jsonl_folder_path, str((self.params['evaluation_id'])) + '_' + str(unix_time) + '.jsonl')
-            print('jsonl_file:   ', self.jsonl_file)
+
             with open(self.jsonl_file, mode='w') as output_jsonl:
                 for evaluation_test_case_relation_record in self.evaluation_test_case_relation_records:
                     prompt = evaluation_test_case_relation_record['prompt']
                     acceptable_result = evaluation_test_case_relation_record['acceptable_result']
                     data = {'input': prompt, 'ideal': acceptable_result}
-                    print('data:   ', data)
+                
                     json.dump(data, output_jsonl)
                     output_jsonl.write('\n')
         except Exception as e:
-            print("Error while creating jsonl file: ", str(e))
             self.raise_error(str(e), "c_j_f_1")
  
+    """
+    Create ymal file for choosing evaluator for evals framework
+    Build new ymal file from base ymal file according to eval name
+
+    @sets {Object} self.yaml_file
+    """
     def create_yaml_file(self):
         try:
             self.yaml_folder = os.path.join(os.getcwd(), config('PE_YAML_FOLDER_BASE_PATH'))
@@ -160,10 +203,8 @@ class BgJob():
                 os.mkdir(self.eval_folder)
 
             self.yaml_file = os.path.join(self.eval_folder, str(self.params['evaluation_id']) + '_' + str(unix_time) + '.yaml')
-            print('yaml_file:   ', self.yaml_file)  
                 
             base_yaml_file = os.path.join(self.yaml_folder, 'base.yaml')
-            print('base_yaml_file:   ', base_yaml_file)
             
             eval_name = self.evaluation['eval']
             evaluation_id = self.params['evaluation_id']
@@ -175,19 +216,14 @@ class BgJob():
             if eval_name == 'graphql':
                 fuzzy_boolean = True
                 extract_gql_boolean = True
-
-            print('eval_name:   evaluation_id:  version:    class_name:     jsonl_file_path:', eval_name, evaluation_id, version, class_name, jsonl_file_path)
             
             with open(base_yaml_file, "r") as file:
                 # Load the YAML contents into a Python dictionary
                 yaml_dict = yaml.load(file, Loader=yaml.FullLoader)
-                print('yaml_dict-----', yaml_dict)
                 if eval_name != 'graphql':
-                    # Remove the two lines from the dictionary
                     del yaml_dict['eval_name.evaluation_id.version']['args']['fuzzy']
                     del yaml_dict['eval_name.evaluation_id.version']['args']['extract_gql']
                 yaml_str = yaml.dump(yaml_dict)
-                print('yaml_str-----', yaml_dict)
                 yaml_str = yaml_str.replace("eval_name", eval_name)
                 yaml_str = yaml_str.replace("evaluation_id", str(evaluation_id))
                 yaml_str = yaml_str.replace("version", version)
@@ -196,15 +232,18 @@ class BgJob():
                 yaml_str = yaml_str.replace("jsonl_file_path", jsonl_file_path)
                 yaml_str = yaml_str.replace("fuzzy_boolean", str(fuzzy_boolean))
                 yaml_str = yaml_str.replace("extract_gql_boolean", str(extract_gql_boolean))
-                print('yaml_str after replacement-----', yaml_str)
 
             with open(self.yaml_file, "w") as file:
                 file.write(yaml_str)
         except Exception as e:
-            print("Error while creating yaml file: ", e)
             self.raise_error(str(e), "c_y_f_1" )
 
 
+    """
+    update evals parameter in evaluation table
+
+    @sets {Object} self.evaluation
+    """
     def update_evals_parameter(self):  
         try:
             self.evaluation = Evaluation.objects.get(id=self.params['evaluation_id'])
@@ -214,9 +253,13 @@ class BgJob():
             }
             self.evaluation.save()
         except Exception as e:
-            print("Error while updating files in evaluation db: ", str(e))
             self.raise_error(str(e), "u_e_p_1" )
                 
+    """
+    run evaluation using CLI by making command which take jsoln file and ymal file as input
+
+    @sets {Object} self.evaluation
+    """
     def run_evaluation(self):
         try:
             
@@ -225,37 +268,6 @@ class BgJob():
             self.record_path = os.path.join(self.eval_folder, f"output_{str(self.params['evaluation_id'])}.jsonl")
             registry_path = self.yaml_folder
             
-            # completion_fn = 'gpt-3.5-turbo'
-            # eval = 'graphql.6453a63ea80680d9183b7d6b'
-            # self.record_path = '/Users/shraddha/git/prompt-eval-be/YAML/evals/output.jsonl'
-            # registry_path = '/Users/shraddha/git/prompt-eval-be/YAML'
-            print('completion_fn:   ', completion_fn)
-            print('eval:   ', eval)
-            print('record_path:   ', self.record_path)
-            print('registry_path:   ', registry_path)
-            
-            # Using command
-            
-            # args = EvalArguments(
-            #     extra_eval_params='',
-            #     max_samples=None,
-            #     cache=True,
-            #     visible='',
-            #     user='',
-            #     completion_fn='gpt-3.5-turbo',
-            #     eval='graphql-fuzzy',
-            #     seed=20220722,
-            #     record_path='/Users/shraddha/git/prompt-eval-be/JSONL/output.jsonl',
-            #     registry_path=['/Users/shraddha/git/prompt-eval-be/YAML'],
-            #     debug=True,
-            #     local_run=True,
-            #     dry_run_logging=True
-            # )
-            
-            # oaieval.run(args)
-            # print('Execution ended::')
-            
-            # Using CLI
 
             command = f"oaieval {completion_fn} {eval} --debug --registry_path {registry_path} --record_path {self.record_path}"
             print('command--------', command)
@@ -264,9 +276,11 @@ class BgJob():
                     print(line, end='')
 
         except Exception as e:
-            print('Error while running evals:   ', str(e))
             self.raise_error(str(e), "bg_j_b_bg_j_r_e_1", "EVALS_RUN_ERROR")
             
+    """
+    update database from output jsonl file which generated from evals framework
+    """
     def update_evaluation_test_case_relation(self):
         try:
             actual_results = {}
@@ -276,15 +290,11 @@ class BgJob():
                 for line in f:
 
                     line = line.strip()
-                    print("\n\nbefore load",)
                     data = json.loads(line)
-                    print("\n\n",line_number)
                     eval_name = self.evaluation['eval']
                     if data.get('final_report'):
-                        print('Inside final report:')
                         self.accuracy = data['final_report']['accuracy']
                     elif data.get('spec'):
-                        print('Inside spec :')
                         self.run_id = data['spec']['run_id']
                     elif data.get('type') == 'sampling':
                         jsonl_order = data['sample_id'].split('.')[2]
@@ -300,22 +310,22 @@ class BgJob():
                         accuracy_results[jsonl_order] = accuracy
                     line_number += 1
                     
-            print("line_number:   ", line_number)
-            print("actual_results:   ", actual_results, len(actual_results))
-            print("accuracy_results:   ", accuracy_results, len(accuracy_results))
-                    
             for key in actual_results.keys():  
                     params = {}
                     params['actual_result'] = actual_results.get(str(key),None)
                     params['accuracy'] = accuracy_results.get(str(key),None)
                     params['jsonl_order'] = key
                     params['evaluation_id'] = self.params['evaluation_id']
-                    print("params:   ", params)
                     EvaluationTestCaseRelation.update_evaluation_test_case_relation(params)
         except Exception as e:
             self.raise_error(str(e), "u_e_t_c_r_1" )
                 
 
+    """
+    Update evaluation status to COMPLETED and update accuracy and run_id
+
+    @sets {Object} self.evaluation
+    """
     def update_evaluation(self):
         try:
             self.evaluation = Evaluation.objects.get(id=self.params['evaluation_id'])
@@ -327,6 +337,11 @@ class BgJob():
         except Exception as e:
             self.raise_error(str(e), "u_e_1" )
     
+    """
+    update evaluation table by setting status to FAILED and update error_object and retry_count
+
+    @sets {Object} self.evaluation
+    """
     def update_evaluation_on_error(self, error):
         self.evaluation = Evaluation.objects.get(id=self.params['evaluation_id'])
         self.evaluation.status = 'FAILED'
@@ -339,6 +354,9 @@ class BgJob():
         self.evaluation.save()
             
         
+    """
+    delete jsonl file and yaml file after evaluation or on error
+    """
     def clean_up(self):
         try:
             if os.path.exists(self.record_path):

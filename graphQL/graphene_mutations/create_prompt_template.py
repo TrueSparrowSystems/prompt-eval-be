@@ -18,6 +18,17 @@ class CreatePromptTemplateMutation(MutateBase):
 
     promptTemplate = graphene.Field(PromptTemplateType)
 
+    """
+    create prompt template
+
+    @params {Object} prompt_template_data
+    @params {String} prompt_template_data.name
+    @params {String} prompt_template_data.description
+    @params {String} prompt_template_data.conversation
+    @params {String} prompt_template_data.experiment_id
+
+    @returns {Object} CreatePromptTemplateMutation object
+    """
     @classmethod
     def self_mutate(cls, root, info, prompt_template_data=None):
         if not CommonValiator.max_length_validation(prompt_template_data.name, 70):

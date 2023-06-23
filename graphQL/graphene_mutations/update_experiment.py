@@ -18,6 +18,17 @@ class UpdateExperimentMutation(MutateBase):
 
     experiment = graphene.Field(ExperimentType)
 
+    """
+    update experiment
+    
+    @params {Object} update_experiment_data
+    @params {String} update_experiment_data.id
+    @params {String} update_experiment_data.name
+    @params {String} update_experiment_data.description
+    @params {String} update_experiment_data.dynamic_vars
+
+    @returns {Object} UpdateExperimentMutation object
+    """
     @classmethod
     def self_mutate(cls, root, info, update_experiment_data=None):
         experiment = Experiment.objects.get(id=update_experiment_data.id)

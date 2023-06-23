@@ -1,8 +1,6 @@
 import graphene
 from graphQL.db_models.evaluation import Evaluation
 from .mutation_base import MutateBase
-from graphQL.lib.helper import CommonValiator
-from graphQL.lib.custom_exception import InvalidLengthError
 from graphQL.graphene_types.report import ReportBaseType
 
 from bg_jobs.background_job import background_job
@@ -21,6 +19,16 @@ class CreateEvaluationMutation(MutateBase):
 
     report = graphene.Field(ReportBaseType)
 
+    """
+    create evaluation report
+
+    @params {Object} evaluation_data
+    @params {String} evaluation_data.prompt_template_id
+    @params {String} evaluation_data.model
+    @params {String} evaluation_data.eval
+
+    @returns {Object} CreateEvaluationMutation object
+    """
     @classmethod
     def self_mutate(cls, root, info, evaluation_data=None):
         report = Evaluation(prompt_template_id=evaluation_data.prompt_template_id, 
