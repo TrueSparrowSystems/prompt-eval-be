@@ -17,6 +17,18 @@ class CreateTestCasesMutation(MutateBase):
 
     testCase = graphene.Field(TestCaseType)
 
+    """
+    create test case
+    
+    @params {Object} test_case_data
+    @params {String} test_case_data.name
+    @params {String} test_case_data.description
+    @params {String} test_case_data.dynamic_var_values
+    @params {String} test_case_data.experiment_id
+    @params {String} test_case_data.expected_result
+
+    @returns {Object} CreateTestCasesMutation object
+    """
     @classmethod
     def self_mutate(cls, root, info, test_case_data=None):
         if not CommonValiator.max_length_validation(test_case_data.name, 70):

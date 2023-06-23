@@ -5,6 +5,8 @@ from graphQL.db_models.experiment import Experiment
 from graphQL.db_models.test_case import TestCase
 from graphQL.db_models.prompt_template import PromptTemplate
 
+# To Execute: python -m onetimers.activate_experiment <experimentIDs>
+
 _MONGODB_USER = config('PE_MONGODB_USER')
 _MONGODB_PASSWD = config('PE_MONGODB_PASSWORD')
 _MONGODB_HOST = config('PE_MONGODB_HOST')

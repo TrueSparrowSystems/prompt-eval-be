@@ -1,6 +1,5 @@
-from graphene import relay,String,Int, List, ObjectType, ID, Float, InputObjectType, Boolean
-from graphene_mongo import MongoengineObjectType
-from graphQL.graphene_types.report import ReportType, ReportBaseType
+from graphene import String, Int, List, ObjectType, ID, InputObjectType, Boolean
+from graphQL.graphene_types.report import ReportBaseType
 class InputConversationType(InputObjectType):
     role = String()
     content = String()

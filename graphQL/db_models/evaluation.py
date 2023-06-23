@@ -19,7 +19,7 @@ class Status(Enum):
     FAILED = 'FAILED'
 
 class Evaluation(ModelBase):
-    meta = {'collection': 'evaluation'}
+    meta = {'collection': 'evaluations'}
     model = StringField(required=True)
     eval = StringField(required=True)
     accuracy = FloatField()

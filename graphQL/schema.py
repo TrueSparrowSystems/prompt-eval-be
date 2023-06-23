@@ -22,7 +22,13 @@ from bg_jobs.globals import EVALS_CLASS_DICT
 from decouple import config
 import openai
 
+"""
+mutation class for defining GraphQL mutations
+
+@class Mutations
+"""
 class Mutations(graphene.ObjectType):
+    # Define mutation fields
     create_experiment = CreateExperimentMutation.Field()
     update_experiment = UpdateExperimentMutation.Field()
     create_prompt_template = CreatePromptTemplateMutation.Field()
@@ -31,7 +37,12 @@ class Mutations(graphene.ObjectType):
     update_test_cases = UpdateTestCasesMutation.Field()
     create_evaluation = CreateEvaluationMutation.Field()
 
-    
+
+"""
+Query class for defining GraphQL queries
+
+@class Query
+"""
 class Query(graphene.ObjectType):
     experiment_list = graphene.List(ExperimentType)
     prompt_list_by_pagination = graphene.Field(PromptTemplatePaginationType, experimentId=graphene.String(required=True), limit=graphene.Int(required=True), page=graphene.Int(required=True))
@@ -39,6 +50,13 @@ class Query(graphene.ObjectType):
     get_report = graphene.Field(ReportType, reportId=graphene.String(required=True),limit=graphene.Int(required=True), page=graphene.Int(required=True))
     get_eval_and_models = graphene.Field(GetEvalAndModelType)
 
+    """
+    resolver for the experiment_list query
+
+    @param {String} experimentId
+
+    @returns {List} List of experiments
+    """
     def resolve_experiment_list(root, info): 
         try:
             return Experiment.objects.filter(status="ACTIVE").order_by("-created_at")
@@ -53,6 +71,15 @@ class Query(graphene.ObjectType):
             )
             return error    
     
+    """
+    resolver for the prompt_list_by_pagination query
+
+    @param {String} experimentId
+    @param {Int} limit
+    @param {Int} page
+
+    @returns {List} List of prompt templates
+    """
     def resolve_prompt_list_by_pagination(self, info, experimentId=graphene.String(required=True), **kwargs):
         try:
             limit = kwargs.get('limit')
@@ -60,9 +87,7 @@ class Query(graphene.ObjectType):
             offset = (page - 1) * limit
             total_count = None
             if page == 1:
-                # i want both condition to be true in filter write a code for that
                 total_count = PromptTemplate.objects.filter(experiment_id=experimentId, status="ACTIVE").count()
-                # (experiment_id=experimentId).count()
             is_runnable = TestCase.objects(experiment_id=experimentId, status="ACTIVE").count() > 0
             prompts = PromptTemplate.objects.filter(experiment_id=experimentId, status="ACTIVE").order_by('-created_at')[offset:offset+limit]
 
@@ -83,7 +108,13 @@ class Query(graphene.ObjectType):
             )
             return error
             
+    """
+    resolver for the test_cases query
 
+    @param {String} experimentId
+
+    @returns {List} List of test cases
+    """
     def resolve_test_cases(self, info, experimentId=graphene.String(required=True)):
         try:
             return TestCase.objects.filter(experiment_id=experimentId, status="ACTIVE").order_by('-created_at')
@@ -97,7 +128,16 @@ class Query(graphene.ObjectType):
              }
             )
             return error
-        
+
+    """
+    resolver for the get_report query
+
+    @param {String} reportId
+    @param {Int} limit
+    @param {Int} page
+
+    @returns {Object} Evaluation report
+    """
     def resolve_get_report(self, info, reportId=graphene.String(required=True), **kwargs):
         try:
             limit = kwargs.get('limit')
@@ -121,6 +161,11 @@ class Query(graphene.ObjectType):
             )
             return error
     
+    """
+    resolver for the get_eval_and_models query
+    
+    @returns {Object} Evaluation report
+    """
     def resolve_get_eval_and_models(self, info):
         try:
             openai.api_key = config('OPENAI_API_KEY')
@@ -139,7 +184,7 @@ class Query(graphene.ObjectType):
             )
             return error
 
-    
+
 schema = graphene.Schema(query=Query, mutation=Mutations, types=[ExperimentType, PromptTemplatePaginationType, TestCaseType, ReportType, GetEvalAndModelType])
 
 
