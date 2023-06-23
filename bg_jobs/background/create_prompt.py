@@ -18,7 +18,8 @@ class CreatePrompt:
         try:
             prompt = []
             template_conversations = self.prompt_template_obj.conversation
-            # RE pattern to find dynamic variables in prompt template
+            
+            # Regex pattern to find dynamic variables in prompt template
             pattern = r"\{\{[a-zA-Z0-9_]+\}\}"
 
             for conversion in template_conversations:

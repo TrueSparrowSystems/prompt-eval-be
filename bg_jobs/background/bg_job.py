@@ -55,10 +55,10 @@ class BgJob():
         except Exception as e:
             self.update_evaluation_on_error(e)
             self.evaluation = Evaluation.objects.get(id=self.params['evaluation_id'])
-            # delete all records from evaluation_test_case_relation table for this evaluation_id
+            
             EvaluationTestCaseRelation.delete_records_by_evaluation_id(evaluation_id=self.params['evaluation_id'])
             self.clean_up()
-            #check if retry_count is less than 3 and status is FAILED then retry
+
             if(self.evaluation.retry_count <= 3 and self.evaluation.status == Status['FAILED']):
                 print('************* Retrying BGJOB Perform ****************')
                 self.perform()
@@ -203,7 +203,6 @@ class BgJob():
                 # Load the YAML contents into a Python dictionary
                 yaml_dict = yaml.load(file, Loader=yaml.FullLoader)
                 if eval_name != 'graphql':
-                    # Remove the two lines from the dictionary
                     del yaml_dict['eval_name.evaluation_id.version']['args']['fuzzy']
                     del yaml_dict['eval_name.evaluation_id.version']['args']['extract_gql']
                 yaml_str = yaml.dump(yaml_dict)
