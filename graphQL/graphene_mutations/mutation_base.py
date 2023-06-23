@@ -10,13 +10,13 @@ class MutateBase(graphene.Mutation):
     def self_mutate(cls, root, info, **kwargs):
         raise NotImplementedError('self_mutate must be implemented to use MutateBase')
     
+    """
+    GraphQL has a built-in error handling mechanism.
+    If an exception is raised while resolving a field, the error is captured and returned to the client.
+    However, if you want to handle errors in a custom way, you can do so by catching the exception in the resolve method.
+    """
     @classmethod
     def mutate(cls,root, info, **kwargs):
-        """
-        GraphQL has a built-in error handling mechanism.
-        If an exception is raised while resolving a field, the error is captured and returned to the client.
-        However, if you want to handle errors in a custom way, you can do so by catching the exception in the resolve method.
-        """
         try:
             return cls.self_mutate(root, info, **kwargs)
         except CustomExpetion as e:

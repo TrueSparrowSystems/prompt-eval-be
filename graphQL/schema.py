@@ -22,7 +22,11 @@ from bg_jobs.globals import EVALS_CLASS_DICT
 from decouple import config
 import openai
 
-# Mutation class for defining GraphQL mutations
+"""
+mutation class for defining GraphQL mutations
+
+@class Mutations
+"""
 class Mutations(graphene.ObjectType):
     # Define mutation fields
     create_experiment = CreateExperimentMutation.Field()
@@ -33,7 +37,12 @@ class Mutations(graphene.ObjectType):
     update_test_cases = UpdateTestCasesMutation.Field()
     create_evaluation = CreateEvaluationMutation.Field()
 
-# Query class for defining GraphQL queries
+
+"""
+Query class for defining GraphQL queries
+
+@class Query
+"""
 class Query(graphene.ObjectType):
     experiment_list = graphene.List(ExperimentType)
     prompt_list_by_pagination = graphene.Field(PromptTemplatePaginationType, experimentId=graphene.String(required=True), limit=graphene.Int(required=True), page=graphene.Int(required=True))
@@ -41,9 +50,14 @@ class Query(graphene.ObjectType):
     get_report = graphene.Field(ReportType, reportId=graphene.String(required=True),limit=graphene.Int(required=True), page=graphene.Int(required=True))
     get_eval_and_models = graphene.Field(GetEvalAndModelType)
 
-    # Resolver for the experiment_list query
+    """
+    resolver for the experiment_list query
+
+    @param {String} experimentId
+
+    @returns {List} List of experiments
+    """
     def resolve_experiment_list(root, info): 
-        # Retrieve active experiments and order them by creation date
         try:
             return Experiment.objects.filter(status="ACTIVE").order_by("-created_at")
         except Exception as e:
@@ -57,7 +71,15 @@ class Query(graphene.ObjectType):
             )
             return error    
     
-    # Resolver for the prompt_list_by_pagination quer
+    """
+    resolver for the prompt_list_by_pagination query
+
+    @param {String} experimentId
+    @param {Int} limit
+    @param {Int} page
+
+    @returns {List} List of prompt templates
+    """
     def resolve_prompt_list_by_pagination(self, info, experimentId=graphene.String(required=True), **kwargs):
         try:
             limit = kwargs.get('limit')
@@ -65,10 +87,8 @@ class Query(graphene.ObjectType):
             offset = (page - 1) * limit
             total_count = None
             if page == 1:
-                # Count the total number of active prompt templates for the given experiment
                 total_count = PromptTemplate.objects.filter(experiment_id=experimentId, status="ACTIVE").count()
             is_runnable = TestCase.objects(experiment_id=experimentId, status="ACTIVE").count() > 0
-            # Retrieve active prompt templates for the given experiment, ordered by creation date
             prompts = PromptTemplate.objects.filter(experiment_id=experimentId, status="ACTIVE").order_by('-created_at')[offset:offset+limit]
 
             for prompt in prompts:
@@ -88,10 +108,15 @@ class Query(graphene.ObjectType):
             )
             return error
             
-     # Resolver for the test_cases query
+    """
+    resolver for the test_cases query
+
+    @param {String} experimentId
+
+    @returns {List} List of test cases
+    """
     def resolve_test_cases(self, info, experimentId=graphene.String(required=True)):
         try:
-            # Retrieve active test cases for the given experiment, ordered by creation date
             return TestCase.objects.filter(experiment_id=experimentId, status="ACTIVE").order_by('-created_at')
         except Exception as e:
             print(e)
@@ -104,7 +129,15 @@ class Query(graphene.ObjectType):
             )
             return error
 
-    # Resolver for the get_report query
+    """
+    resolver for the get_report query
+
+    @param {String} reportId
+    @param {Int} limit
+    @param {Int} page
+
+    @returns {Object} Evaluation report
+    """
     def resolve_get_report(self, info, reportId=graphene.String(required=True), **kwargs):
         try:
             limit = kwargs.get('limit')
@@ -112,10 +145,8 @@ class Query(graphene.ObjectType):
             offset = (page - 1) * limit
             total_count = None
             if page == 1:
-                # Count the total number of active prompt templates for the given experiment
                 total_count = EvaluationTestCaseRelation.objects.filter(evaluation_id=reportId).count()
             evaluation_report = Evaluation.objects.get(id=reportId)
-            # Retrieve evaluation test case relations for the given report, ordered by update date
             evaluation_report.test_case_evaluation_report = EvaluationTestCaseRelation.objects.filter(evaluation_id=reportId).order_by('-updated_at')[offset:offset+limit]
             evaluation_report.total_count = total_count 
             return evaluation_report
@@ -130,10 +161,13 @@ class Query(graphene.ObjectType):
             )
             return error
     
-    # Resolver for the get_eval_and_models query
+    """
+    resolver for the get_eval_and_models query
+    
+    @returns {Object} Evaluation report
+    """
     def resolve_get_eval_and_models(self, info):
         try:
-            # Retrieve OpenAI models and evaluation types
             openai.api_key = config('OPENAI_API_KEY')
             models = openai.Model.list()
             model_ids = [model["id"] for model in models["data"]]
@@ -150,7 +184,7 @@ class Query(graphene.ObjectType):
             )
             return error
 
-# Create the schema with the defined query, mutation, and types
+
 schema = graphene.Schema(query=Query, mutation=Mutations, types=[ExperimentType, PromptTemplatePaginationType, TestCaseType, ReportType, GetEvalAndModelType])
 
 

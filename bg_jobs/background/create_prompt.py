@@ -1,20 +1,30 @@
 import re
 
+"""
+create prompt by replacing dynamic variables with values in prompt template by test case
+
+@class CreatePrompt
+"""
 class CreatePrompt:
+    """
+    Initialize the CreatePrompt object with the provided parameters
+    
+    @params {Object} params
+    @params {Object} params.test_case
+    @params {Object} params.prompt_template_obj
+
+    @returns {Object} params
+    """
     def __init__(self, params):
-        """
-        Initialize the CreatePrompt object with the provided parameters
-        @params: A dictionary containing 'test_case' and 'prompt_template_obj'
-        """
         self.test_case = params['test_case']
         self.prompt_template_obj = params['prompt_template_obj']
 
-    def perform(self):
-        """
-        perfrom create prompt which replace dynamic variables with values in prompt template by test case
+    """
+    perfrom create prompt which replace dynamic variables with values in prompt template by test case
 
-        @return: A dictionary containing the prompt.
-        """
+    @returns {Object} prompt
+    """
+    def perform(self):
         try:
             prompt = []
             template_conversations = self.prompt_template_obj.conversation

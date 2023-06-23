@@ -19,15 +19,19 @@ class UpdatePromptTemplateMutation(MutateBase):
 
     prompt_template = graphene.Field(PromptTemplateType)
 
+    """
+    update prompt template
+
+    @params {Object} update_prompt_template_data
+    @params {String} update_prompt_template_data.id
+    @params {String} update_prompt_template_data.name
+    @params {String} update_prompt_template_data.description
+    @params {String} update_prompt_template_data.conversation
+
+    @returns {Object} UpdatePromptTemplateMutation object
+    """
     @classmethod
     def self_mutate(cls, root, info, update_prompt_template_data=None):
-        """
-        update prompt template
-
-        @params: update_prompt_template_data: A dictionary containing the parameters for the prompt template.
-
-        @return: A dictionary containing the prompt template.
-        """
         prompt_template = PromptTemplate.objects.get(id=update_prompt_template_data.id)
 
         if update_prompt_template_data.name:

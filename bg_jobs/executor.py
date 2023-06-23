@@ -3,6 +3,11 @@ import concurrent.futures
 from decouple import config
 
 
+"""
+singleton thread pool executor
+
+@class SingletonThreadPoolExecutor
+"""
 class SingletonThreadPoolExecutor(concurrent.futures.ThreadPoolExecutor):
     def __new__(cls, ):
         if not hasattr(cls, '_instance'):

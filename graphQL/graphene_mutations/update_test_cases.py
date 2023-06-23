@@ -18,15 +18,20 @@ class UpdateTestCasesMutation(MutateBase):
 
     testCase = graphene.Field(TestCaseType)
 
+    """
+    update test case
+
+    @params {Object} update_test_case_data
+    @params {String} update_test_case_data.id
+    @params {String} update_test_case_data.name
+    @params {String} update_test_case_data.description
+    @params {String} update_test_case_data.dynamic_var_values
+    @params {String} update_test_case_data.expected_result
+
+    @returns {Object} UpdateTestCasesMutation object
+    """
     @classmethod
     def self_mutate(cls, root, info, update_test_case_data=None):
-        """
-        update test case
-
-        @params: update_test_case_data: A dictionary containing the parameters for the test case.
-
-        @return: A dictionary containing the test case.
-        """
         testCase = TestCase.objects.get(id=update_test_case_data.id)
 
         if update_test_case_data.name:

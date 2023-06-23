@@ -14,15 +14,17 @@ class CreateExperimentMutation(MutateBase):
 
     experiment = graphene.Field(ExperimentType)
 
+    """
+    create experiment
+
+    @params {Object} experiment_data
+    @params {String} experiment_data.name
+    @params {String} experiment_data.description
+
+    @returns {Object} CreateExperimentMutation object
+    """
     @classmethod
     def self_mutate(cls, root, info, experiment_data=None):
-        """
-        create experiment
-
-        @params: experiment_data: A dictionary containing the parameters for the experiment.
-
-        @return: A dictionary containing the experiment.
-        """
         if not CommonValiator.max_length_validation(experiment_data.name, 70):
             raise InvalidLengthError(code = "g_gm_ce_1", param="name")
 

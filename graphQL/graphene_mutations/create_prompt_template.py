@@ -18,15 +18,19 @@ class CreatePromptTemplateMutation(MutateBase):
 
     promptTemplate = graphene.Field(PromptTemplateType)
 
+    """
+    create prompt template
+
+    @params {Object} prompt_template_data
+    @params {String} prompt_template_data.name
+    @params {String} prompt_template_data.description
+    @params {String} prompt_template_data.conversation
+    @params {String} prompt_template_data.experiment_id
+
+    @returns {Object} CreatePromptTemplateMutation object
+    """
     @classmethod
     def self_mutate(cls, root, info, prompt_template_data=None):
-        """
-        create prompt template
-
-        @params: prompt_template_data: A dictionary containing the parameters for the prompt template.
-
-        @return: A dictionary containing the prompt template.
-        """
         if not CommonValiator.max_length_validation(prompt_template_data.name, 70):
             raise InvalidLengthError(code = "g_gm_cpt_1", param="name")
 

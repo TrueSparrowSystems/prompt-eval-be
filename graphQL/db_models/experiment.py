@@ -20,14 +20,14 @@ class Experiment(ModelBase):
     dynamic_vars = ListField(StringField(max_length=255))
     status = EnumField(Status)
 
+    """
+    get dynamic vars from conversation
+
+    @params {Object} conversation
+
+    @return {Object} dynamic_vars_list
+    """
     def get_dynamic_vars_dict(conversation):
-        """
-        get dynamic vars from conversation
-
-        @params: conversation
-
-        @return: dynamic_vars_list
-        """
         dynamic_vars_list = []
         pattern = r"\{\{[a-zA-Z0-9_]+\}\}"
         for conversion in conversation:
@@ -39,15 +39,16 @@ class Experiment(ModelBase):
                 dynamic_vars_list.append(key)
         return dynamic_vars_list
 
+    """
+    update dynamic vars in experiment collection
+
+    @params {String} experiment_id
+    @params {Object} conversation
+
+    @return {Object} experiment
+    """
     @classmethod
     def update_dynamic_vars(cls, experiment_id, conversation):
-        """
-        update dynamic vars in experiment collection
-
-        @params: experiment_id, conversation
-
-        @return: None
-        """
         experiment = cls.objects(id=experiment_id).first()
         if not experiment:
             raise ValueError('Experiment not found')
