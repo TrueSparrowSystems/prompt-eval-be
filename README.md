@@ -25,6 +25,7 @@ This is the backend component of the Prompt Evaluator tool. It is built using Dj
 
 - [**Sequence diagrams**](./docs/sequenceDiagram.mermaid)
 - [**DBML diagrams**](./docs/db.dbml)
+- [**DevOps Documentation**](./docs/deployment.md)
 
 ## Tech Stack
 
