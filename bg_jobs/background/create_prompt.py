@@ -36,13 +36,13 @@ class CreatePrompt:
                 content = conversion['content']
         
                 matches = re.findall(pattern, content)
+                unique_matches = list(set(matches))
     
-                replaced_content = content
-                for match in matches:
+                for match in unique_matches:
                     key = match.replace("{{", "").replace("}}", "")
                     if key in self.test_case.dynamic_var_values:
-                        replaced_content = content.replace(match, self.test_case.dynamic_var_values[key])
-                prompt.append({'role': conversion['role'], 'content': replaced_content})          
+                        content = content.replace(match, self.test_case.dynamic_var_values[key])
+                prompt.append({'role': conversion['role'], 'content': content})
             
             return prompt
         except Exception as e:
