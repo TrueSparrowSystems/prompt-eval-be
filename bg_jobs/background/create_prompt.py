@@ -32,8 +32,8 @@ class CreatePrompt:
             # Regex pattern to find dynamic variables in prompt template
             pattern = r"\{\{[a-zA-Z0-9_]+\}\}"
 
-            for conversion in template_conversations:
-                content = conversion['content']
+            for conversation in template_conversations:
+                content = conversation['content']
         
                 matches = re.findall(pattern, content)
                 unique_matches = list(set(matches))
@@ -42,7 +42,7 @@ class CreatePrompt:
                     key = match.replace("{{", "").replace("}}", "")
                     if key in self.test_case.dynamic_var_values:
                         content = content.replace(match, self.test_case.dynamic_var_values[key])
-                prompt.append({'role': conversion['role'], 'content': content})
+                prompt.append({'role': conversation['role'], 'content': content})
             
             return prompt
         except Exception as e:

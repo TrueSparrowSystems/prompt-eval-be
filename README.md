@@ -41,9 +41,11 @@ Follow the instructions below for installation:
 1. Check you have installed python version greater than or equal to 3.9
 2. [Install MongoDB](https://www.mongodb.com/docs/manual/administration/install-community/): If MongoDB is not installed on your system, you can download the MongoDB installer from the official website, run it, and follow the installation instructions. Make sure to have MongoDB installed before proceeding.
 
-3. Copy the contents of .env.sample file in .env file and add the values for all env variables.
+3. Go to the project directory and copy the contents of .env.sample file in .env file and add the values for all env variables.
 
 ```sh { language=sh }
+cd prompt-eval-be
+
 # For Linux/macOS
 cp .env.sample .env
 # For Windows
@@ -89,23 +91,35 @@ pip install -e evals_framework
 pip install -r requirements.txt
 ```
 
-11. Run the api server using following command
+## Run Tests
 
-```sh { language=sh }
-python manage.py runserver 8000
-```
-
-12. Run the test cases using following command
+Run the test cases using following command
 
 ```sh { language=sh }
 python manage.py test graphQL
 ```
 
-13. Run the following command to generate test coverage report
+## Generate Report
+
+Run the following command to generate test coverage report
 
 ```sh { language=sh }
 coverage run manage.py test
 coverage report
+```
+
+## Start the server
+
+1. Activate the virtual environment if not already activated
+
+```sh { language=sh }
+source .venv/bin/activate
+```
+
+2. Run the api server using following command
+
+```sh { language=sh }
+python manage.py runserver 8000
 ```
 
 ## Documents
