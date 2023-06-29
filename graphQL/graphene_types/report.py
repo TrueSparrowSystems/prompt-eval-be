@@ -6,6 +6,8 @@ class ReportBaseType(ObjectType):
     model = String()
     eval = String()
     accuracy = Float()
+    total_testcases = Int()
+    passed_testcases = Int()
     prompt_template_id = ID()
     run_id = String()
     status = String()
