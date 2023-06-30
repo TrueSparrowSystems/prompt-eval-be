@@ -12,6 +12,7 @@ from enum import Enum
 class Status(Enum):
     ACTIVE = 'ACTIVE'
     DELETED = 'DELETED'
+    DISABLED = 'DISABLED'
 
 class TestCase(ModelBase):
     meta = {'collection': 'test_cases'}

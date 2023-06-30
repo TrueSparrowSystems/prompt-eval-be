@@ -1,13 +1,14 @@
 import graphene
-from graphQL.db_models.test_case import TestCase
 from graphQL.graphene_types.test_case import TestCaseType
+from graphQL.db_models.test_case import TestCase, Status as TestCaseStatus
 from .mutation_base import MutateBase
 from graphQL.lib.helper import CommonValiator
-from graphQL.lib.custom_exception import InvalidLengthError
+from graphQL.lib.custom_exception import InvalidLengthError, InvalidStatusError
 
 class UpdateTestCaseInput(graphene.InputObjectType):
     id = graphene.String(required=True)
     name = graphene.String()
+    status = graphene.String()
     description = graphene.String()
     dynamic_var_values = graphene.JSONString()
     expected_result = graphene.List(graphene.String)
@@ -49,6 +50,11 @@ class UpdateTestCasesMutation(MutateBase):
 
         if update_test_case_data.expected_result:
             testCase.expected_result = update_test_case_data.expected_result
-        
+
+        if update_test_case_data.status:
+            if not (testCase.status == TestCaseStatus.ACTIVE or testCase.status == TestCaseStatus.DISABLED):
+                raise InvalidStatusError(code = "g_gm_utc_3", param="status") 
+            testCase.status = update_test_case_data.status
+
         testCase.save()
         return UpdateTestCasesMutation(testCase=testCase)

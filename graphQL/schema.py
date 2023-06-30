@@ -9,7 +9,7 @@ from graphQL.graphene_mutations.create_evaluation import CreateEvaluationMutatio
 from graphQL.graphene_mutations.update_test_cases import UpdateTestCasesMutation
 from graphQL.db_models.experiment import Experiment
 from graphQL.db_models.prompt_template import PromptTemplate
-from graphQL.db_models.test_case import TestCase
+from graphQL.db_models.test_case import TestCase, Status as TestCaseStatus
 from graphQL.db_models.evaluation import Evaluation
 from graphQL.db_models.evaluation_test_case_relation import EvaluationTestCaseRelation
 from graphQL.graphene_types.experiment import ExperimentType
@@ -117,7 +117,7 @@ class Query(graphene.ObjectType):
     """
     def resolve_test_cases(self, info, experimentId=graphene.String(required=True)):
         try:
-            return TestCase.objects.filter(experiment_id=experimentId, status="ACTIVE").order_by('-created_at')
+            return TestCase.objects.filter(experiment_id=experimentId, status__in=[TestCaseStatus.ACTIVE,TestCaseStatus.DISABLED]).order_by('-created_at')
         except Exception as e:
             print(e)
             error = GraphQLError(
