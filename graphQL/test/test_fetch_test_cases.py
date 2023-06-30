@@ -2,7 +2,7 @@ from django.test import TestCase
 from graphQL.db_models.prompt_template import PromptTemplate
 from graphQL.db_models.test_case import TestCase as tc
 from graphQL.db_models.experiment import Experiment
-from bg_jobs.background.fetch_test_cases import FetchTestCasesByPromptId
+from bg_jobs.run_eval.fetch_test_cases import FetchTestCasesByPromptId
 
 class FetchTestCasesByPromptIdTest(TestCase):
 

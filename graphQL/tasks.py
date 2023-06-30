@@ -1,7 +1,7 @@
 from celery import Task
 from api.celery import app
 from graphQL.db_models.evaluation_test_case_relation import EvaluationTestCaseRelation
-from bg_jobs.background.fetch_test_cases import FetchTestCasesByPromptId
+from bg_jobs.run_eval.fetch_test_cases import FetchTestCasesByPromptId
 
 """
 Background job class that performs a series of tasks.

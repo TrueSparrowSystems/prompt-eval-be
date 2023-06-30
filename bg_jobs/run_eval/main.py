@@ -1,7 +1,7 @@
 from graphQL.db_models.evaluation_test_case_relation import EvaluationTestCaseRelation
 from graphQL.db_models.evaluation import Evaluation, Status
 from graphQL.db_models.prompt_template import PromptTemplate
-from ..background.create_eval_files import CreateEvalFiles
+from .create_eval_files import CreateEvalFiles
 from .fetch_test_cases import FetchTestCasesByPromptId
 from .create_prompt import CreatePrompt
 from decouple import config
