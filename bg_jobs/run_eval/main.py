@@ -15,7 +15,7 @@ bg job class which perform background job for evaluation
 
 @class BgJob
 """
-class BgJob():
+class RunEvalJob():
     """
     Constructor for the BgJob class.
 
