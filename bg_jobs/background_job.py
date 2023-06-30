@@ -12,7 +12,7 @@ Function to run a background job with given parameters.
 @returns: Returns the error message if any, else None.
 """
 def background_job(params):
-    
+
     print('Sigint Triggered:::', globals.SIGINT_TRIGGERED)
 
     if not globals.SIGINT_TRIGGERED:
@@ -26,9 +26,9 @@ def background_job(params):
         finally:
             globals.PROCESS_COMPLETED = True
             print("Process Completed::: ", globals.PROCESS_COMPLETED)
-            
-    
-        
- 
-        
+
+
+
+
+
 

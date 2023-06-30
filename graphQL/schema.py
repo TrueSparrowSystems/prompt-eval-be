@@ -18,7 +18,7 @@ from graphQL.graphene_types.test_case import TestCaseType
 from graphQL.graphene_types.report import ReportType
 from graphQL.graphene_types.get_eval_and_model import GetEvalAndModelType
 from graphql import GraphQLError
-from bg_jobs.globals import EVALS_CLASS_DICT
+from bg_jobs.globals import EVALS_BASE_FILE_DICT
 from decouple import config
 import openai
 
@@ -57,7 +57,7 @@ class Query(graphene.ObjectType):
 
     @returns {List} List of experiments
     """
-    def resolve_experiment_list(root, info): 
+    def resolve_experiment_list(root, info):
         try:
             return Experiment.objects.filter(status="ACTIVE").order_by("-created_at")
         except Exception as e:
@@ -69,8 +69,8 @@ class Query(graphene.ObjectType):
              "debug": "Something_went_wrong",
              }
             )
-            return error    
-    
+            return error
+
     """
     resolver for the prompt_list_by_pagination query
 
@@ -107,7 +107,7 @@ class Query(graphene.ObjectType):
              }
             )
             return error
-            
+
     """
     resolver for the test_cases query
 
@@ -148,7 +148,7 @@ class Query(graphene.ObjectType):
                 total_count = EvaluationTestCaseRelation.objects.filter(evaluation_id=reportId).count()
             evaluation_report = Evaluation.objects.get(id=reportId)
             evaluation_report.test_case_evaluation_report = EvaluationTestCaseRelation.objects.filter(evaluation_id=reportId).order_by('-updated_at')[offset:offset+limit]
-            evaluation_report.total_count = total_count 
+            evaluation_report.total_count = total_count
             return evaluation_report
         except Exception as e:
             print(e)
@@ -160,10 +160,10 @@ class Query(graphene.ObjectType):
              }
             )
             return error
-    
+
     """
     resolver for the get_eval_and_models query
-    
+
     @returns {Object} Evaluation report
     """
     def resolve_get_eval_and_models(self, info):
@@ -171,7 +171,7 @@ class Query(graphene.ObjectType):
             openai.api_key = config('OPENAI_API_KEY')
             models = openai.Model.list()
             model_ids = [model["id"] for model in models["data"]]
-            evals = list(EVALS_CLASS_DICT.keys())
+            evals = list(EVALS_BASE_FILE_DICT.keys())
             return GetEvalAndModelType(evals=evals, models=model_ids)
         except Exception as e:
             print(e)
