@@ -224,6 +224,7 @@ class RunEvalJob():
             actual_results = {}
             accuracy_results = {}
             line_number = 1
+            processed_sample_ids = []
             with open(self.record_path, 'r') as f:
                 for line in f:
 
@@ -243,7 +244,10 @@ class RunEvalJob():
                     elif data.get('type') == 'sampling':
                         jsonl_order = data['sample_id'].split('.')[2]
                         sampled = data['data']['sampled']
-                        actual_results[jsonl_order] = sampled if data['event_id'] == 0 else actual_results[jsonl_order]
+                        # This has specifically been added for model-graded evals, as there are multiple entries created for model-graded evals
+                        # The first entry is the actual result and the second entry is from the prompt provided by model-graded.
+                        actual_results[jsonl_order] = sampled if data['sample_id'] not in processed_sample_ids else actual_results[jsonl_order]
+                        processed_sample_ids.append(data['sample_id'])
                     elif data.get('type') == 'match' and eval_name == 'match':
                         jsonl_order = data['sample_id'].split('.')[2]
                         matched = 1 if data['data']['correct'] else 0
