@@ -243,7 +243,7 @@ class RunEvalJob():
                     elif data.get('type') == 'sampling':
                         jsonl_order = data['sample_id'].split('.')[2]
                         sampled = data['data']['sampled']
-                        actual_results[jsonl_order] = sampled
+                        actual_results[jsonl_order] = sampled if data['event_id'] == 0 else actual_results[jsonl_order]
                     elif data.get('type') == 'match' and eval_name == 'match':
                         jsonl_order = data['sample_id'].split('.')[2]
                         matched = 1 if data['data']['correct'] else 0
