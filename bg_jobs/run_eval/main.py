@@ -10,6 +10,8 @@ import subprocess
 import os
 import logging
 
+ACCURACY_THRESHOLD_FOR_PASSING = 0.6
+
 """
 bg job class which perform background job for evaluation
 
@@ -31,6 +33,8 @@ class RunEvalJob():
         self.yaml_file = ''
         self.accuracy = 0
         self.run_id = 0
+        self.total_testcases = 0
+        self.passed_testcases = 0
 
     def perform(self):
         try:
@@ -112,7 +116,8 @@ class RunEvalJob():
     def fetch_testcases_by_prompt_template_id(self):
         try:
             self.test_cases = FetchTestCasesByPromptId(self.params).perform()
-            if self.test_cases.count() == 0:
+            self.total_testcases = self.test_cases.count()
+            if self.total_testcases == 0:
                 self.raise_error("no test cases record found", "f_t_c_b_p_t_i_1")
         except Exception as e:
             self.raise_error(f"error while fetching test cases: {str(e)}", "f_t_c_b_p_t_i_2")
@@ -258,6 +263,8 @@ class RunEvalJob():
                     params = {}
                     params['actual_result'] = actual_results.get(str(key),None)
                     params['accuracy'] = accuracy_results.get(str(key),None)
+                    if params['accuracy'] >= ACCURACY_THRESHOLD_FOR_PASSING:
+                        self.passed_testcases += 1
                     params['jsonl_order'] = key
                     params['evaluation_id'] = self.params['evaluation_id']
                     EvaluationTestCaseRelation.update_evaluation_test_case_relation(params)
@@ -275,6 +282,8 @@ class RunEvalJob():
             self.evaluation = Evaluation.objects.get(id=self.params['evaluation_id'])
             self.evaluation.status = 'COMPLETED'
             self.evaluation.accuracy = self.accuracy
+            self.evaluation.passed_testcases = self.passed_testcases
+            self.evaluation.total_testcases = self.total_testcases
             self.evaluation.run_id = self.run_id
             self.evaluation.completed_at  = int(time.time())
             self.evaluation.save()
