@@ -1,0 +1,8 @@
+eval_name_placeholder:
+  id: eval_name_placeholder.v0
+  metrics: accuracy
+
+eval_name_placeholder.v0:
+  class: evals.elsuite.basic.match:Match
+  args:
+    samples_jsonl: jsonl_file_path_placeholder
