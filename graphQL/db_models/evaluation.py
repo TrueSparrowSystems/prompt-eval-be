@@ -22,6 +22,8 @@ class Evaluation(ModelBase):
     meta = {'collection': 'evaluations'}
     model = StringField(required=True)
     eval = StringField(required=True)
+    total_testcases = IntField()
+    passed_testcases = IntField()
     accuracy = FloatField()
     prompt_template_id = ObjectIdField(required=True)
     run_id = StringField()

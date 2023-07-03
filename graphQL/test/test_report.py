@@ -22,6 +22,8 @@ class ReportTest(GraphQLTestCase):
                     model
                     eval
                     accuracy
+                    totalTestcases
+                    passedTestcases
                     promptTemplateId
                     runId
                     status
@@ -62,6 +64,8 @@ class ReportTest(GraphQLTestCase):
                     model
                     eval
                     accuracy
+                    totalTestcases
+                    passedTestcases
                     promptTemplateId
                     runId
                     status
@@ -104,6 +108,8 @@ class ReportTest(GraphQLTestCase):
                     model
                     eval
                     accuracy
+                    totalTestcases
+                    passedTestcases
                     promptTemplateId
                     runId
                     status
@@ -148,6 +154,8 @@ class ReportTest(GraphQLTestCase):
                     model
                     eval
                     accuracy
+                    totalTestcases
+                    passedTestcases
                     promptTemplateId
                     runId
                     status
