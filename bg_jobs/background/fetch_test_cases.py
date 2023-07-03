@@ -1,5 +1,5 @@
 from graphQL.db_models.prompt_template import PromptTemplate
-from graphQL.db_models.test_case import TestCase
+from graphQL.db_models.test_case import TestCase, Status as TestCaseStatus
 
 
 """
@@ -35,7 +35,7 @@ class FetchTestCasesByPromptId:
             if not experiment_id:
                 self.raise_error("invalid params", "m_e_t_d_p_2")    
             
-            test_cases = TestCase.objects(experiment_id=experiment_id)
+            test_cases = TestCase.objects(experiment_id=experiment_id, status=TestCaseStatus.ACTIVE)
             
             return test_cases
         except Exception as e:
