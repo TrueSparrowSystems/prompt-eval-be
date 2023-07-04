@@ -57,7 +57,7 @@ class Query(graphene.ObjectType):
 
     @returns {List} List of experiments
     """
-    def resolve_experiment_list(root, info): 
+    def resolve_experiment_list(root, info):
         try:
             return Experiment.objects.filter(status="ACTIVE").order_by("-created_at")
         except Exception as e:
@@ -69,8 +69,8 @@ class Query(graphene.ObjectType):
              "debug": "Something_went_wrong",
              }
             )
-            return error    
-    
+            return error
+
     """
     resolver for the prompt_list_by_pagination query
 
@@ -88,7 +88,7 @@ class Query(graphene.ObjectType):
             total_count = None
             if page == 1:
                 total_count = PromptTemplate.objects.filter(experiment_id=experimentId, status="ACTIVE").count()
-            is_runnable = TestCase.objects(experiment_id=experimentId, status="ACTIVE").count() > 0
+            is_runnable = TestCase.objects(experiment_id=experimentId, status=TestCaseStatus.ACTIVE).count() > 0
             prompts = PromptTemplate.objects.filter(experiment_id=experimentId, status="ACTIVE").order_by('-created_at')[offset:offset+limit]
 
             for prompt in prompts:
@@ -107,7 +107,7 @@ class Query(graphene.ObjectType):
              }
             )
             return error
-            
+
     """
     resolver for the test_cases query
 
@@ -148,7 +148,7 @@ class Query(graphene.ObjectType):
                 total_count = EvaluationTestCaseRelation.objects.filter(evaluation_id=reportId).count()
             evaluation_report = Evaluation.objects.get(id=reportId)
             evaluation_report.test_case_evaluation_report = EvaluationTestCaseRelation.objects.filter(evaluation_id=reportId).order_by('-updated_at')[offset:offset+limit]
-            evaluation_report.total_count = total_count 
+            evaluation_report.total_count = total_count
             return evaluation_report
         except Exception as e:
             print(e)
@@ -160,10 +160,10 @@ class Query(graphene.ObjectType):
              }
             )
             return error
-    
+
     """
     resolver for the get_eval_and_models query
-    
+
     @returns {Object} Evaluation report
     """
     def resolve_get_eval_and_models(self, info):
