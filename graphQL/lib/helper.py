@@ -1,4 +1,4 @@
-class CommonValiator:
+class CommonValidator:
     def validate_string(variable):
         return type(variable) == str
 
@@ -8,7 +8,7 @@ class CommonValiator:
 
     def is_var_none(variable):
         return variable == None
-    
+
     def validate_dictionary(variable):
         return type(variable) !=  dict
 
@@ -17,6 +17,6 @@ class CommonValiator:
 
     def validate_non_empty_list(variable):
         return type(variable) ==  list and len(variable) > 0
-    
+
     def max_length_validation(variable, length):
         return len(variable) <= length

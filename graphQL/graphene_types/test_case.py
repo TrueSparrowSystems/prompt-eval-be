@@ -4,6 +4,7 @@ from graphene import String, Int, List, ObjectType, ID, JSONString
 class TestCaseType(ObjectType):
     id = ID()
     name = String()
+    status = String()
     description = String()
     dynamic_var_values = JSONString()
     experiment_id = ID()
