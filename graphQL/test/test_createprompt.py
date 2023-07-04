@@ -15,8 +15,11 @@ class CreatePromptTest(TestCase):
                                       description="This is a test prompt",
                                       experiment_id=experiment.id,
                                       conversation= [{
+                                            'role': 'system',
+                                            'content': ' Hey'
+                                      },{
                                           'role': 'user',
-                                          'content': ' Hi, how are you {name}?'
+                                          'content': ' Hi, how are you {{name}}, {{name}}, {{name}}?'
                                       }])
         print(prompt_template.id)
         # Write a code to create test case
@@ -37,5 +40,6 @@ class CreatePromptTest(TestCase):
         Experiment.objects.filter(id=experiment.id).delete()
         PromptTemplate.objects.filter(id=prompt_template.id).delete()
         tc.objects.filter(id=test_case.id).delete()
-
-        self.assertEqual(prompt, [{'role': 'user', 'content': ' Hi, how are you John?'}] )
+        
+        self.assertEqual(prompt, [{'content': ' Hey', 'role': 'system'},{'role': 'user', 'content': ' Hi, how are you John, John, John?'}] )
+        
