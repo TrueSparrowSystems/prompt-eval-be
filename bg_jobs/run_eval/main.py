@@ -212,6 +212,9 @@ class RunEvalJob():
             with subprocess.Popen(command.split(), stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as p:
                 for line in p.stdout:
                     print(line, end='')
+            exitcode = p.wait() # 0 means success
+            if exitcode != 0:
+                raise ValueError('Something went wrong while running evaluation. Please check the logs for more details.')
 
         except Exception as e:
             self.raise_error(str(e), "bg_j_b_bg_j_r_e_1", "EVALS_RUN_ERROR")
