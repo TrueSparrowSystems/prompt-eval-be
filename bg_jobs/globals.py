@@ -1,9 +1,11 @@
 PROCESS_COMPLETED = True
-
 SIGINT_TRIGGERED = False
 
-EVALS_CLASS_DICT = {
-"match": "evals.elsuite.basic.match:Match",
-"fuzzy-match": "evals.elsuite.basic.fuzzy_match:FuzzyMatch",
-"graphql": "evals.elsuite.graphql:GraphQL"
+EVALS_BASE_FILE_DICT = {
+  "match": "YAML/match.yaml.sample",
+  "fuzzy-match": "YAML/fuzzy_match.yaml.sample",
+  "graphql": "YAML/graphql_match.yaml.sample",
+  "meaning-match": "YAML/meaning_match.yaml.sample"
 }
+
+MODEL_GRADED_EVALS = ["meaning-match"]

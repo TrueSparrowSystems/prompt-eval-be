@@ -18,7 +18,7 @@ from graphQL.graphene_types.test_case import TestCaseType
 from graphQL.graphene_types.report import ReportType
 from graphQL.graphene_types.get_eval_and_model import GetEvalAndModelType
 from graphql import GraphQLError
-from bg_jobs.globals import EVALS_CLASS_DICT
+from bg_jobs.globals import EVALS_BASE_FILE_DICT
 from decouple import config
 import openai
 
@@ -171,7 +171,7 @@ class Query(graphene.ObjectType):
             openai.api_key = config('OPENAI_API_KEY')
             models = openai.Model.list()
             model_ids = [model["id"] for model in models["data"]]
-            evals = list(EVALS_CLASS_DICT.keys())
+            evals = list(EVALS_BASE_FILE_DICT.keys())
             return GetEvalAndModelType(evals=evals, models=model_ids)
         except Exception as e:
             print(e)
