@@ -1,4 +1,4 @@
-from graphQL.lib.constants.error_codes import INVALID_LENGTH_ERROR
+from graphQL.lib.constants.error_codes import INVALID_LENGTH_ERROR, INVALID_STATUS, OBJECT_NOT_FOUND
 from graphql import GraphQLError
 
 """
@@ -59,3 +59,37 @@ class InvalidLengthError(ParamValidationError):
     """
     def __init__(self, code, param, message="Invalid length", debug=INVALID_LENGTH_ERROR):
         super().__init__(message, param, debug, code)
+
+"""
+Invalid status check
+
+@class InvalidStatus
+"""
+class InvalidStatusError(ParamValidationError):
+    """
+    Invalid length error extend param validation error class
+
+    @params {String} message
+    @params {String} paramName
+    @params {String} debug
+    @params {String} code
+    """
+    def __init__(self, code, param, message="Invalid status", debug=INVALID_STATUS):
+        super().__init__(message, param, debug, code)
+
+"""
+@class Invalid id
+"""
+class ObjectNotFoundError(ParamValidationError):
+    """
+    Object not found extends param validation error class
+
+    @params {String} message
+    @params {String} paramName
+    @params {String} debug
+    @params {String} code
+    """
+    def __init__(self, code, param, message="Object not found", debug=OBJECT_NOT_FOUND):
+        super().__init__(message, param, debug, code)
+
+
