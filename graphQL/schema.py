@@ -88,7 +88,7 @@ class Query(graphene.ObjectType):
             total_count = None
             if page == 1:
                 total_count = PromptTemplate.objects.filter(experiment_id=experimentId, status="ACTIVE").count()
-            is_runnable = TestCase.objects(experiment_id=experimentId, status=TestCaseStatus.ACTIVE).count() > 0
+            is_runnable = TestCase.objects(experiment_id=experimentId, status=TestCaseStatus.ACTIVE.value).count() > 0
             prompts = PromptTemplate.objects.filter(experiment_id=experimentId, status="ACTIVE").order_by('-created_at')[offset:offset+limit]
 
             for prompt in prompts:
@@ -117,7 +117,7 @@ class Query(graphene.ObjectType):
     """
     def resolve_test_cases(self, info, experimentId=graphene.String(required=True)):
         try:
-            return TestCase.objects.filter(experiment_id=experimentId, status__in=[TestCaseStatus.ACTIVE,TestCaseStatus.DISABLED]).order_by('-created_at')
+            return TestCase.objects.filter(experiment_id=experimentId, status__in=[TestCaseStatus.ACTIVE.value,TestCaseStatus.DISABLED.value]).order_by('-created_at')
         except Exception as e:
             print(e)
             error = GraphQLError(

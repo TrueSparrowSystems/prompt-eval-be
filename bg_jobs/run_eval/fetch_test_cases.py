@@ -35,7 +35,7 @@ class FetchTestCasesByPromptId:
             if not experiment_id:
                 self.raise_error("invalid params", "m_e_t_d_p_2")
 
-            test_cases = TestCase.objects(experiment_id=experiment_id, status=TestCaseStatus.ACTIVE)
+            test_cases = TestCase.objects(experiment_id=experiment_id, status=TestCaseStatus.ACTIVE.value)
 
             return test_cases
         except Exception as e:
