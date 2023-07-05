@@ -11,6 +11,8 @@ class TestCaseInput(graphene.InputObjectType):
     dynamic_var_values = graphene.JSONString()
     experiment_id = graphene.ID(required=True)
     expected_result = graphene.List(graphene.String)
+    status = graphene.String()
+
 class CreateTestCasesMutation(MutateBase):
     class Arguments:
         test_case_data = TestCaseInput(required=True)

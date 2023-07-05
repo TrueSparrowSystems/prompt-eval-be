@@ -27,6 +27,16 @@ class SanitizeMiddleware:
 
     @returns {Dict} Sanitized request
     """
+
+    def sanitize_list_values(self, request):
+        for value in request:
+            if isinstance(value, dict):
+                self.sanitize_dict_values(value)
+            elif isinstance(value, str):
+                request[value] = bleach.clean(value)
+            elif isinstance(value, list):
+                self.sanitize_list_values(value)
+
     def sanitize_dict_values(self, request):
         for key, value in request.items():
             if isinstance(value, dict):
@@ -34,8 +44,8 @@ class SanitizeMiddleware:
             elif isinstance(value, str):
                 request[key] = bleach.clean(value)
             elif isinstance(value, list):
-                for i in range(len(value)):
-                    self.sanitize_dict_values(value[i])
+                self.sanitize_list_values(value)
+                    
 
     """
     Processes the request and sanitizes the request body and query parameters.
@@ -54,7 +64,7 @@ class SanitizeMiddleware:
                 request._stream = BytesIO(sanitized_body)
                 request._body = sanitized_body
                 request._content_length = len(sanitized_body)
-                print('request.body', sanitized_body)
+                print('request.body----------------->', sanitized_body)
             # Sanitize query parameters
             query_params = request.GET.copy()
             self.sanitize_dict_values(query_params)

@@ -59,7 +59,7 @@ class UpdateTestCasesMutation(MutateBase):
             testCase.expected_result = update_test_case_data.expected_result
 
         if update_test_case_data.status:
-            if not (testCase.status == TestCaseStatus.ACTIVE.value or testCase.status == TestCaseStatus.DISABLED.value):
+            if not (update_test_case_data.status == TestCaseStatus.ACTIVE.value or update_test_case_data.status == TestCaseStatus.DISABLED.value):
                 raise InvalidStatusError(code = "g_gm_utc_3", param="status")
             testCase.status = update_test_case_data.status
 
