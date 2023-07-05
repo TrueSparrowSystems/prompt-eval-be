@@ -13,6 +13,7 @@ class ReportBaseType(ObjectType):
     status = String()
     initiated_at = Int()
     completed_at = Int()
+    error_object = String()
     created_at = Int()
     updated_at = Int()
 
