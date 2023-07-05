@@ -37,7 +37,7 @@ class UpdateTestCasesMutation(MutateBase):
     def self_mutate(cls, root, info, update_test_case_data=None):
         testCase = ""
         try:
-            testCase = TestCase.objects.get(id=update_test_case_data.id, status__in=[TestCaseStatus.ACTIVE, TestCaseStatus.DISABLED])
+            testCase = TestCase.objects.get(id=update_test_case_data.id, status__in=[TestCaseStatus.ACTIVE.value, TestCaseStatus.DISABLED.value])
         except TestCase.DoesNotExist as e:
             logging.error("ERROR: ", e)
             raise ObjectNotFoundError(code="g_gm_utc_0", param="id", message="Testcase object not found")
@@ -59,7 +59,7 @@ class UpdateTestCasesMutation(MutateBase):
             testCase.expected_result = update_test_case_data.expected_result
 
         if update_test_case_data.status:
-            if not (testCase.status == TestCaseStatus.ACTIVE or testCase.status == TestCaseStatus.DISABLED):
+            if not (testCase.status == TestCaseStatus.ACTIVE.value or testCase.status == TestCaseStatus.DISABLED.value):
                 raise InvalidStatusError(code = "g_gm_utc_3", param="status")
             testCase.status = update_test_case_data.status
 
