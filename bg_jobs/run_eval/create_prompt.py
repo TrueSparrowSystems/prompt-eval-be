@@ -1,4 +1,5 @@
 import re
+from html import unescape
 
 """
 create prompt by replacing dynamic variables with values in prompt template by test case
@@ -33,7 +34,7 @@ class CreatePrompt:
             pattern = r"\{\{[a-zA-Z0-9_]+\}\}"
 
             for conversation in template_conversations:
-                content = conversation['content']
+                content = unescape(conversation['content'])
 
                 matches = re.findall(pattern, content)
                 unique_matches = list(set(matches))
