@@ -9,6 +9,7 @@ import json, time
 import subprocess
 import os
 import logging
+import uuid
 
 ACCURACY_THRESHOLD_FOR_PASSING = 0.6
 
@@ -208,13 +209,19 @@ class RunEvalJob():
             self.created_files.append(self.record_path)
 
             command = f"oaieval {completion_fn} {self.eval} --debug --registry_path {registry_path} --record_path {self.record_path}"
-            print('command--------', command)
-            with subprocess.Popen(command.split(), stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as p:
-                for line in p.stdout:
-                    print(line, end='')
-            exitcode = p.wait() # 0 means success
+
+            calling_output = subprocess.run(command.split(), capture_output=True)
+            exitcode = calling_output.returncode
+
             if exitcode != 0:
-                raise ValueError('Something went wrong while running evaluation. Please check the logs for more details.')
+                uniqueId = uuid.uuid1()
+                print("--------------- ",uniqueId," -------------------")
+
+                print("--------------- Error Log Starts for Evaluation Id: " + str(self.params['evaluation_id']))
+                print(calling_output.stderr)
+                print("--------------- Error Log Ends for Evaluation Id: ", self.params['evaluation_id'])
+    
+                raise ValueError('Something went wrong while running evaluation. Please search the unique id: '+ str(uniqueId)+ ' in the logs to find the error.')
 
         except Exception as e:
             self.raise_error(str(e), "bg_j_b_bg_j_r_e_1", "EVALS_RUN_ERROR")
