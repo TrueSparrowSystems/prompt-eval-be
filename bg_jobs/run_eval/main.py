@@ -9,6 +9,7 @@ import json, time
 import subprocess
 import os
 import logging
+import uuid
 
 ACCURACY_THRESHOLD_FOR_PASSING = 0.6
 
@@ -213,23 +214,14 @@ class RunEvalJob():
             exitcode = calling_output.returncode
 
             if exitcode != 0:
-                errLogBasePath = config("PE_ERROR_LOG_FOLDER_BASE_PATH")
-                errLogFolderPath = os.path.join(os.getcwd(), errLogBasePath)
-                if not os.path.exists(errLogFolderPath):
-                    os.makedirs(errLogFolderPath)
-                unix_time = int(time.time())
+                uniqueId = uuid.uuid1()
+                print("--------------- ",uniqueId," -------------------")
 
-                errLogFile = os.path.join(
-                    errLogFolderPath,
-                    str(self.params['evaluation_id']) + "_" + str(unix_time) + ".log",
-                )
-                print(" ",errLogFile)
-
-                with open(errLogFile, "wb") as err_log_file:
-                    # Write bytes to file
-                    err_log_file.write(calling_output.stderr)   
+                print("--------------- Error Log Starts for Evaluation Id: " + str(self.params['evaluation_id']))
+                print(calling_output.stderr)
+                print("--------------- Error Log Ends for Evaluation Id: ", self.params['evaluation_id'])
     
-                raise ValueError('Something went wrong while running evaluation. Please check the logs at, ', errLogFile, ' for more details.')
+                raise ValueError('Something went wrong while running evaluation. Please search the unique id: '+ str(uniqueId)+ ' in the logs to find the error.')
 
         except Exception as e:
             self.raise_error(str(e), "bg_j_b_bg_j_r_e_1", "EVALS_RUN_ERROR")
