@@ -1,0 +1,10 @@
+eval_name_placeholder:
+  id: eval_name_placeholder.v0
+  metrics: accuracy
+
+eval_name_placeholder.v0:
+  class: evals.elsuite.modelgraded.classify:ModelBasedClassify
+  args:
+    samples_jsonl: jsonl_file_path_placeholder
+    eval_type: cot_classify
+    modelgraded_spec: meaning

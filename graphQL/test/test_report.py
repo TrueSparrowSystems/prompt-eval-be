@@ -3,6 +3,7 @@ from graphene_django.utils.testing import GraphQLTestCase
 from graphQL.db_models.experiment import Experiment
 from graphQL.db_models.prompt_template import PromptTemplate
 from graphQL.db_models.evaluation import Evaluation
+from graphQL.db_models.test_case import TestCase
 
 # Command to run test cases for experiment
 # $ python manage.py test graphQL.test.test_report
@@ -11,7 +12,17 @@ from graphQL.db_models.evaluation import Evaluation
 class ReportTest(GraphQLTestCase):
     def test_get_report_query(self):
         experiment = Experiment.objects.create(name="Test Experiment", description="This is a test experiment")
-        prompt = PromptTemplate.objects.create(experiment_id=str(experiment.id),name="Test Prompt", description="This is a test prompt")
+        prompt = PromptTemplate.objects.create(experiment_id=str(experiment.id),name="Test Prompt", description="This is a test prompt",
+                                      conversation= [{
+                                            'role': 'system',
+                                            'content': ' Hey'
+                                      },{
+                                          'role': 'user',
+                                          'content': ' Hi, how are you {{name}}, {{name}}, {{name}}?'
+                                      }])
+        test_case = TestCase.objects.create(name="Test Case", description="This is a test case",
+                                            dynamic_var_values={"name": "John"},
+                                            experiment_id=str(experiment.id))
         evaluation = Evaluation.objects.create(prompt_template_id=str(prompt.id),model="Test Model",eval="Test Eval")
         variables = {"reportID": str(evaluation.id)}
         response = self.query(
@@ -22,6 +33,8 @@ class ReportTest(GraphQLTestCase):
                     model
                     eval
                     accuracy
+                    totalTestcases
+                    passedTestcases
                     promptTemplateId
                     runId
                     status
@@ -62,6 +75,8 @@ class ReportTest(GraphQLTestCase):
                     model
                     eval
                     accuracy
+                    totalTestcases
+                    passedTestcases
                     promptTemplateId
                     runId
                     status
@@ -104,6 +119,8 @@ class ReportTest(GraphQLTestCase):
                     model
                     eval
                     accuracy
+                    totalTestcases
+                    passedTestcases
                     promptTemplateId
                     runId
                     status
@@ -148,6 +165,8 @@ class ReportTest(GraphQLTestCase):
                     model
                     eval
                     accuracy
+                    totalTestcases
+                    passedTestcases
                     promptTemplateId
                     runId
                     status

@@ -9,7 +9,7 @@ from graphQL.graphene_mutations.create_evaluation import CreateEvaluationMutatio
 from graphQL.graphene_mutations.update_test_cases import UpdateTestCasesMutation
 from graphQL.db_models.experiment import Experiment
 from graphQL.db_models.prompt_template import PromptTemplate
-from graphQL.db_models.test_case import TestCase
+from graphQL.db_models.test_case import TestCase, Status as TestCaseStatus
 from graphQL.db_models.evaluation import Evaluation
 from graphQL.db_models.evaluation_test_case_relation import EvaluationTestCaseRelation
 from graphQL.graphene_types.experiment import ExperimentType
@@ -18,7 +18,7 @@ from graphQL.graphene_types.test_case import TestCaseType
 from graphQL.graphene_types.report import ReportType
 from graphQL.graphene_types.get_eval_and_model import GetEvalAndModelType
 from graphql import GraphQLError
-from bg_jobs.globals import EVALS_CLASS_DICT
+from bg_jobs.globals import EVALS_BASE_FILE_DICT
 from decouple import config
 import openai
 
@@ -57,7 +57,7 @@ class Query(graphene.ObjectType):
 
     @returns {List} List of experiments
     """
-    def resolve_experiment_list(root, info): 
+    def resolve_experiment_list(root, info):
         try:
             return Experiment.objects.filter(status="ACTIVE").order_by("-created_at")
         except Exception as e:
@@ -69,8 +69,8 @@ class Query(graphene.ObjectType):
              "debug": "Something_went_wrong",
              }
             )
-            return error    
-    
+            return error
+
     """
     resolver for the prompt_list_by_pagination query
 
@@ -88,7 +88,7 @@ class Query(graphene.ObjectType):
             total_count = None
             if page == 1:
                 total_count = PromptTemplate.objects.filter(experiment_id=experimentId, status="ACTIVE").count()
-            is_runnable = TestCase.objects(experiment_id=experimentId, status="ACTIVE").count() > 0
+            is_runnable = TestCase.objects(experiment_id=experimentId, status=TestCaseStatus.ACTIVE.value).count() > 0
             prompts = PromptTemplate.objects.filter(experiment_id=experimentId, status="ACTIVE").order_by('-created_at')[offset:offset+limit]
 
             for prompt in prompts:
@@ -107,7 +107,7 @@ class Query(graphene.ObjectType):
              }
             )
             return error
-            
+
     """
     resolver for the test_cases query
 
@@ -117,7 +117,7 @@ class Query(graphene.ObjectType):
     """
     def resolve_test_cases(self, info, experimentId=graphene.String(required=True)):
         try:
-            return TestCase.objects.filter(experiment_id=experimentId, status="ACTIVE").order_by('-created_at')
+            return TestCase.objects.filter(experiment_id=experimentId, status__in=[TestCaseStatus.ACTIVE.value,TestCaseStatus.DISABLED.value]).order_by('-created_at')
         except Exception as e:
             print(e)
             error = GraphQLError(
@@ -148,7 +148,7 @@ class Query(graphene.ObjectType):
                 total_count = EvaluationTestCaseRelation.objects.filter(evaluation_id=reportId).count()
             evaluation_report = Evaluation.objects.get(id=reportId)
             evaluation_report.test_case_evaluation_report = EvaluationTestCaseRelation.objects.filter(evaluation_id=reportId).order_by('-updated_at')[offset:offset+limit]
-            evaluation_report.total_count = total_count 
+            evaluation_report.total_count = total_count
             return evaluation_report
         except Exception as e:
             print(e)
@@ -160,10 +160,10 @@ class Query(graphene.ObjectType):
              }
             )
             return error
-    
+
     """
     resolver for the get_eval_and_models query
-    
+
     @returns {Object} Evaluation report
     """
     def resolve_get_eval_and_models(self, info):
@@ -171,7 +171,7 @@ class Query(graphene.ObjectType):
             openai.api_key = config('OPENAI_API_KEY')
             models = openai.Model.list()
             model_ids = [model["id"] for model in models["data"]]
-            evals = list(EVALS_CLASS_DICT.keys())
+            evals = list(EVALS_BASE_FILE_DICT.keys())
             return GetEvalAndModelType(evals=evals, models=model_ids)
         except Exception as e:
             print(e)
